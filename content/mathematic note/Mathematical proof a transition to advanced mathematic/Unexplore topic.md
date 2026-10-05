@@ -1,0 +1,5 @@
+- **Extended Euclidean Algorithm**.
+- Chinese remainder theorem
+- [[Logical Architecture from WOP to FTA|Bezout's Identity (gcd) use to prove FTA]]
+- Cauchy-Schwarz Inequality (Faster)
+- Fermat little theorem
