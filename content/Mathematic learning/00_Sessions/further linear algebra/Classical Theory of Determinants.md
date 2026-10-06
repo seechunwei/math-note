@@ -128,6 +128,9 @@ is the **eliminant** (later termed the *determinant* by Cauchy). It dictates the
 - If $\Delta = 0$ and the numerators are non-zero, the system is **inconsistent** (no solution).
 - If $\Delta = 0$ and the numerators vanish, the system possesses **infinitely many** solutions.
 
+Notice that the numerator of  $x$ is the $\det A_{1}(b)$ which is replacing the first column of $A$ by $b$ (the target vector) while the numerator of $y$ is $\det A_{2}(b)$. 
+[[3.3 Cramer's Rule]]
+
 Colin Maclaurin (in a posthumous treatise published in 1748) and Gabriel Cramer (1750) generalized this elimination rule to $n$ equations in $n$ unknowns, yielding what is now celebrated as **Cramer's Rule**.
 
 ### 1.2 The Geometric Route: Signed Hypervolume & Orientation
@@ -165,6 +168,7 @@ For three vectors $v_1, v_2, v_3 \in \mathbb{R}^3$, the signed volume is given b
 $$
 \operatorname{Vol}(P(v_1, v_2, v_3)) = v_1 \cdot (v_2 \times v_3) = \det \begin{pmatrix} v_1 & v_2 & v_3 \end{pmatrix}
 $$
+[[Cross product of vector]]
 
 The sign is positive if $\{v_1, v_2, v_3\}$ obeys the **right-hand rule**, and negative if it obeys a left-handed configuration.
 
@@ -183,11 +187,11 @@ $$
 
 ### 1.3 Conceptual Synthesis: The Dual Nature
 
-| Perspective | Role of $\det(A) \ne 0$ | Meaning of $\det(A) = 0$ |
-| :--- | :--- | :--- |
-| **Algebraic** | $A x = b$ has a unique solution; $A$ has trivial nullspace $\ker(A) = \{0\}$. | Equations are redundant or contradictory; non-trivial kernel $\ker(A) \ne \{0\}$. |
-| **Geometric** | $T$ maps $n$-dimensional bodies to non-degenerate $n$-dimensional bodies. | $T$ collapses space into a subspace of dimension $\le n-1$ (hypervolume collapses to 0). |
-| **Orientational** | $\operatorname{sgn}(\det(A)) = +1$ preserves chirality; $-1$ inverts chirality. | Orientation is annihilated; dimensional collapse destroys handedness. |
+| Perspective       | Role of $\det(A) \ne 0$                                                         | Meaning of $\det(A) = 0$                                                                 |
+| :---------------- | :------------------------------------------------------------------------------ | :--------------------------------------------------------------------------------------- |
+| **Algebraic**     | $A x = b$ has a unique solution; $A$ has trivial nullspace $\ker(A) = \{0\}$.   | Equations are redundant or contradictory; non-trivial kernel $\ker(A) \ne \{0\}$.        |
+| **Geometric**     | $T$ maps $n$-dimensional bodies to non-degenerate $n$-dimensional bodies.       | $T$ collapses space into a subspace of dimension $\le n-1$ (hypervolume collapses to 0). |
+| **Orientational** | $\operatorname{sgn}(\det(A)) = +1$ preserves chirality; $-1$ inverts chirality. | Orientation is annihilated; dimensional collapse destroys handedness.                    |
 
 ---
 
