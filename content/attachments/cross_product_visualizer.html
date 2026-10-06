@@ -1,0 +1,459 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Cross Product Geometric Visualizer</title>
+  <script src="https://www.gstatic.com/antigravity/web/dev/tailwindcss.min.js"></script>
+  <style>
+    :root {
+      --background: #090d16;
+      --card: #131d31;
+      --card-foreground: #f8fafc;
+      --foreground: #f1f5f9;
+      --muted-foreground: #94a3b8;
+      --border: #334155;
+      --accent: #6366f1;
+      --accent-foreground: #ffffff;
+    }
+    body {
+      background-color: #090d16 !important;
+      color: #f1f5f9 !important;
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+      margin: 0;
+      padding: 16px;
+    }
+    canvas {
+      touch-action: none;
+      cursor: grab;
+    }
+    canvas:active {
+      cursor: grabbing;
+    }
+    input[type="number"] {
+      background-color: #0b1120 !important;
+      color: #f8fafc !important;
+      border: 1px solid #475569 !important;
+    }
+    input[type="number"]:focus {
+      border-color: #818cf8 !important;
+      outline: none;
+    }
+    input[type="checkbox"] {
+      accent-color: #6366f1;
+    }
+    button {
+      cursor: pointer;
+      user-select: none;
+    }
+  </style>
+</head>
+<body class="bg-[#090d16] text-slate-100 antialiased p-3 sm:p-5">
+  <div class="max-w-5xl mx-auto bg-[#131d31] text-slate-100 border border-slate-700/80 rounded-2xl p-5 shadow-2xl space-y-6">
+    
+    <!-- Header -->
+    <div class="border-b border-slate-700/80 pb-4 flex flex-col sm:flex-row justify-between items-start sm:items-center gap-3">
+      <div>
+        <h1 class="text-xl sm:text-2xl font-bold tracking-tight text-white flex items-center gap-2">
+          <span>📐</span> Cross Product: Why the Determinant Formula?
+        </h1>
+        <p class="text-sm text-slate-400 mt-1">
+          Visualizing how the 3D parallelogram projects onto the 3 coordinate walls to form <span class="text-yellow-400 font-mono font-semibold">(u × v)</span>
+        </p>
+      </div>
+      <div class="flex gap-2">
+        <button id="presetDefault" class="px-3.5 py-1.5 text-xs font-semibold rounded-lg bg-indigo-600 text-white border border-indigo-500 hover:bg-indigo-500 transition shadow-sm">Preset: General 3D</button>
+        <button id="presetFlat" class="px-3.5 py-1.5 text-xs font-semibold rounded-lg bg-slate-800 text-slate-300 border border-slate-600 hover:bg-slate-700 hover:text-white transition shadow-sm">Preset: Flat XY</button>
+      </div>
+    </div>
+
+    <!-- Main Grid -->
+    <div class="grid grid-cols-1 lg:grid-cols-12 gap-6">
+      
+      <!-- 3D Canvas Box -->
+      <div class="lg:col-span-7 flex flex-col space-y-3">
+        <div class="relative bg-slate-950 rounded-xl overflow-hidden border border-slate-700 aspect-[4/3] sm:aspect-square max-h-[460px] flex items-center justify-center shadow-inner">
+          <canvas id="glCanvas" class="w-full h-full block"></canvas>
+          
+          <!-- Legend Overlay -->
+          <div class="absolute top-3 left-3 bg-slate-900/90 backdrop-blur-md px-3 py-2 rounded-lg text-xs font-mono text-slate-200 border border-slate-700/80 space-y-1 pointer-events-none shadow-md">
+            <div class="flex items-center gap-2"><span class="w-2.5 h-2.5 rounded-full bg-amber-500 inline-block shadow-sm"></span> <span class="text-amber-300 font-bold">Vector u (orange)</span></div>
+            <div class="flex items-center gap-2"><span class="w-2.5 h-2.5 rounded-full bg-cyan-400 inline-block shadow-sm"></span> <span class="text-cyan-300 font-bold">Vector v (cyan)</span></div>
+            <div class="flex items-center gap-2"><span class="w-2.5 h-2.5 rounded bg-purple-500/60 border border-purple-400 inline-block shadow-sm"></span> <span class="text-purple-300">3D Parallelogram</span></div>
+            <div class="flex items-center gap-2"><span class="w-2.5 h-2.5 rounded-full bg-yellow-400 inline-block shadow-sm"></span> <span class="text-yellow-300 font-bold">u × v (normal vector)</span></div>
+          </div>
+          <div class="absolute bottom-3 right-3 text-xs text-slate-300 bg-slate-900/80 px-2.5 py-1 rounded-md border border-slate-700/80 pointer-events-none">
+            🖱️ Drag to rotate view
+          </div>
+        </div>
+
+        <!-- Canvas Controls -->
+        <div class="flex flex-wrap items-center justify-between gap-3 text-xs bg-slate-900/90 text-slate-200 p-3 rounded-xl border border-slate-700">
+          <label class="flex items-center gap-2 cursor-pointer font-medium hover:text-white transition">
+            <input type="checkbox" id="showShadows" checked class="w-4 h-4 rounded border-slate-600 bg-slate-800 text-indigo-500 focus:ring-indigo-400">
+            <span>Show 2D Projections (Wall Shadows)</span>
+          </label>
+          <label class="flex items-center gap-2 cursor-pointer font-medium hover:text-white transition">
+            <input type="checkbox" id="showNormal" checked class="w-4 h-4 rounded border-slate-600 bg-slate-800 text-indigo-500 focus:ring-indigo-400">
+            <span>Show Result Vector (u × v)</span>
+          </label>
+          <button id="resetCam" class="text-xs px-3 py-1 rounded-lg bg-slate-800 text-slate-200 border border-slate-600 hover:bg-slate-700 hover:text-white transition shadow-sm">Reset View</button>
+        </div>
+      </div>
+
+      <!-- Live Mathematical Decomposition -->
+      <div class="lg:col-span-5 flex flex-col space-y-4">
+        
+        <!-- Vector Inputs -->
+        <div class="bg-slate-900/90 p-4 rounded-xl border border-slate-700 space-y-3">
+          <h3 class="text-xs font-bold uppercase tracking-wider text-slate-400">Vector Coordinates</h3>
+          <div class="grid grid-cols-2 gap-3 text-xs">
+            <!-- Vector u -->
+            <div class="space-y-2 p-2.5 bg-slate-800/80 rounded-lg border border-slate-700/90">
+              <span class="font-bold text-amber-400 block mb-1">Vector u</span>
+              <div class="grid grid-cols-3 gap-1.5 items-center text-slate-300">
+                <label>x: <input id="u1" type="number" step="0.5" value="2.0" class="w-full mt-0.5 px-1 py-0.5 bg-slate-950 text-slate-100 border border-slate-600 rounded text-center font-mono"></label>
+                <label>y: <input id="u2" type="number" step="0.5" value="0.5" class="w-full mt-0.5 px-1 py-0.5 bg-slate-950 text-slate-100 border border-slate-600 rounded text-center font-mono"></label>
+                <label>z: <input id="u3" type="number" step="0.5" value="1.5" class="w-full mt-0.5 px-1 py-0.5 bg-slate-950 text-slate-100 border border-slate-600 rounded text-center font-mono"></label>
+              </div>
+            </div>
+            <!-- Vector v -->
+            <div class="space-y-2 p-2.5 bg-slate-800/80 rounded-lg border border-slate-700/90">
+              <span class="font-bold text-cyan-400 block mb-1">Vector v</span>
+              <div class="grid grid-cols-3 gap-1.5 items-center text-slate-300">
+                <label>x: <input id="v1" type="number" step="0.5" value="0.5" class="w-full mt-0.5 px-1 py-0.5 bg-slate-950 text-slate-100 border border-slate-600 rounded text-center font-mono"></label>
+                <label>y: <input id="v2" type="number" step="0.5" value="2.0" class="w-full mt-0.5 px-1 py-0.5 bg-slate-950 text-slate-100 border border-slate-600 rounded text-center font-mono"></label>
+                <label>z: <input id="v3" type="number" step="0.5" value="0.5" class="w-full mt-0.5 px-1 py-0.5 bg-slate-950 text-slate-100 border border-slate-600 rounded text-center font-mono"></label>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- The 3 Projections / Minors Breakdown -->
+        <div class="bg-slate-900/90 p-4 rounded-xl border border-slate-700 space-y-3">
+          <h3 class="text-xs font-bold uppercase tracking-wider text-slate-400">The 3 Projected 2D "Shadows"</h3>
+          
+          <div class="space-y-2 text-xs font-mono">
+            <!-- i component -->
+            <div class="p-2.5 rounded-lg bg-red-950/40 border border-red-700/60 flex justify-between items-center shadow-sm">
+              <div>
+                <span class="font-bold text-red-300">i-slot (yz wall):</span>
+                <span class="text-slate-300 ml-1">det [[u₂, u₃], [v₂, v₃]]</span>
+              </div>
+              <div id="dispX" class="font-bold text-red-200 bg-red-900/60 border border-red-700/70 px-2.5 py-0.5 rounded shadow-sm">0.00</div>
+            </div>
+
+            <!-- j component -->
+            <div class="p-2.5 rounded-lg bg-green-950/40 border border-green-700/60 flex justify-between items-center shadow-sm">
+              <div>
+                <span class="font-bold text-green-300">j-slot (xz wall):</span>
+                <span class="text-slate-300 ml-1">-det [[u₁, u₃], [v₁, v₃]]</span>
+              </div>
+              <div id="dispY" class="font-bold text-green-200 bg-green-900/60 border border-green-700/70 px-2.5 py-0.5 rounded shadow-sm">0.00</div>
+            </div>
+
+            <!-- k component -->
+            <div class="p-2.5 rounded-lg bg-blue-950/40 border border-blue-700/60 flex justify-between items-center shadow-sm">
+              <div>
+                <span class="font-bold text-blue-300">k-slot (xy floor):</span>
+                <span class="text-slate-300 ml-1">det [[u₁, u₂], [v₁, v₂]]</span>
+              </div>
+              <div id="dispZ" class="font-bold text-blue-200 bg-blue-900/60 border border-blue-700/70 px-2.5 py-0.5 rounded shadow-sm">0.00</div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Verification Summary Card -->
+        <div class="bg-slate-900/90 p-4 rounded-xl border border-slate-700 space-y-2.5 text-xs shadow-sm">
+          <h3 class="text-xs font-bold uppercase tracking-wider text-slate-400">Geometric Check</h3>
+          <div class="grid grid-cols-2 gap-2 text-slate-300">
+            <div class="bg-slate-800/80 p-2.5 rounded-lg border border-slate-700">
+              <div class="text-slate-400 text-[11px]">||u × v|| (Pythagoras on 3 Shadows):</div>
+              <div id="dispNorm" class="text-sm font-bold text-yellow-300 font-mono mt-0.5">0.00</div>
+            </div>
+            <div class="bg-slate-800/80 p-2.5 rounded-lg border border-slate-700">
+              <div class="text-slate-400 text-[11px]">Geometric Area (||u|| ||v|| sin θ):</div>
+              <div id="dispGeoArea" class="text-sm font-bold text-purple-300 font-mono mt-0.5">0.00</div>
+            </div>
+          </div>
+          <div class="flex items-center justify-between text-[11px] text-slate-400 pt-1 border-t border-slate-700/80">
+            <span>u · (u × v) = <strong id="dotU" class="text-emerald-400 font-mono">0.00</strong></span>
+            <span>v · (u × v) = <strong id="dotV" class="text-emerald-400 font-mono">0.00</strong></span>
+            <span class="text-emerald-400 font-semibold">✓ 100% Orthogonal</span>
+          </div>
+        </div>
+
+      </div>
+    </div>
+
+    <!-- Explanatory Footnote -->
+    <div class="border-t border-slate-700/80 pt-4 text-xs text-slate-300 leading-relaxed space-y-2">
+      <p>
+        💡 <strong class="text-white">The Core Intuition:</strong> A tilted 2D parallelogram in 3D space casts three flat shadows onto the coordinate planes. The area of each shadow is computed by a standard 2D determinant. By the 3D generalization of Pythagoras' theorem (De Gua's theorem), the square of the total 3D area equals the sum of the squares of the three shadow areas: 
+        <code class="bg-slate-800 px-2 py-0.5 rounded text-amber-300 font-mono border border-slate-700">Area² = (Shadow_yz)² + (Shadow_xz)² + (Shadow_xy)²</code>.
+      </p>
+      <p>
+        The cross product vector <code class="text-yellow-400 font-mono font-bold bg-yellow-950/50 px-1.5 py-0.5 rounded border border-yellow-800/50">u × v</code> stores each of these three shadow areas into the corresponding perpendicular axis direction (<code class="text-red-400 font-bold">i</code>, <code class="text-green-400 font-bold">j</code>, <code class="text-blue-400 font-bold">k</code>). Its direction automatically aligns with the true 3D surface normal!
+      </p>
+    </div>
+
+  </div>
+
+  <script>
+    // Canvas & State
+    const canvas = document.getElementById('glCanvas');
+    const ctx = canvas.getContext('2d');
+    let width, height;
+
+    let rotX = -0.55;
+    let rotY = 0.75;
+    let zoom = 55;
+    let isDragging = false;
+    let lastMouseX = 0, lastMouseY = 0;
+
+    // Inputs
+    const u1El = document.getElementById('u1');
+    const u2El = document.getElementById('u2');
+    const u3El = document.getElementById('u3');
+    const v1El = document.getElementById('v1');
+    const v2El = document.getElementById('v2');
+    const v3El = document.getElementById('v3');
+    const showShadowsEl = document.getElementById('showShadows');
+    const showNormalEl = document.getElementById('showNormal');
+    const presetDefault = document.getElementById('presetDefault');
+    const presetFlat = document.getElementById('presetFlat');
+
+    function resize() {
+      const rect = canvas.getBoundingClientRect();
+      width = canvas.width = rect.width * window.devicePixelRatio;
+      height = canvas.height = rect.height * window.devicePixelRatio;
+      draw();
+    }
+    window.addEventListener('resize', resize);
+
+    // Mouse Dragging
+    canvas.addEventListener('mousedown', e => {
+      isDragging = true;
+      lastMouseX = e.clientX;
+      lastMouseY = e.clientY;
+    });
+    window.addEventListener('mouseup', () => isDragging = false);
+    window.addEventListener('mousemove', e => {
+      if (!isDragging) return;
+      const dx = e.clientX - lastMouseX;
+      const dy = e.clientY - lastMouseY;
+      rotY += dx * 0.01;
+      rotX += dy * 0.01;
+      rotX = Math.max(-Math.PI / 2 + 0.05, Math.min(Math.PI / 2 - 0.05, rotX));
+      lastMouseX = e.clientX;
+      lastMouseY = e.clientY;
+      draw();
+    });
+
+    // Touch support for mobile / tablets
+    canvas.addEventListener('touchstart', e => {
+      if (e.touches.length === 1) {
+        isDragging = true;
+        lastMouseX = e.touches[0].clientX;
+        lastMouseY = e.touches[0].clientY;
+      }
+    });
+    window.addEventListener('touchend', () => isDragging = false);
+    window.addEventListener('touchmove', e => {
+      if (!isDragging || e.touches.length !== 1) return;
+      const dx = e.touches[0].clientX - lastMouseX;
+      const dy = e.touches[0].clientY - lastMouseY;
+      rotY += dx * 0.01;
+      rotX += dy * 0.01;
+      rotX = Math.max(-Math.PI / 2 + 0.05, Math.min(Math.PI / 2 - 0.05, rotX));
+      lastMouseX = e.touches[0].clientX;
+      lastMouseY = e.touches[0].clientY;
+      draw();
+    });
+
+    // Preset buttons
+    presetDefault.addEventListener('click', () => {
+      u1El.value = 2.0; u2El.value = 0.5; u3El.value = 1.5;
+      v1El.value = 0.5; v2El.value = 2.0; v3El.value = 0.5;
+      presetDefault.className = "px-3.5 py-1.5 text-xs font-semibold rounded-lg bg-indigo-600 text-white border border-indigo-500 transition shadow-sm";
+      presetFlat.className = "px-3.5 py-1.5 text-xs font-semibold rounded-lg bg-slate-800 text-slate-300 border border-slate-600 hover:bg-slate-700 hover:text-white transition shadow-sm";
+      draw();
+    });
+    presetFlat.addEventListener('click', () => {
+      u1El.value = 2.5; u2El.value = 0.0; u3El.value = 0.0;
+      v1El.value = 1.0; v2El.value = 2.0; v3El.value = 0.0;
+      presetFlat.className = "px-3.5 py-1.5 text-xs font-semibold rounded-lg bg-indigo-600 text-white border border-indigo-500 transition shadow-sm";
+      presetDefault.className = "px-3.5 py-1.5 text-xs font-semibold rounded-lg bg-slate-800 text-slate-300 border border-slate-600 hover:bg-slate-700 hover:text-white transition shadow-sm";
+      draw();
+    });
+    document.getElementById('resetCam').addEventListener('click', () => {
+      rotX = -0.55; rotY = 0.75;
+      draw();
+    });
+
+    [u1El, u2El, u3El, v1El, v2El, v3El, showShadowsEl, showNormalEl].forEach(el => {
+      el.addEventListener('input', draw);
+    });
+
+    // 3D Projection Engine
+    function project(x, y, z) {
+      // Rotate around Y
+      let x1 = x * Math.cos(rotY) + z * Math.sin(rotY);
+      let z1 = -x * Math.sin(rotY) + z * Math.cos(rotY);
+      let y1 = y;
+
+      // Rotate around X
+      let y2 = y1 * Math.cos(rotX) - z1 * Math.sin(rotX);
+      let z2 = y1 * Math.sin(rotX) + z1 * Math.cos(rotX);
+      let x2 = x1;
+
+      // Center and scale to screen coordinates
+      const cx = width / 2;
+      const cy = height / 2;
+      return {
+        x: cx + x2 * zoom * (window.devicePixelRatio || 1),
+        y: cy - y2 * zoom * (window.devicePixelRatio || 1),
+        depth: z2
+      };
+    }
+
+    function drawArrow(p1, p2, color, lineWidth = 3, headSize = 8) {
+      const from = project(p1.x, p1.y, p1.z);
+      const to = project(p2.x, p2.y, p2.z);
+
+      ctx.save();
+      ctx.strokeStyle = color;
+      ctx.fillStyle = color;
+      ctx.lineWidth = lineWidth * (window.devicePixelRatio || 1);
+
+      ctx.beginPath();
+      ctx.moveTo(from.x, from.y);
+      ctx.lineTo(to.x, to.y);
+      ctx.stroke();
+
+      const angle = Math.atan2(to.y - from.y, to.x - from.x);
+      const hs = headSize * (window.devicePixelRatio || 1);
+      ctx.beginPath();
+      ctx.moveTo(to.x, to.y);
+      ctx.lineTo(to.x - hs * Math.cos(angle - Math.PI / 6), to.y - hs * Math.sin(angle - Math.PI / 6));
+      ctx.lineTo(to.x - hs * Math.cos(angle + Math.PI / 6), to.y - hs * Math.sin(angle + Math.PI / 6));
+      ctx.closePath();
+      ctx.fill();
+      ctx.restore();
+    }
+
+    function draw() {
+      if (!width || !height) resize();
+      ctx.clearRect(0, 0, width, height);
+
+      const u = { x: parseFloat(u1El.value) || 0, y: parseFloat(u2El.value) || 0, z: parseFloat(u3El.value) || 0 };
+      const v = { x: parseFloat(v1El.value) || 0, y: parseFloat(v2El.value) || 0, z: parseFloat(v3El.value) || 0 };
+
+      // Compute Cross Product Components
+      const wx = u.y * v.z - u.z * v.y; // i-slot: yz
+      const wy = u.z * v.x - u.x * v.z; // j-slot: xz
+      const wz = u.x * v.y - u.y * v.x; // k-slot: xy
+
+      // Update Text Panels
+      document.getElementById('dispX').innerText = wx.toFixed(2);
+      document.getElementById('dispY').innerText = wy.toFixed(2);
+      document.getElementById('dispZ').innerText = wz.toFixed(2);
+
+      const normW = Math.sqrt(wx * wx + wy * wy + wz * wz);
+      const normU = Math.sqrt(u.x * u.x + u.y * u.y + u.z * u.z);
+      const normV = Math.sqrt(v.x * v.x + v.y * v.y + v.z * v.z);
+      const dotUV = u.x * v.x + u.y * v.y + u.z * v.z;
+      const cosTheta = Math.max(-1, Math.min(1, dotUV / (normU * normV || 1)));
+      const sinTheta = Math.sqrt(Math.max(0, 1 - cosTheta * cosTheta));
+      const geoArea = normU * normV * sinTheta;
+
+      document.getElementById('dispNorm').innerText = normW.toFixed(3);
+      document.getElementById('dispGeoArea').innerText = geoArea.toFixed(3);
+
+      const dotU_W = u.x * wx + u.y * wy + u.z * wz;
+      const dotV_W = v.x * wx + v.y * wy + v.z * wz;
+      document.getElementById('dotU').innerText = Math.abs(dotU_W) < 1e-4 ? '0.00' : dotU_W.toFixed(2);
+      document.getElementById('dotV').innerText = Math.abs(dotV_W) < 1e-4 ? '0.00' : dotV_W.toFixed(2);
+
+      const origin = { x: 0, y: 0, z: 0 };
+      const u_plus_v = { x: u.x + v.x, y: u.y + v.y, z: u.z + v.z };
+
+      // 1. Draw Grid Ground (xy-plane)
+      ctx.save();
+      ctx.strokeStyle = 'rgba(255, 255, 255, 0.05)';
+      ctx.lineWidth = 1;
+      for (let i = -3; i <= 3; i++) {
+        const p1 = project(i, -3, 0), p2 = project(i, 3, 0);
+        ctx.beginPath(); ctx.moveTo(p1.x, p1.y); ctx.lineTo(p2.x, p2.y); ctx.stroke();
+        const p3 = project(-3, i, 0), p4 = project(3, i, 0);
+        ctx.beginPath(); ctx.moveTo(p3.x, p3.y); ctx.lineTo(p4.x, p4.y); ctx.stroke();
+      }
+      ctx.restore();
+
+      // 2. Draw 3 Coordinate Axes (i, j, k)
+      drawArrow(origin, { x: 3.5, y: 0, z: 0 }, '#ef4444', 1.5, 6); // x = red (i)
+      drawArrow(origin, { x: 0, y: 3.5, z: 0 }, '#22c55e', 1.5, 6); // y = green (j)
+      drawArrow(origin, { x: 0, y: 0, z: 3.5 }, '#3b82f6', 1.5, 6); // z = blue (k)
+
+      // Axis Labels
+      ctx.font = `${11 * (window.devicePixelRatio || 1)}px monospace`;
+      const lx = project(3.8, 0, 0); ctx.fillStyle = '#ef4444'; ctx.fillText('X (i)', lx.x, lx.y);
+      const ly = project(0, 3.8, 0); ctx.fillStyle = '#22c55e'; ctx.fillText('Y (j)', ly.x, ly.y);
+      const lz = project(0, 0, 3.8); ctx.fillStyle = '#3b82f6'; ctx.fillText('Z (k)', lz.x, lz.y);
+
+      // 3. Draw 2D Wall Shadows (Projections)
+      if (showShadowsEl.checked) {
+        // Shadow on XY plane (k slot, z=0) - Blue
+        ctx.save();
+        ctx.fillStyle = 'rgba(59, 130, 246, 0.22)';
+        ctx.strokeStyle = 'rgba(59, 130, 246, 0.7)';
+        ctx.lineWidth = 1.5;
+        const pxy0 = project(0, 0, 0), pxy1 = project(u.x, u.y, 0), pxy2 = project(u.x + v.x, u.y + v.y, 0), pxy3 = project(v.x, v.y, 0);
+        ctx.beginPath();
+        ctx.moveTo(pxy0.x, pxy0.y); ctx.lineTo(pxy1.x, pxy1.y); ctx.lineTo(pxy2.x, pxy2.y); ctx.lineTo(pxy3.x, pxy3.y);
+        ctx.closePath(); ctx.fill(); ctx.stroke();
+
+        // Shadow on YZ plane (i slot, x=0) - Red
+        ctx.fillStyle = 'rgba(239, 68, 68, 0.22)';
+        ctx.strokeStyle = 'rgba(239, 68, 68, 0.7)';
+        const pyz0 = project(0, 0, 0), pyz1 = project(0, u.y, u.z), pyz2 = project(0, u.y + v.y, u.z + v.z), pyz3 = project(0, v.y, v.z);
+        ctx.beginPath();
+        ctx.moveTo(pyz0.x, pyz0.y); ctx.lineTo(pyz1.x, pyz1.y); ctx.lineTo(pyz2.x, pyz2.y); ctx.lineTo(pyz3.x, pyz3.y);
+        ctx.closePath(); ctx.fill(); ctx.stroke();
+
+        // Shadow on XZ plane (j slot, y=0) - Green
+        ctx.fillStyle = 'rgba(34, 197, 94, 0.22)';
+        ctx.strokeStyle = 'rgba(34, 197, 94, 0.7)';
+        const pxz0 = project(0, 0, 0), pxz1 = project(u.x, 0, u.z), pxz2 = project(u.x + v.x, 0, u.z + v.z), pxz3 = project(v.x, 0, v.z);
+        ctx.beginPath();
+        ctx.moveTo(pxz0.x, pxz0.y); ctx.lineTo(pxz1.x, pxz1.y); ctx.lineTo(pxz2.x, pxz2.y); ctx.lineTo(pxz3.x, pxz3.y);
+        ctx.closePath(); ctx.fill(); ctx.stroke();
+        ctx.restore();
+      }
+
+      // 4. Draw the 3D Parallelogram
+      ctx.save();
+      ctx.fillStyle = 'rgba(168, 85, 247, 0.45)';
+      ctx.strokeStyle = '#c084fc';
+      ctx.lineWidth = 2 * (window.devicePixelRatio || 1);
+      const pp0 = project(0, 0, 0), pp1 = project(u.x, u.y, u.z), pp2 = project(u_plus_v.x, u_plus_v.y, u_plus_v.z), pp3 = project(v.x, v.y, v.z);
+      ctx.beginPath();
+      ctx.moveTo(pp0.x, pp0.y); ctx.lineTo(pp1.x, pp1.y); ctx.lineTo(pp2.x, pp2.y); ctx.lineTo(pp3.x, pp3.y);
+      ctx.closePath(); ctx.fill(); ctx.stroke();
+      ctx.restore();
+
+      // 5. Draw Input Vectors u and v
+      drawArrow(origin, u, '#f59e0b', 3, 9); // u = amber
+      drawArrow(origin, v, '#22d3ee', 3, 9); // v = cyan
+
+      // 6. Draw Normal Result Vector (u × v)
+      if (showNormalEl.checked && normW > 0.01) {
+        drawArrow(origin, { x: wx, y: wy, z: wz }, '#facc15', 3.5, 10);
+      }
+    }
+
+    // Initial Trigger
+    resize();
+  </script>
+</body>
+</html>
