@@ -8,6 +8,7 @@ import { KatexOptions } from "katex"
 import { Options as MathjaxOptions } from "rehype-mathjax/svg"
 //@ts-ignore
 import { Options as TypstOptions } from "@myriaddreamin/rehype-typst"
+import { visit } from "unist-util-visit"
 
 interface Options {
   renderEngine: "katex" | "mathjax" | "typst"
@@ -28,6 +29,14 @@ export const Latex: QuartzTransformerPlugin<Partial<Options>> = (opts) => {
   const macros = opts?.customMacros ?? {}
   return {
     name: "Latex",
+    textTransform(_ctx, src) {
+      if (typeof src === "string") {
+        return src
+          .replace(/\\begin\{align\*?\}/g, "\\begin{aligned}")
+          .replace(/\\end\{align\*?\}/g, "\\end{aligned}")
+      }
+      return src
+    },
     markdownPlugins() {
       return [remarkMath]
     },

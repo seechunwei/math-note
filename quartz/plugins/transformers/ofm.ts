@@ -411,6 +411,23 @@ export const ObsidianFlavoredMarkdown: QuartzTransformerPlugin<Partial<Options>>
         })
       }
 
+      plugins.push(() => {
+        return (tree: Root, _file) => {
+          visit(tree, "code", (node: Code, index, parent) => {
+            if (node.lang === "html-embed" && parent && index !== undefined) {
+              const raw = node.value.trim()
+              const cleanName = path.basename(raw)
+              const newNode: Html = {
+                type: "html",
+                value: `<div class="html-embed-wrapper"><iframe src="attachments/${cleanName}" loading="lazy" allowfullscreen></iframe></div>`,
+              }
+              parent.children.splice(index, 1, newNode)
+              return SKIP
+            }
+          })
+        }
+      })
+
       if (opts.callouts) {
         plugins.push(() => {
           return (tree: Root, _file) => {

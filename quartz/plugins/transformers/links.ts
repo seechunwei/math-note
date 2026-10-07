@@ -103,11 +103,15 @@ export const CrawlLinks: QuartzTransformerPlugin<Partial<Options>> = (userOpts) 
                   isAbsoluteUrl(dest, { httpOnly: false }) || dest.startsWith("#")
                 )
                 if (isInternal) {
+                  const isHtml = typeof node.properties.href === "string" && node.properties.href.endsWith(".html")
                   dest = node.properties.href = transformLink(
                     file.data.slug!,
                     dest,
                     transformOptions,
                   )
+                  if (isHtml && !dest.endsWith(".html")) {
+                    dest = node.properties.href = (dest + ".html") as RelativeURL
+                  }
 
                   // url.resolve is considered legacy
                   // WHATWG equivalent https://nodejs.dev/en/api/v18/url/#urlresolvefrom-to
@@ -148,12 +152,16 @@ export const CrawlLinks: QuartzTransformerPlugin<Partial<Options>> = (userOpts) 
                 }
 
                 if (!isAbsoluteUrl(node.properties.src, { httpOnly: false })) {
+                  const isHtml = typeof node.properties.src === "string" && node.properties.src.endsWith(".html")
                   let dest = node.properties.src as RelativeURL
                   dest = node.properties.src = transformLink(
                     file.data.slug!,
                     dest,
                     transformOptions,
                   )
+                  if (isHtml && !dest.endsWith(".html")) {
+                    dest = (dest + ".html") as RelativeURL
+                  }
                   node.properties.src = dest
                 }
               }

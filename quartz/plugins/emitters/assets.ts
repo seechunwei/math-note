@@ -14,7 +14,11 @@ const filesToCopy = async (argv: Argv, cfg: QuartzConfig) => {
 const copyFile = async (argv: Argv, fp: FilePath) => {
   const src = joinSegments(argv.directory, fp) as FilePath
 
-  const name = slugifyFilePath(fp)
+  const ext = path.extname(fp)
+  let name = slugifyFilePath(fp)
+  if (ext === ".html" && !name.endsWith(".html")) {
+    name = (name + ".html") as FullSlug
+  }
   const dest = joinSegments(argv.output, name) as FilePath
 
   // ensure dir exists
@@ -22,6 +26,14 @@ const copyFile = async (argv: Argv, fp: FilePath) => {
   await fs.promises.mkdir(dir, { recursive: true })
 
   await fs.promises.copyFile(src, dest)
+
+  // Also copy unslugified version if different (e.g. cross_product_visualizer.html)
+  const rawDest = joinSegments(argv.output, fp) as FilePath
+  if (rawDest !== dest) {
+    await fs.promises.mkdir(path.dirname(rawDest), { recursive: true })
+    await fs.promises.copyFile(src, rawDest)
+  }
+
   return dest
 }
 

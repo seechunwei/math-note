@@ -1,3 +1,40 @@
 @use "./base.scss";
 
-// put your custom CSS here!
+// Mobile math display & horizontal scroll
+.katex-display {
+  display: block !important;
+  overflow-x: auto !important;
+  overflow-y: hidden !important;
+  max-width: 100% !important;
+  padding: 0.5em 0;
+  -webkit-overflow-scrolling: touch;
+}
+
+.katex-display > .katex {
+  white-space: nowrap !important;
+  text-align: left;
+}
+
+// Ensure tags (if any) don't overlap formulas
+.katex .tag {
+  position: relative !important;
+  float: right !important;
+  padding-left: 1.5rem !important;
+}
+
+// HTML embed visualizer container
+.html-embed-wrapper {
+  width: 100%;
+  margin: 1.5rem 0;
+  border: 1px solid var(--lightgray);
+  border-radius: 8px;
+  overflow: hidden;
+  background: #090d16;
+}
+
+.html-embed-wrapper iframe {
+  width: 100%;
+  height: 600px;
+  border: none;
+  display: block;
+}
