@@ -273,7 +273,7 @@ $EA=U$
 $LEA=LU$
 $A=LU$ since $E$ is the inverse of $L$.
 
-
+[[2.2 exercise  Lay#^be07a8]]
 ## 1. The Core Idea: $A = LU$
 
 The text explains that if you take a matrix $A$ and perform elimination to get it into its upper triangular form $U$, the matrix $L$ "brings back" $A$.

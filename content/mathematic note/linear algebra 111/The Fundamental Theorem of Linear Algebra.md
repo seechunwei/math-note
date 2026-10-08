@@ -124,6 +124,11 @@ With $b \in R(A)$, $Ax=b$ can be solved. There is a particular solution $x$, in 
 
 ![[Pasted image 20260629231227.png]]
 
+> [!question]
+> Why Row Space is connected to Null Space but the number of pivot column is the one determine the dimension of nullspace?
+> It is because the number of pivot column is constraint by the row space dimension which is in $\mathbb{R}^{n}$.
+> But why the number of pivot indicate the linearly dependency of column vector? Because pivot work for both Row and Column, that's why $dim(Row)=dim(Col)$
+
 ## The Second Figure: Least Squares Equations
 
 ^177ee1
