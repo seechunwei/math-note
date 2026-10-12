@@ -1,0 +1,276 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <style>
+    :root {
+      --bg-color: #121214;
+      --card-bg: #1c1c1f;
+      --inner-bg: #26262b;
+      --text-color: #f4f4f5;
+      --text-muted: #a1a1aa;
+      --border-color: #3f3f46;
+      --indigo: #6366f1;
+      --emerald: #10b981;
+      --amber: #f59e0b;
+      --rose: #f43f5e;
+      --cyan: #06b6d4;
+    }
+    @media (prefers-color-scheme: light) {
+      :root {
+        --bg-color: #f4f4f5;
+        --card-bg: #ffffff;
+        --inner-bg: #f8fafc;
+        --text-color: #18181b;
+        --text-muted: #71717a;
+        --border-color: #e4e4e7;
+      }
+    }
+    * { box-sizing: border-box; margin: 0; padding: 0; font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif; }
+    body { background: var(--bg-color); color: var(--text-color); padding: 10px; select: none; }
+    .card { background: var(--card-bg); border: 1px solid var(--border-color); border-radius: 12px; padding: 14px; max-width: 850px; margin: 0 auto; box-shadow: 0 4px 12px rgba(0,0,0,0.15); }
+    .header { display: flex; justify-content: space-between; align-items: center; border-bottom: 1px solid var(--border-color); padding-bottom: 10px; margin-bottom: 12px; gap: 8px; flex-wrap: wrap; }
+    .title { font-size: 14px; font-weight: 700; display: flex; align-items: center; gap: 8px; }
+    .badge { font-size: 11px; padding: 2px 6px; border-radius: 4px; font-family: monospace; background: rgba(99,102,241,0.15); color: var(--indigo); border: 1px solid rgba(99,102,241,0.3); }
+    .subtitle { font-size: 12px; color: var(--text-muted); margin-top: 2px; }
+    .tabs { display: flex; gap: 6px; background: var(--inner-bg); padding: 4px; border-radius: 8px; border: 1px solid var(--border-color); }
+    .tab-btn { padding: 4px 10px; font-size: 11px; font-weight: 600; border-radius: 6px; border: none; cursor: pointer; color: var(--text-muted); background: transparent; transition: all 0.2s; }
+    .tab-btn.active { background: var(--indigo); color: #fff; }
+    .tab-btn.active.sing { background: var(--amber); }
+    .grid { display: grid; grid-template-columns: 1.25fr 0.75fr; gap: 12px; }
+    @media (max-width: 650px) { .grid { grid-template-columns: 1fr; } }
+    .canvas-wrap { background: var(--inner-bg); border: 1px solid var(--border-color); border-radius: 8px; padding: 8px; text-align: center; }
+    canvas { width: 100%; height: auto; border-radius: 6px; touch-action: none; }
+    .controls { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-top: 8px; padding-top: 8px; border-top: 1px solid var(--border-color); font-size: 11px; }
+    .panel { display: flex; flex-direction: column; justify-content: space-between; gap: 10px; }
+    .box { background: var(--inner-bg); border: 1px solid var(--border-color); border-radius: 8px; padding: 10px; }
+    .box-header { display: flex; justify-content: space-between; font-size: 10px; font-weight: 700; text-transform: uppercase; color: var(--text-muted); margin-bottom: 8px; }
+    .val-row { display: flex; justify-content: space-between; padding: 5px 8px; background: var(--card-bg); border: 1px solid var(--border-color); border-radius: 6px; margin-bottom: 6px; font-family: monospace; font-size: 11px; }
+    .callout { padding: 10px; border-radius: 8px; font-size: 12px; line-height: 1.45; border: 1px solid; }
+    .callout.normal { background: rgba(99,102,241,0.1); border-color: rgba(99,102,241,0.25); color: var(--text-color); }
+    .callout.singular { background: rgba(244,63,94,0.1); border-color: rgba(244,63,94,0.3); color: var(--text-color); }
+    input[type=range] { width: 100%; cursor: pointer; }
+  </style>
+</head>
+<body>
+  <div class="card">
+    <div class="header">
+      <div>
+        <div class="title">
+          <span>Why ∂f/∂y and NOT ∂f/∂x?</span>
+          <span class="badge">The Vertical Slice</span>
+        </div>
+        <div class="subtitle">At any fixed x, Δx = 0. The gap between curves is purely vertical (Δy)!</div>
+      </div>
+      <div class="tabs">
+        <button id="tb-n" class="tab-btn active" onclick="setMode('normal')">dy/dx = y</button>
+        <button id="tb-s" class="tab-btn" onclick="setMode('singular')">dy/dx = y⅓</button>
+      </div>
+    </div>
+
+    <div class="grid">
+      <div class="canvas-wrap">
+        <canvas id="cv" width="450" height="270"></canvas>
+        <div class="controls">
+          <div>
+            <div style="display:flex; justify-content:space-between; margin-bottom:2px;">
+              <span>Position <b>x</b>:</span>
+              <span id="lx" style="font-family:monospace;">1.00</span>
+            </div>
+            <input id="rx" type="range" min="0.2" max="2.0" step="0.05" value="1.0" oninput="update()">
+          </div>
+          <div>
+            <div style="display:flex; justify-content:space-between; margin-bottom:2px;">
+              <span>Vertical Gap <b>Δy</b>:</span>
+              <span id="ldy" style="font-family:monospace;">0.20</span>
+            </div>
+            <input id="rdy" type="range" min="0.01" max="0.6" step="0.01" value="0.20" oninput="update()">
+          </div>
+        </div>
+      </div>
+
+      <div class="panel">
+        <div class="box">
+          <div class="box-header">
+            <span>On the Vertical Slice (Fixed x)</span>
+            <span style="color:var(--cyan); font-family:monospace;">Δx = 0</span>
+          </div>
+          <div class="val-row">
+            <span style="color:var(--emerald);">Slope at y₁:</span>
+            <b id="s1">0.00</b>
+          </div>
+          <div class="val-row">
+            <span style="color:var(--amber);">Slope at y₂ (y₁ + Δy):</span>
+            <b id="s2">0.20</b>
+          </div>
+          <div class="val-row">
+            <span style="color:var(--text-muted);">Slope Difference:</span>
+            <b id="ds" style="color:var(--cyan);">0.20</b>
+          </div>
+
+          <div style="background:rgba(0,0,0,0.25); border:1px solid var(--border-color); border-radius:6px; padding:8px; margin-top:8px;">
+            <div style="display:flex; justify-content:space-between; font-size:11px; font-family:monospace; margin-bottom:4px;">
+              <span style="color:var(--text-muted);">Ratio: Δ(Slope) / Δy</span>
+              <b id="ratio" style="color:var(--indigo);">1.00</b>
+            </div>
+            <p style="font-size:10px; color:var(--text-muted);">
+              This ratio is definitionally <b>∂f/∂y</b>!
+            </p>
+          </div>
+        </div>
+
+        <div id="c-box" class="callout normal">
+          <span id="c-txt"></span>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    const cv = document.getElementById('cv');
+    const ctx = cv.getContext('2d');
+    let mode = 'normal';
+
+    function f(x, y) {
+      return mode === 'normal' ? y : Math.cbrt(y);
+    }
+
+    function setMode(m) {
+      mode = m;
+      document.getElementById('tb-n').className = 'tab-btn' + (mode === 'normal' ? ' active' : '');
+      document.getElementById('tb-s').className = 'tab-btn' + (mode === 'singular' ? ' active sing' : '');
+      update();
+    }
+
+    const xMin = -0.5, xMax = 2.5, yMin = -0.3, yMax = 1.2;
+
+    function toScreen(x, y) {
+      return {
+        x: ((x - xMin) / (xMax - xMin)) * cv.width,
+        y: cv.height - ((y - yMin) / (yMax - yMin)) * cv.height
+      };
+    }
+
+    function update() {
+      const curX = parseFloat(document.getElementById('rx').value);
+      const dy = parseFloat(document.getElementById('rdy').value);
+      document.getElementById('lx').textContent = curX.toFixed(2);
+      document.getElementById('ldy').textContent = dy.toFixed(2);
+
+      const y1 = 0.0, y2 = dy;
+      const s1 = f(curX, y1), s2 = f(curX, y2);
+      const ds = s2 - s1;
+      const r = ds / dy;
+
+      document.getElementById('s1').textContent = s1.toFixed(3);
+      document.getElementById('s2').textContent = s2.toFixed(3);
+      document.getElementById('ds').textContent = ds.toFixed(3);
+
+      const rBox = document.getElementById('ratio');
+      const cBox = document.getElementById('c-box');
+      const cTxt = document.getElementById('c-txt');
+
+      if (mode === 'normal') {
+        rBox.textContent = r.toFixed(2) + " (Finite = 1.00)";
+        rBox.style.color = "#10b981";
+        cBox.className = "callout normal";
+        cTxt.innerHTML = "<b>dy/dx = y (Bounded):</b> As Δy → 0, the slope difference also shrinks to 0 at the exact same pace (ratio = 1). Since curves start at the same point (Δy = 0), they can never pull apart!";
+      } else {
+        rBox.textContent = r.toFixed(1) + " (Exploding!)";
+        rBox.style.color = "#f43f5e";
+        cBox.className = "callout singular";
+        cTxt.innerHTML = "<b>dy/dx = y⅓ (Singular):</b> Try dragging Δy smaller! Even with a microscopic gap, the slope difference remains high! The ratio <i>ΔSlope / Δy → ∞</i> as Δy → 0. This infinite vertical sensitivity is why the curve peels away!";
+      }
+
+      draw(curX, y1, y2, s1, s2);
+    }
+
+    function draw(curX, y1, y2, s1, s2) {
+      ctx.clearRect(0, 0, cv.width, cv.height);
+
+      const origin = toScreen(0, 0);
+      ctx.strokeStyle = "rgba(255, 255, 255, 0.2)";
+      ctx.lineWidth = 1.5;
+      ctx.beginPath();
+      ctx.moveTo(0, origin.y); ctx.lineTo(cv.width, origin.y);
+      ctx.moveTo(origin.x, 0); ctx.lineTo(origin.x, cv.height);
+      ctx.stroke();
+
+      // Lower curve: y1 = 0
+      ctx.strokeStyle = "#10b981";
+      ctx.lineWidth = 2.5;
+      ctx.beginPath();
+      ctx.moveTo(toScreen(xMin, 0).x, toScreen(xMin, 0).y);
+      ctx.lineTo(toScreen(xMax, 0).x, toScreen(xMax, 0).y);
+      ctx.stroke();
+
+      // Upper curve
+      ctx.strokeStyle = "#f59e0b";
+      ctx.lineWidth = 2.5;
+      ctx.beginPath();
+      let started = false;
+      for (let x = 0; x <= xMax; x += 0.05) {
+        let y = (mode === 'normal') ? y2 * Math.exp(x - curX) : Math.pow((2/3)*x, 1.5);
+        let pt = toScreen(x, y);
+        if (!started) { ctx.moveTo(pt.x, pt.y); started = true; }
+        else ctx.lineTo(pt.x, pt.y);
+      }
+      ctx.stroke();
+
+      // Vertical slice line at curX
+      const pTop = toScreen(curX, yMax);
+      const pBottom = toScreen(curX, yMin);
+      ctx.strokeStyle = "#818cf8";
+      ctx.lineWidth = 2;
+      ctx.setLineDash([5, 5]);
+      ctx.beginPath();
+      ctx.moveTo(pTop.x, pTop.y); ctx.lineTo(pBottom.x, pBottom.y);
+      ctx.stroke();
+      ctx.setLineDash([]);
+
+      ctx.fillStyle = "#a5b4fc";
+      ctx.font = "11px monospace";
+      ctx.fillText(`Slice at x = ${curX.toFixed(2)} (Δx = 0)`, pTop.x + 8, pTop.y + 16);
+
+      const pt1 = toScreen(curX, y1);
+      const pt2 = toScreen(curX, y2);
+
+      // Bracket for Δy
+      ctx.strokeStyle = "#f43f5e";
+      ctx.lineWidth = 2;
+      ctx.beginPath();
+      ctx.moveTo(pt1.x - 12, pt1.y); ctx.lineTo(pt1.x - 6, pt1.y);
+      ctx.lineTo(pt1.x - 6, pt2.y); ctx.lineTo(pt1.x - 12, pt2.y);
+      ctx.stroke();
+
+      ctx.fillStyle = "#f43f5e";
+      ctx.font = "bold 11px sans-serif";
+      ctx.fillText(`Δy`, pt1.x - 30, (pt1.y + pt2.y) / 2 + 4);
+
+      // Tangent lines
+      drawTangent(pt1, s1, "#10b981");
+      drawTangent(pt2, s2, "#f59e0b");
+
+      ctx.fillStyle = "#10b981";
+      ctx.beginPath(); ctx.arc(pt1.x, pt1.y, 5, 0, Math.PI * 2); ctx.fill();
+
+      ctx.fillStyle = "#f59e0b";
+      ctx.beginPath(); ctx.arc(pt2.x, pt2.y, 5, 0, Math.PI * 2); ctx.fill();
+    }
+
+    function drawTangent(pt, slope, color) {
+      const len = 35;
+      const angle = Math.atan(slope);
+      const dx = len * Math.cos(angle);
+      const dy = -len * Math.sin(angle);
+      ctx.strokeStyle = color;
+      ctx.lineWidth = 2;
+      ctx.beginPath();
+      ctx.moveTo(pt.x - dx, pt.y - dy); ctx.lineTo(pt.x + dx, pt.y + dy);
+      ctx.stroke();
+    }
+
+    update();
+  </script>
+</body>
+</html>

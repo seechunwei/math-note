@@ -1,0 +1,531 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <title>Attractors, Repellers & Semi-Stable Equilibria</title>
+  <style>
+    :root {
+      --bg-color: #121214;
+      --card-bg: #1c1c1f;
+      --inner-bg: #26262b;
+      --text-color: #f4f4f5;
+      --text-muted: #a1a1aa;
+      --border-color: #3f3f46;
+      --indigo: #6366f1;
+      --emerald: #10b981;
+      --amber: #f59e0b;
+      --rose: #f43f5e;
+      --cyan: #06b6d4;
+    }
+    @media (prefers-color-scheme: light) {
+      :root {
+        --bg-color: #f4f4f5;
+        --card-bg: #ffffff;
+        --inner-bg: #f8fafc;
+        --text-color: #18181b;
+        --text-muted: #71717a;
+        --border-color: #e4e4e7;
+      }
+    }
+    * { box-sizing: border-box; margin: 0; padding: 0; font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif; }
+    body { background: var(--bg-color); color: var(--text-color); padding: 12px; }
+    .card { background: var(--card-bg); border: 1px solid var(--border-color); border-radius: 12px; padding: 16px; max-width: 960px; margin: 0 auto; box-shadow: 0 4px 16px rgba(0,0,0,0.2); }
+    .header { display: flex; justify-content: space-between; align-items: center; border-bottom: 1px solid var(--border-color); padding-bottom: 12px; margin-bottom: 14px; gap: 8px; flex-wrap: wrap; }
+    .title { font-size: 15px; font-weight: 700; display: flex; align-items: center; gap: 8px; }
+    .badge { font-size: 11px; padding: 2px 7px; border-radius: 4px; font-family: monospace; font-weight: 700; }
+    .badge-stable { background: rgba(16,185,129,0.15); color: var(--emerald); border: 1px solid rgba(16,185,129,0.3); }
+    .badge-unstable { background: rgba(244,63,94,0.15); color: var(--rose); border: 1px solid rgba(244,63,94,0.3); }
+    .badge-semistable { background: rgba(245,158,11,0.15); color: var(--amber); border: 1px solid rgba(245,158,11,0.3); }
+    
+    .tabs { display: flex; gap: 6px; background: var(--inner-bg); padding: 4px; border-radius: 8px; border: 1px solid var(--border-color); }
+    .tab-btn { padding: 5px 12px; font-size: 11px; font-weight: 600; border-radius: 6px; border: none; cursor: pointer; color: var(--text-muted); background: transparent; transition: all 0.2s; }
+    .tab-btn.active.stable { background: var(--emerald); color: #fff; }
+    .tab-btn.active.unstable { background: var(--rose); color: #fff; }
+    .tab-btn.active.semistable { background: var(--amber); color: #fff; }
+
+    .grid { display: grid; grid-template-columns: 1.25fr 0.75fr; gap: 14px; }
+    @media (max-width: 768px) { .grid { grid-template-columns: 1fr; } }
+
+    .canvas-wrap { background: var(--inner-bg); border: 1px solid var(--border-color); border-radius: 10px; padding: 10px; text-align: center; position: relative; }
+    canvas { width: 100%; height: auto; border-radius: 6px; display: block; cursor: crosshair; }
+
+    .canvas-caption { font-size: 11px; color: var(--text-muted); margin-top: 8px; display: flex; justify-content: space-between; }
+
+    .panel { display: flex; flex-direction: column; gap: 10px; }
+    .box { background: var(--inner-bg); border: 1px solid var(--border-color); border-radius: 8px; padding: 11px; }
+    .box-header { display: flex; justify-content: space-between; font-size: 11px; font-weight: 700; text-transform: uppercase; color: var(--text-muted); margin-bottom: 8px; }
+
+    .val-row { display: flex; justify-content: space-between; align-items: center; padding: 6px 10px; background: var(--card-bg); border: 1px solid var(--border-color); border-radius: 6px; margin-bottom: 6px; font-family: monospace; font-size: 12px; }
+
+    .control-group { margin-bottom: 8px; font-size: 12px; }
+    .slider-header { display: flex; justify-content: space-between; margin-bottom: 4px; }
+    input[type=range] { width: 100%; cursor: pointer; }
+
+    .btn-row { display: flex; gap: 8px; margin-top: 6px; }
+    .action-btn { flex: 1; padding: 6px 10px; font-size: 11px; font-weight: 600; border-radius: 6px; border: 1px solid var(--border-color); cursor: pointer; background: var(--card-bg); color: var(--text-color); transition: all 0.2s; }
+    .action-btn:hover { background: var(--inner-bg); border-color: var(--text-muted); }
+
+    .callout { padding: 11px; border-radius: 8px; font-size: 12px; line-height: 1.5; border: 1px solid; }
+  </style>
+</head>
+<body>
+  <div class="card">
+    <div class="header">
+      <div>
+        <div class="title">
+          <span>Equilibrium Stability Visualizer</span>
+          <span id="type-badge" class="badge badge-stable">ATTRACTOR (STABLE)</span>
+        </div>
+        <div id="subtitle" class="subtitle" style="font-size:12px; color:var(--text-muted); margin-top:2px;">
+          Watch how solution curves behave as time moves forward (t → ∞).
+        </div>
+      </div>
+      <div class="tabs">
+        <button id="tab-att" class="tab-btn active stable" onclick="setMode('attractor')">Attractor (Sink)</button>
+        <button id="tab-rep" class="tab-btn" onclick="setMode('repeller')">Repeller (Source)</button>
+        <button id="tab-semi" class="tab-btn" onclick="setMode('semistable')">Semi-Stable</button>
+      </div>
+    </div>
+
+    <div class="grid">
+      <!-- Left Column: Dual Canvas (1D Phase Line on left + 2D Solution curves) -->
+      <div class="canvas-wrap">
+        <canvas id="cv" width="520" height="340"></canvas>
+        <div class="canvas-caption">
+          <span>Left: <b>1D Phase Line</b> (Arrow Flow)</span>
+          <span>Right: <b>2D (t, y) Solution Curves</b> (Click to drop particle)</span>
+        </div>
+      </div>
+
+      <!-- Right Column: Controls & Intuition -->
+      <div class="panel">
+        <div class="box">
+          <div class="box-header">
+            <span>Model & Initial Condition</span>
+            <span id="de-eqn" style="color:var(--cyan); font-family:monospace;">dy/dt = -(y - 1)</span>
+          </div>
+
+          <div class="control-group">
+            <div class="slider-header">
+              <span>Initial Value <b>y(0) = y₀</b>:</span>
+              <span id="lbl-y0" style="font-family:monospace; font-weight:700; color:var(--cyan);">2.20</span>
+            </div>
+            <input id="rng-y0" type="range" min="-1.5" max="3.5" step="0.05" value="2.2" oninput="onY0Change()">
+          </div>
+
+          <div class="btn-row">
+            <button class="action-btn" onclick="resetAnimation()">▶ Replay Trajectory</button>
+            <button class="action-btn" onclick="toggleField()">Toggle Slope Field</button>
+          </div>
+        </div>
+
+        <div class="box">
+          <div class="box-header">
+            <span>Mathematical Diagnostics</span>
+          </div>
+          <div class="val-row">
+            <span style="color:var(--text-muted);">Equilibrium Line:</span>
+            <b id="val-c" style="color:var(--indigo);">y = 1.00</b>
+          </div>
+          <div class="val-row">
+            <span style="color:var(--text-muted);">Derivative f'(c):</span>
+            <b id="val-fprime" style="color:var(--emerald);">-1.00 (< 0)</b>
+          </div>
+          <div class="val-row">
+            <span style="color:var(--text-muted);">Future Limit (t → ∞):</span>
+            <b id="val-lim" style="color:var(--emerald);">Approaches y = 1</b>
+          </div>
+        </div>
+
+        <div id="callout-box" class="callout" style="background:rgba(16,185,129,0.08); border-color:rgba(16,185,129,0.3);">
+          <b id="callout-title" style="color:var(--emerald);">Attractor Intuition (The Bowl):</b>
+          <div id="callout-desc" style="margin-top:4px;">
+            Notice how arrows point <b>inward toward y = 1</b> from both top and bottom. Any trajectory starting above or below is pulled into the equilibrium line as time goes forward.
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    let mode = 'attractor'; // 'attractor', 'repeller', 'semistable'
+    let y0 = 2.2;
+    let animT = 0;
+    let animTimer = null;
+    let showField = true;
+
+    const cv = document.getElementById('cv');
+    const ctx = cv.getContext('2d');
+
+    // Bounds:
+    // Phase line occupies x: [0, 90] px
+    // Solution plane occupies x: [110, 510] px, math t in [0, 5]
+    // Math y in [-1.5, 3.5], equilibrium at c = 1.0
+    const c = 1.0;
+    const yMin = -1.5, yMax = 3.5;
+    const tMin = 0, tMax = 5.0;
+
+    const planeLeft = 110, planeRight = 505;
+    const phaseX = 50;
+
+    function toScreenY(y) {
+      return cv.height - 25 - ((y - yMin) / (yMax - yMin)) * (cv.height - 50);
+    }
+    function toScreenT(t) {
+      return planeLeft + ((t - tMin) / (tMax - tMin)) * (planeRight - planeLeft);
+    }
+    function toMathY(sy) {
+      const h = cv.height - 50;
+      const frac = (cv.height - 25 - sy) / h;
+      return yMin + frac * (yMax - yMin);
+    }
+
+    function f(y) {
+      if (mode === 'attractor') {
+        return -(y - c); // dy/dt = -(y - 1)
+      } else if (mode === 'repeller') {
+        return (y - c); // dy/dt = +(y - 1)
+      } else {
+        return Math.pow(y - c, 2); // dy/dt = (y - 1)^2
+      }
+    }
+
+    // Exact analytical solutions for precision:
+    function solveY(t, yInit) {
+      if (mode === 'attractor') {
+        // y(t) = 1 + (y0 - 1)*exp(-t)
+        return c + (yInit - c) * Math.exp(-t);
+      } else if (mode === 'repeller') {
+        // y(t) = 1 + (y0 - 1)*exp(t)
+        return c + (yInit - c) * Math.exp(t);
+      } else {
+        // dy/dt = (y - 1)^2 => -1/(y - 1) = t - 1/(y0 - 1)
+        // y(t) = 1 + 1 / (1/(y0 - 1) - t)
+        if (Math.abs(yInit - c) < 1e-4) return c;
+        const denom = (1.0 / (yInit - c)) - t;
+        if (denom === 0) return 999;
+        return c + (1.0 / denom);
+      }
+    }
+
+    function setMode(newMode) {
+      mode = newMode;
+      document.getElementById('tab-att').className = 'tab-btn' + (mode === 'attractor' ? ' active stable' : '');
+      document.getElementById('tab-rep').className = 'tab-btn' + (mode === 'repeller' ? ' active unstable' : '');
+      document.getElementById('tab-semi').className = 'tab-btn' + (mode === 'semistable' ? ' active semistable' : '');
+
+      const badge = document.getElementById('type-badge');
+      const deEqn = document.getElementById('de-eqn');
+      const fprime = document.getElementById('val-fprime');
+      const lim = document.getElementById('val-lim');
+      const cBox = document.getElementById('callout-box');
+      const cTitle = document.getElementById('callout-title');
+      const cDesc = document.getElementById('callout-desc');
+
+      if (mode === 'attractor') {
+        badge.className = 'badge badge-stable';
+        badge.textContent = 'ATTRACTOR (SINK / STABLE)';
+        deEqn.textContent = 'dy/dt = -(y - 1)';
+        fprime.textContent = '-1.00 (< 0) ⟹ STABLE';
+        fprime.style.color = 'var(--emerald)';
+        lim.textContent = 'Approaches y = 1';
+        lim.style.color = 'var(--emerald)';
+        cBox.style.background = 'rgba(16,185,129,0.08)';
+        cBox.style.borderColor = 'rgba(16,185,129,0.3)';
+        cTitle.textContent = 'Attractor (Sink): Sucks Everything In';
+        cTitle.style.color = 'var(--emerald)';
+        cDesc.innerHTML = 'Arrows on the phase line point <b>TOWARD y = 1</b> from both sides. Notice on the right how every curve levels off horizontally into the green line as <i>t → ∞</i>. It behaves like a <b>marble at the bottom of a bowl</b>.';
+      } else if (mode === 'repeller') {
+        badge.className = 'badge badge-unstable';
+        badge.textContent = 'REPELLER (SOURCE / UNSTABLE)';
+        deEqn.textContent = 'dy/dt = +(y - 1)';
+        fprime.textContent = '+1.00 (> 0) ⟹ UNSTABLE';
+        fprime.style.color = 'var(--rose)';
+        lim.textContent = 'Flees away to ±∞';
+        lim.style.color = 'var(--rose)';
+        cBox.style.background = 'rgba(244,63,94,0.08)';
+        cBox.style.borderColor = 'rgba(244,63,94,0.3)';
+        cTitle.textContent = 'Repeller (Source): Blasts Everything Away';
+        cTitle.style.color = 'var(--rose)';
+        cDesc.innerHTML = 'Arrows on the phase line point <b>AWAY from y = 1</b>. Even if you start 0.01 above or below the line, the solution accelerates away to ±∞. It behaves like a <b>marble balanced on top of a hill</b>.';
+      } else {
+        badge.className = 'badge badge-semistable';
+        badge.textContent = 'SEMI-STABLE (ONE-SIDED)';
+        deEqn.textContent = 'dy/dt = (y - 1)²';
+        fprime.textContent = '0.00 (Inconclusive)';
+        fprime.style.color = 'var(--amber)';
+        lim.textContent = 'Attracts below, repels above';
+        lim.style.color = 'var(--amber)';
+        cBox.style.background = 'rgba(245,158,11,0.08)';
+        cBox.style.borderColor = 'rgba(245,158,11,0.3)';
+        cTitle.textContent = 'Semi-Stable: One-Way Street';
+        cTitle.style.color = 'var(--amber)';
+        cDesc.innerHTML = 'Because (y - 1)² ≥ 0, slopes are positive on <b>both</b> sides. Solutions starting below y = 1 are <b>attracted</b> upward into y = 1. But solutions starting above y = 1 are <b>repelled</b> away toward +∞!';
+      }
+
+      resetAnimation();
+    }
+
+    function onY0Change() {
+      y0 = parseFloat(document.getElementById('rng-y0').value);
+      document.getElementById('lbl-y0').textContent = y0.toFixed(2);
+      resetAnimation();
+    }
+
+    function toggleField() {
+      showField = !showField;
+      draw();
+    }
+
+    function resetAnimation() {
+      animT = 0;
+      if (animTimer) clearInterval(animTimer);
+      animTimer = setInterval(() => {
+        animT += 0.04;
+        if (animT > tMax) {
+          animT = tMax;
+          clearInterval(animTimer);
+        }
+        draw();
+      }, 20);
+    }
+
+    // Canvas click to pick y0
+    cv.addEventListener('mousedown', (e) => {
+      const rect = cv.getBoundingClientRect();
+      const clickY = e.clientY - rect.top;
+      const mathY = toMathY(clickY);
+      if (mathY >= yMin && mathY <= yMax) {
+        y0 = Math.max(yMin, Math.min(yMax, mathY));
+        document.getElementById('rng-y0').value = y0.toFixed(2);
+        document.getElementById('lbl-y0').textContent = y0.toFixed(2);
+        resetAnimation();
+      }
+    });
+
+    function drawArrow(cx, cy, dir, color) {
+      ctx.save();
+      ctx.strokeStyle = color;
+      ctx.fillStyle = color;
+      ctx.lineWidth = 2.5;
+      const len = 18;
+      const sign = dir > 0 ? -1 : 1; // screen y is inverted: dir>0 is up (-y)
+      const tipY = cy + (sign * len / 2);
+      const baseY = cy - (sign * len / 2);
+
+      ctx.beginPath();
+      ctx.moveTo(cx, baseY);
+      ctx.lineTo(cx, tipY);
+      ctx.stroke();
+
+      // arrowhead
+      ctx.beginPath();
+      ctx.moveTo(cx, tipY);
+      ctx.lineTo(cx - 4, tipY - sign * 6);
+      ctx.lineTo(cx + 4, tipY - sign * 6);
+      ctx.closePath();
+      ctx.fill();
+      ctx.restore();
+    }
+
+    function draw() {
+      ctx.clearRect(0, 0, cv.width, cv.height);
+
+      const isLight = window.matchMedia && window.matchMedia('(prefers-color-scheme: light)').matches;
+      const axisColor = isLight ? '#a1a1aa' : '#52525b';
+      const gridColor = isLight ? '#e4e4e7' : '#27272a';
+      const themeStable = '#10b981';
+      const themeUnstable = '#f43f5e';
+      const themeSemi = '#f59e0b';
+      const mainTheme = mode === 'attractor' ? themeStable : (mode === 'repeller' ? themeUnstable : themeSemi);
+
+      // 1. Divider between Phase Line and 2D Plane
+      ctx.strokeStyle = 'rgba(150, 150, 160, 0.2)';
+      ctx.lineWidth = 1;
+      ctx.beginPath();
+      ctx.moveTo(85, 10);
+      ctx.lineTo(85, cv.height - 10);
+      ctx.stroke();
+
+      // ==========================================
+      // SECTION A: 1D PHASE LINE (Left Side)
+      // ==========================================
+      ctx.strokeStyle = axisColor;
+      ctx.lineWidth = 2;
+      ctx.beginPath();
+      ctx.moveTo(phaseX, toScreenY(yMin));
+      ctx.lineTo(phaseX, toScreenY(yMax));
+      ctx.stroke();
+
+      // Label
+      ctx.fillStyle = axisColor;
+      ctx.font = 'bold 11px sans-serif';
+      ctx.fillText('Phase Line', 20, 20);
+      ctx.fillText('y', phaseX - 12, toScreenY(yMax) - 5);
+
+      // Equilibrium point dot on Phase Line
+      const syEq = toScreenY(c);
+      ctx.fillStyle = mainTheme;
+      ctx.beginPath();
+      ctx.arc(phaseX, syEq, 6, 0, Math.PI * 2);
+      ctx.fill();
+      ctx.strokeStyle = '#fff';
+      ctx.lineWidth = 1.5;
+      ctx.stroke();
+
+      // Direction Arrows on Phase Line
+      if (mode === 'attractor') {
+        drawArrow(phaseX, toScreenY(2.2), -1, themeStable); // Down toward c
+        drawArrow(phaseX, toScreenY(-0.2), +1, themeStable); // Up toward c
+      } else if (mode === 'repeller') {
+        drawArrow(phaseX, toScreenY(2.2), +1, themeUnstable); // Up away from c
+        drawArrow(phaseX, toScreenY(-0.2), -1, themeUnstable); // Down away from c
+      } else {
+        drawArrow(phaseX, toScreenY(2.2), +1, themeSemi); // Up away from c
+        drawArrow(phaseX, toScreenY(-0.2), +1, themeSemi); // Up toward c
+      }
+
+      // Moving particle on the Phase line
+      const currY = solveY(animT, y0);
+      if (currY >= yMin && currY <= yMax) {
+        ctx.fillStyle = '#06b6d4';
+        ctx.beginPath();
+        ctx.arc(phaseX, toScreenY(currY), 5, 0, Math.PI * 2);
+        ctx.fill();
+        ctx.strokeStyle = '#fff';
+        ctx.lineWidth = 1.5;
+        ctx.stroke();
+      }
+
+      // ==========================================
+      // SECTION B: 2D (t, y) SOLUTION PLANE (Right)
+      // ==========================================
+      // Grid
+      ctx.strokeStyle = gridColor;
+      ctx.lineWidth = 1;
+      for (let t = 0; t <= 5; t++) {
+        ctx.beginPath();
+        ctx.moveTo(toScreenT(t), toScreenY(yMin));
+        ctx.lineTo(toScreenT(t), toScreenY(yMax));
+        ctx.stroke();
+      }
+      for (let y = -1; y <= 3; y++) {
+        ctx.beginPath();
+        ctx.moveTo(planeLeft, toScreenY(y));
+        ctx.lineTo(planeRight, toScreenY(y));
+        ctx.stroke();
+      }
+
+      // t-axis (y = 0)
+      ctx.strokeStyle = axisColor;
+      ctx.lineWidth = 1.2;
+      ctx.beginPath();
+      ctx.moveTo(planeLeft, toScreenY(0));
+      ctx.lineTo(planeRight, toScreenY(0));
+      ctx.stroke();
+      ctx.fillStyle = axisColor;
+      ctx.font = '11px sans-serif';
+      ctx.fillText('t', planeRight + 5, toScreenY(0) + 4);
+
+      // Slope Field dashes (if enabled)
+      if (showField) {
+        for (let t = 0.5; t < 5; t += 0.75) {
+          for (let y = -1.2; y <= 3.2; y += 0.5) {
+            const slope = f(y);
+            const angle = Math.atan(slope);
+            const len = 9;
+            const sx = toScreenT(t);
+            const sy = toScreenY(y);
+            const dx = (len / 2) * Math.cos(angle);
+            const dy = (len / 2) * Math.sin(angle);
+            ctx.save();
+            ctx.strokeStyle = isLight ? '#cbd5e1' : '#3f3f46';
+            ctx.lineWidth = 1;
+            ctx.beginPath();
+            ctx.moveTo(sx - dx, sy + dy);
+            ctx.lineTo(sx + dx, sy - dy);
+            ctx.stroke();
+            ctx.restore();
+          }
+        }
+      }
+
+      // Equilibrium Solution Line (y = c = 1)
+      ctx.save();
+      ctx.strokeStyle = mainTheme;
+      ctx.lineWidth = 2.5;
+      ctx.setLineDash([6, 4]);
+      ctx.beginPath();
+      ctx.moveTo(planeLeft, syEq);
+      ctx.lineTo(planeRight, syEq);
+      ctx.stroke();
+      ctx.restore();
+
+      ctx.fillStyle = mainTheme;
+      ctx.font = 'bold 11px sans-serif';
+      ctx.fillText('Equilibrium y = 1.0 (' + mode.toUpperCase() + ')', planeLeft + 10, syEq - 8);
+
+      // Background Family of Sample Curves
+      const sampleY0 = [-1.0, -0.2, 0.5, 1.5, 2.2, 3.0];
+      sampleY0.forEach(initY => {
+        ctx.save();
+        ctx.strokeStyle = isLight ? 'rgba(99,102,241,0.25)' : 'rgba(99,102,241,0.2)';
+        ctx.lineWidth = 1.2;
+        ctx.beginPath();
+        let started = false;
+        for (let stepT = 0; stepT <= tMax; stepT += 0.05) {
+          const valY = solveY(stepT, initY);
+          if (valY >= yMin - 0.5 && valY <= yMax + 0.5) {
+            const sx = toScreenT(stepT);
+            const sy = toScreenY(valY);
+            if (!started) { ctx.moveTo(sx, sy); started = true; }
+            else { ctx.lineTo(sx, sy); }
+          }
+        }
+        ctx.stroke();
+        ctx.restore();
+      });
+
+      // Active User Solution Curve (Cyan, traced up to animT)
+      ctx.save();
+      ctx.strokeStyle = '#06b6d4';
+      ctx.lineWidth = 3;
+      ctx.beginPath();
+      let started = false;
+      for (let stepT = 0; stepT <= animT; stepT += 0.02) {
+        const valY = solveY(stepT, y0);
+        if (valY >= yMin - 1 && valY <= yMax + 1) {
+          const sx = toScreenT(stepT);
+          const sy = toScreenY(valY);
+          if (!started) { ctx.moveTo(sx, sy); started = true; }
+          else { ctx.lineTo(sx, sy); }
+        }
+      }
+      ctx.stroke();
+      ctx.restore();
+
+      // Active moving particle on the curve
+      if (currY >= yMin && currY <= yMax) {
+        const curSx = toScreenT(animT);
+        const curSy = toScreenY(currY);
+        ctx.fillStyle = '#06b6d4';
+        ctx.beginPath();
+        ctx.arc(curSx, curSy, 5.5, 0, Math.PI * 2);
+        ctx.fill();
+        ctx.strokeStyle = '#fff';
+        ctx.lineWidth = 2;
+        ctx.stroke();
+      }
+
+      // Initial point marker
+      ctx.fillStyle = '#06b6d4';
+      ctx.beginPath();
+      ctx.arc(toScreenT(0), toScreenY(y0), 4, 0, Math.PI * 2);
+      ctx.fill();
+    }
+
+    // Initialize
+    setMode('attractor');
+  </script>
+</body>
+</html>

@@ -75,7 +75,7 @@ $$
 &=p(s-r)
 \end{align}
 $$
-and since ($s-r$) is an integer $p \mid 1$. But by Theorem, the only integer divisor of 1 are 1 and -1 and $p>1$ because p is prime. Thus, $p\leq 1$ and $p>1$, which is a contradiction. 
+and since ($s-r$) is an integer $p \mid 1$. But by Theorem, the only integer divisor of 1 are 1 and -1 and $p>1$ because p is prime. Thus, $p\leq 1$ and $p>1$, which is a contradiction. $\blacksquare$
 
 
 The idea of Euclid’s proof is this: Suppose the set of prime numbers were finite. Then you could take the product of all the prime numbers and add 1. By Theorem 4.4.4 this number must be divisible by some prime number. But by Proposition 4.8.3, this number is not divisible by any of the prime numbers in the set.
@@ -97,7 +97,7 @@ Let N be the product of all the prime numbers plus 1:
 $$
 N=(2\cdot 3 \cdot 5 \cdot 7 \dots p)+1
 $$
-Then $N>1$%%Condition for it to be divisible by some prime number%%, and so, by Theorem 4.4.4, N is divisible by some prime number $q$. Because q is prime, q must equal one of the prime numbers 2, 3, 5, 7, 11,$\dots$, p. Thus, by definition of divisibility, q divides $2\cdot 3\cdot 5 \dots p$, and so, by Proposition 4.8.3, q does not divide $(2\cdot 3 \cdot 5 \cdot 7 \dots p)+1$, which equals N. Hence N is divisible by q and N is not divisible by q, and we have reached a contradiction.
+Then $N>1$%%Condition for it to be divisible by some prime number%%, and so, by Theorem 4.4.4, N is divisible by some prime number $q$. Because q is prime, q must equal one of the prime numbers 2, 3, 5, 7, 11,$\dots$, p. Thus, by definition of divisibility, q divides $2\cdot 3\cdot 5 \dots p$, and so, by Proposition 4.8.3, q does not divide $(2\cdot 3 \cdot 5 \cdot 7 \dots p)+1$, which equals N. Hence N is divisible by q and N is not divisible by q, and we have reached a contradiction. $\blacksquare$
 
 
 

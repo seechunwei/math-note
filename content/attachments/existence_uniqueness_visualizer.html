@@ -1,0 +1,374 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <style>
+    :root {
+      --bg-color: #121214;
+      --card-bg: #1c1c1f;
+      --inner-bg: #26262b;
+      --text-color: #f4f4f5;
+      --text-muted: #a1a1aa;
+      --border-color: #3f3f46;
+      --blue: #3b82f6;
+      --emerald: #10b981;
+      --amber: #f59e0b;
+      --rose: #f43f5e;
+      --cyan: #06b6d4;
+    }
+    @media (prefers-color-scheme: light) {
+      :root {
+        --bg-color: #f4f4f5;
+        --card-bg: #ffffff;
+        --inner-bg: #f8fafc;
+        --text-color: #18181b;
+        --text-muted: #71717a;
+        --border-color: #e4e4e7;
+      }
+    }
+    * { box-sizing: border-box; margin: 0; padding: 0; font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif; }
+    body { background: var(--bg-color); color: var(--text-color); padding: 10px; select: none; }
+    .card { background: var(--card-bg); border: 1px solid var(--border-color); border-radius: 12px; padding: 14px; max-width: 900px; margin: 0 auto; box-shadow: 0 4px 12px rgba(0,0,0,0.15); }
+    .header { display: flex; justify-content: space-between; align-items: center; border-bottom: 1px solid var(--border-color); padding-bottom: 10px; margin-bottom: 12px; gap: 8px; flex-wrap: wrap; }
+    .title { font-size: 14px; font-weight: 700; display: flex; align-items: center; gap: 8px; }
+    .badge { font-size: 11px; padding: 2px 6px; border-radius: 4px; font-family: monospace; background: rgba(59,130,246,0.15); color: var(--blue); border: 1px solid rgba(59,130,246,0.3); }
+    .subtitle { font-size: 12px; color: var(--text-muted); margin-top: 2px; }
+    .tabs { display: flex; gap: 6px; background: var(--inner-bg); padding: 4px; border-radius: 8px; border: 1px solid var(--border-color); }
+    .tab-btn { padding: 4px 10px; font-size: 11px; font-weight: 600; border-radius: 6px; border: none; cursor: pointer; color: var(--text-muted); background: transparent; transition: all 0.2s; }
+    .tab-btn.active { background: var(--blue); color: #fff; }
+    .tab-btn.active.branch { background: var(--amber); }
+    .grid { display: grid; grid-template-columns: 1.2fr 0.8fr; gap: 12px; }
+    @media (max-width: 650px) { .grid { grid-template-columns: 1fr; } }
+    .canvas-wrap { background: var(--inner-bg); border: 1px solid var(--border-color); border-radius: 8px; padding: 8px; text-align: center; }
+    canvas { width: 100%; height: auto; border-radius: 6px; cursor: crosshair; touch-action: none; }
+    .legend { display: flex; justify-content: space-between; font-size: 11px; color: var(--text-muted); margin-top: 6px; padding: 0 4px; flex-wrap: wrap; gap: 4px; }
+    .panel { display: flex; flex-direction: column; justify-content: space-between; gap: 10px; }
+    .diag-box { background: var(--inner-bg); border: 1px solid var(--border-color); border-radius: 8px; padding: 10px; }
+    .diag-header { display: flex; justify-content: space-between; font-size: 10px; font-weight: 700; text-transform: uppercase; color: var(--text-muted); margin-bottom: 8px; }
+    .diag-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; margin-bottom: 8px; font-family: monospace; font-size: 11px; }
+    .metric { background: var(--card-bg); border: 1px solid var(--border-color); padding: 6px; border-radius: 6px; }
+    .metric span { display: block; font-size: 10px; color: var(--text-muted); }
+    .bar-container { background: rgba(255,255,255,0.1); height: 6px; border-radius: 4px; overflow: hidden; margin-top: 6px; }
+    .bar-fill { height: 100%; transition: width 0.2s, background-color 0.2s; }
+    .callout { padding: 10px; border-radius: 8px; font-size: 12px; line-height: 1.45; border: 1px solid; }
+    .callout.unique { background: rgba(59,130,246,0.1); border-color: rgba(59,130,246,0.25); color: var(--text-color); }
+    .callout.branch { background: rgba(244,63,94,0.1); border-color: rgba(244,63,94,0.3); color: var(--text-color); }
+    .snap-btn { font-size: 11px; padding: 4px 8px; border-radius: 6px; border: 1px solid var(--border-color); background: var(--card-bg); color: var(--text-color); cursor: pointer; }
+  </style>
+</head>
+<body>
+  <div class="card">
+    <div class="header">
+      <div>
+        <div class="title">
+          <span>Existence & Uniqueness Visualizer</span>
+          <span class="badge">Theorem 1.2.1</span>
+        </div>
+        <div class="subtitle">Interactive demonstration of how ∂f/∂y prevents curves from branching</div>
+      </div>
+      <div class="tabs">
+        <button id="btn-u" class="tab-btn active" onclick="setMode('unique')">Unique: dy/dx = y</button>
+        <button id="btn-b" class="tab-btn" onclick="setMode('branch')">Branching: dy/dx = y⅓</button>
+      </div>
+    </div>
+
+    <div class="grid">
+      <div class="canvas-wrap">
+        <canvas id="cv" width="460" height="300"></canvas>
+        <div class="legend">
+          <div>
+            <span style="color:#10b981;">― y₁(x)</span> &nbsp;
+            <span style="color:#f59e0b;">― y₂(x) (branch)</span> &nbsp;
+            <span style="color:#06b6d4;">● (x₀,y₀)</span>
+          </div>
+          <div>Click & drag to move (x₀,y₀)</div>
+        </div>
+      </div>
+
+      <div class="panel">
+        <div class="diag-box">
+          <div class="diag-header">
+            <span>Diagnostics</span>
+            <span id="badge-stat" style="color:#10b981;">UNIQUE</span>
+          </div>
+          <div class="diag-grid">
+            <div class="metric">
+              <span>Point (x₀, y₀)</span>
+              <strong id="v-pos" style="color:var(--cyan);">(0.00, 0.00)</strong>
+            </div>
+            <div class="metric">
+              <span>Slope f(x₀, y₀)</span>
+              <strong id="v-slope" style="color:var(--blue);">0.00</strong>
+            </div>
+          </div>
+          <div style="font-size:11px;">
+            <div style="display:flex; justify-content:space-between;">
+              <span style="color:var(--text-muted);">Vertical Sensitivity: <b>∂f/∂y</b></span>
+              <b id="v-dfdy" style="color:#10b981; font-family:monospace;">1.00 (Finite)</b>
+            </div>
+            <div class="bar-container">
+              <div id="v-bar" class="bar-fill" style="width:25%; background:#10b981;"></div>
+            </div>
+          </div>
+        </div>
+
+        <div id="v-callout" class="callout unique">
+          <span id="v-text"></span>
+        </div>
+
+        <div style="display:flex; justify-content:space-between; align-items:center; font-size:11px;">
+          <span style="color:var(--text-muted);">Singular point test:</span>
+          <button class="snap-btn" onclick="snapOrigin()">Snap to (0, 0)</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    const cv = document.getElementById('cv');
+    const ctx = cv.getContext('2d');
+    let mode = 'unique';
+    let x0 = 0.0, y0 = 0.0;
+    const xMin = -2.5, xMax = 2.5, yMin = -2.0, yMax = 2.0;
+
+    function mathToScreen(x, y) {
+      return {
+        x: ((x - xMin) / (xMax - xMin)) * cv.width,
+        y: cv.height - ((y - yMin) / (yMax - yMin)) * cv.height
+      };
+    }
+    function screenToMath(sx, sy) {
+      return {
+        x: xMin + (sx / cv.width) * (xMax - xMin),
+        y: yMin + ((cv.height - sy) / cv.height) * (yMax - yMin)
+      };
+    }
+    function f(x, y) {
+      return mode === 'unique' ? y : Math.cbrt(y);
+    }
+    function dfdy(x, y) {
+      if (mode === 'unique') return 1.0;
+      if (Math.abs(y) < 1e-4) return Infinity;
+      return 1.0 / (3.0 * Math.cbrt(y * y));
+    }
+
+    function setMode(m) {
+      mode = m;
+      document.getElementById('btn-u').className = 'tab-btn' + (mode === 'unique' ? ' active' : '');
+      document.getElementById('btn-b').className = 'tab-btn' + (mode === 'branch' ? ' active branch' : '');
+      if (mode === 'branch') { x0 = 0.0; y0 = 0.0; }
+      update();
+    }
+    function snapOrigin() {
+      x0 = 0.0; y0 = 0.0;
+      update();
+    }
+
+    function update() {
+      document.getElementById('v-pos').textContent = `(${x0.toFixed(2)}, ${y0.toFixed(2)})`;
+      document.getElementById('v-slope').textContent = f(x0, y0).toFixed(2);
+      const val = dfdy(x0, y0);
+      const bStat = document.getElementById('badge-stat');
+      const vDf = document.getElementById('v-dfdy');
+      const vBar = document.getElementById('v-bar');
+      const cBox = document.getElementById('v-callout');
+      const cTxt = document.getElementById('v-text');
+
+      if (mode === 'unique') {
+        bStat.textContent = 'UNIQUE (1 Sol)';
+        bStat.style.color = '#10b981';
+        vDf.textContent = '1.00 (Finite)';
+        vDf.style.color = '#10b981';
+        vBar.style.width = '25%';
+        vBar.style.background = '#10b981';
+        cBox.className = 'callout unique';
+        cTxt.innerHTML = '<b>Unique Solution Guaranteed:</b> Here ∂f/∂y = 1 is finite everywhere. The rate of vertical gap growth d(Δy)/dx = 1·Δy is strictly bounded. Since curves start at the same point (Δy = 0), they are permanently glued together!';
+      } else {
+        if (Math.abs(y0) < 0.06) {
+          bStat.textContent = 'BRANCHING!';
+          bStat.style.color = '#f43f5e';
+          vDf.textContent = '∞ (Explodes!)';
+          vDf.style.color = '#f43f5e';
+          vBar.style.width = '100%';
+          vBar.style.background = '#f43f5e';
+          cBox.className = 'callout branch';
+          cTxt.innerHTML = '<b>Uniqueness Fails at y = 0:</b> Here ∂f/∂y = 1/(3y⅔) → ∞! Because vertical sensitivity is infinite, a second solution curve peels off and branches upward from (0,0)!';
+        } else {
+          bStat.textContent = 'LOCALLY UNIQUE';
+          bStat.style.color = '#f59e0b';
+          vDf.textContent = val.toFixed(2) + ' (Finite)';
+          vDf.style.color = '#f59e0b';
+          vBar.style.width = Math.min(100, val * 20) + '%';
+          vBar.style.background = '#f59e0b';
+          cBox.className = 'callout unique';
+          cTxt.innerHTML = 'Away from y = 0, ∂f/∂y is finite, so a unique solution passes through this point locally until it reaches y = 0.';
+        }
+      }
+      draw();
+    }
+
+    function draw() {
+      ctx.clearRect(0, 0, cv.width, cv.height);
+
+      // Grid
+      ctx.strokeStyle = 'rgba(255,255,255,0.06)';
+      ctx.lineWidth = 1;
+      for (let x = -2; x <= 2; x++) {
+        let p1 = mathToScreen(x, yMin), p2 = mathToScreen(x, yMax);
+        ctx.beginPath(); ctx.moveTo(p1.x, p1.y); ctx.lineTo(p2.x, p2.y); ctx.stroke();
+      }
+      for (let y = -2; y <= 2; y++) {
+        let p1 = mathToScreen(xMin, y), p2 = mathToScreen(xMax, y);
+        ctx.beginPath(); ctx.moveTo(p1.x, p1.y); ctx.lineTo(p2.x, p2.y); ctx.stroke();
+      }
+
+      // Axes
+      const o = mathToScreen(0, 0);
+      ctx.strokeStyle = 'rgba(255,255,255,0.25)';
+      ctx.lineWidth = 1.5;
+      ctx.beginPath();
+      ctx.moveTo(0, o.y); ctx.lineTo(cv.width, o.y);
+      ctx.moveTo(o.x, 0); ctx.lineTo(o.x, cv.height);
+      ctx.stroke();
+
+      // Highlight singular line y=0 in branch mode
+      if (mode === 'branch') {
+        ctx.strokeStyle = 'rgba(244,63,94,0.4)';
+        ctx.lineWidth = 3;
+        ctx.setLineDash([4, 4]);
+        ctx.beginPath(); ctx.moveTo(0, o.y); ctx.lineTo(cv.width, o.y); ctx.stroke();
+        ctx.setLineDash([]);
+      }
+
+      // Slope field
+      const nx = 20, ny = 14;
+      ctx.lineWidth = 1;
+      for (let i = 0; i <= nx; i++) {
+        const mx = xMin + (i / nx) * (xMax - xMin);
+        for (let j = 0; j <= ny; j++) {
+          const my = yMin + (j / ny) * (yMax - yMin);
+          const slope = f(mx, my);
+          const angle = Math.atan(slope);
+          const p = mathToScreen(mx, my);
+          const len = 6;
+          const dx = len * Math.cos(angle), dy = -len * Math.sin(angle);
+          ctx.strokeStyle = (mode === 'branch' && Math.abs(my) < 0.08) ? 'rgba(244,63,94,0.6)' : 'rgba(160,170,190,0.3)';
+          ctx.beginPath(); ctx.moveTo(p.x - dx, p.y - dy); ctx.lineTo(p.x + dx, p.y + dy); ctx.stroke();
+        }
+      }
+
+      // Curves
+      if (mode === 'unique') {
+        ctx.strokeStyle = '#10b981';
+        ctx.lineWidth = 2.5;
+        ctx.beginPath();
+        let s = false;
+        for (let x = xMin; x <= xMax; x += 0.05) {
+          const y = y0 * Math.exp(x - x0);
+          if (y >= yMin - 1 && y <= yMax + 1) {
+            const pt = mathToScreen(x, y);
+            if (!s) { ctx.moveTo(pt.x, pt.y); s = true; } else ctx.lineTo(pt.x, pt.y);
+          }
+        }
+        ctx.stroke();
+      } else {
+        if (Math.abs(y0) < 0.1) {
+          // Sol 1: y = 0
+          ctx.strokeStyle = '#10b981';
+          ctx.lineWidth = 2.5;
+          ctx.beginPath();
+          ctx.moveTo(mathToScreen(xMin, 0).x, mathToScreen(xMin, 0).y);
+          ctx.lineTo(mathToScreen(xMax, 0).x, mathToScreen(xMax, 0).y);
+          ctx.stroke();
+
+          // Sol 2: branch up
+          ctx.strokeStyle = '#f59e0b';
+          ctx.lineWidth = 2.5;
+          ctx.beginPath();
+          let s = false;
+          for (let x = x0; x <= xMax; x += 0.03) {
+            const b = (2/3) * (x - x0);
+            if (b >= 0) {
+              const pt = mathToScreen(x, Math.pow(b, 1.5));
+              if (!s) { ctx.moveTo(pt.x, pt.y); s = true; } else ctx.lineTo(pt.x, pt.y);
+            }
+          }
+          ctx.stroke();
+
+          // Sol 3: branch down (dashed)
+          ctx.strokeStyle = '#f59e0b';
+          ctx.lineWidth = 2;
+          ctx.setLineDash([3, 3]);
+          ctx.beginPath();
+          s = false;
+          for (let x = x0; x <= xMax; x += 0.03) {
+            const b = (2/3) * (x - x0);
+            if (b >= 0) {
+              const pt = mathToScreen(x, -Math.pow(b, 1.5));
+              if (!s) { ctx.moveTo(pt.x, pt.y); s = true; } else ctx.lineTo(pt.x, pt.y);
+            }
+          }
+          ctx.stroke();
+          ctx.setLineDash([]);
+        } else {
+          // RK4
+          traceRK4(x0, y0, "#10b981");
+        }
+      }
+
+      // Point (x0, y0)
+      const pInit = mathToScreen(x0, y0);
+      ctx.fillStyle = '#06b6d4';
+      ctx.beginPath(); ctx.arc(pInit.x, pInit.y, 5, 0, Math.PI * 2); ctx.fill();
+    }
+
+    function traceRK4(sx, sy, color) {
+      ctx.strokeStyle = color;
+      ctx.lineWidth = 2.5;
+      const step = 0.04;
+      ctx.beginPath();
+      let cx = sx, cy = sy;
+      let p = mathToScreen(cx, cy);
+      ctx.moveTo(p.x, p.y);
+      for (let i = 0; i < 60 && cx <= xMax && cy >= yMin && cy <= yMax; i++) {
+        let k1 = f(cx, cy), k2 = f(cx+step/2, cy+(step/2)*k1), k3 = f(cx+step/2, cy+(step/2)*k2), k4 = f(cx+step, cy+step*k3);
+        cy += (step/6)*(k1 + 2*k2 + 2*k3 + k4);
+        cx += step;
+        ctx.lineTo(mathToScreen(cx, cy).x, mathToScreen(cx, cy).y);
+      }
+      ctx.stroke();
+      ctx.beginPath();
+      cx = sx; cy = sy;
+      ctx.moveTo(p.x, p.y);
+      for (let i = 0; i < 60 && cx >= xMin && cy >= yMin && cy <= yMax; i++) {
+        let k1 = f(cx, cy), k2 = f(cx-step/2, cy-(step/2)*k1), k3 = f(cx-step/2, cy-(step/2)*k2), k4 = f(cx-step, cy-step*k3);
+        cy -= (step/6)*(k1 + 2*k2 + 2*k3 + k4);
+        cx -= step;
+        ctx.lineTo(mathToScreen(cx, cy).x, mathToScreen(cx, cy).y);
+      }
+      ctx.stroke();
+    }
+
+    let drag = false;
+    cv.addEventListener('pointerdown', (e) => {
+      drag = true;
+      const r = cv.getBoundingClientRect();
+      const m = screenToMath((e.clientX - r.left)*(cv.width/r.width), (e.clientY - r.top)*(cv.height/r.height));
+      x0 = Math.max(xMin, Math.min(xMax, m.x));
+      y0 = Math.max(yMin, Math.min(yMax, m.y));
+      update();
+    });
+    window.addEventListener('pointermove', (e) => {
+      if (!drag) return;
+      const r = cv.getBoundingClientRect();
+      const m = screenToMath((e.clientX - r.left)*(cv.width/r.width), (e.clientY - r.top)*(cv.height/r.height));
+      x0 = Math.max(xMin, Math.min(xMax, m.x));
+      y0 = Math.max(yMin, Math.min(yMax, m.y));
+      update();
+    });
+    window.addEventListener('pointerup', () => { drag = false; });
+
+    update();
+  </script>
+</body>
+</html>

@@ -1,0 +1,330 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <style>
+    :root {
+      --bg-color: #121214;
+      --card-bg: #1c1c1f;
+      --inner-bg: #26262b;
+      --text-color: #f4f4f5;
+      --text-muted: #a1a1aa;
+      --border-color: #3f3f46;
+      --blue: #3b82f6;
+      --emerald: #10b981;
+      --amber: #f59e0b;
+      --rose: #f43f5e;
+      --cyan: #06b6d4;
+    }
+    @media (prefers-color-scheme: light) {
+      :root {
+        --bg-color: #f4f4f5;
+        --card-bg: #ffffff;
+        --inner-bg: #f8fafc;
+        --text-color: #18181b;
+        --text-muted: #71717a;
+        --border-color: #e4e4e7;
+      }
+    }
+    * { box-sizing: border-box; margin: 0; padding: 0; font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif; }
+    body { background: var(--bg-color); color: var(--text-color); padding: 10px; select: none; }
+    .card { background: var(--card-bg); border: 1px solid var(--border-color); border-radius: 12px; padding: 14px; max-width: 850px; margin: 0 auto; box-shadow: 0 4px 12px rgba(0,0,0,0.15); }
+    .header { display: flex; justify-content: space-between; align-items: center; border-bottom: 1px solid var(--border-color); padding-bottom: 10px; margin-bottom: 12px; gap: 8px; flex-wrap: wrap; }
+    .title { font-size: 14px; font-weight: 700; display: flex; align-items: center; gap: 8px; }
+    .badge { font-size: 11px; padding: 2px 6px; border-radius: 4px; font-family: monospace; background: rgba(16,185,129,0.15); color: var(--emerald); border: 1px solid rgba(16,185,129,0.3); }
+    .subtitle { font-size: 12px; color: var(--text-muted); margin-top: 2px; }
+    .tabs { display: flex; gap: 6px; background: var(--inner-bg); padding: 4px; border-radius: 8px; border: 1px solid var(--border-color); flex-wrap: wrap; }
+    .tab-btn { padding: 4px 8px; font-size: 11px; font-weight: 600; border-radius: 6px; border: none; cursor: pointer; color: var(--text-muted); background: transparent; transition: all 0.2s; }
+    .tab-btn.active { background: var(--blue); color: #fff; }
+    .grid { display: grid; grid-template-columns: 1.25fr 0.75fr; gap: 12px; }
+    @media (max-width: 650px) { .grid { grid-template-columns: 1fr; } }
+    .canvas-wrap { background: var(--inner-bg); border: 1px solid var(--border-color); border-radius: 8px; padding: 8px; text-align: center; }
+    canvas { width: 100%; height: auto; border-radius: 6px; cursor: pointer; touch-action: none; }
+    .legend { display: flex; justify-content: space-between; font-size: 11px; color: var(--text-muted); margin-top: 6px; padding: 0 4px; }
+    .panel { display: flex; flex-direction: column; justify-content: space-between; gap: 10px; }
+    .box { background: var(--inner-bg); border: 1px solid var(--border-color); border-radius: 8px; padding: 10px; }
+    .box-header { display: flex; justify-content: space-between; font-size: 10px; font-weight: 700; text-transform: uppercase; color: var(--text-muted); margin-bottom: 8px; }
+    .val-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; font-family: monospace; font-size: 11px; margin-bottom: 8px; }
+    .metric { background: var(--card-bg); border: 1px solid var(--border-color); padding: 6px; border-radius: 6px; }
+    .metric span { display: block; font-size: 10px; color: var(--text-muted); }
+    .df-row { display: flex; justify-content: space-between; align-items: center; font-family: monospace; font-size: 11px; padding: 6px 8px; background: var(--card-bg); border: 1px solid var(--border-color); border-radius: 6px; }
+    .callout { padding: 10px; border-radius: 8px; font-size: 12px; line-height: 1.45; border: 1px solid; }
+    .callout.stable { background: rgba(16,185,129,0.1); border-color: rgba(16,185,129,0.3); color: var(--text-color); }
+    .callout.unstable { background: rgba(244,63,94,0.1); border-color: rgba(244,63,94,0.3); color: var(--text-color); }
+    .callout.semi { background: rgba(245,158,11,0.1); border-color: rgba(245,158,11,0.3); color: var(--text-color); }
+    .toggle-btn { font-size: 11px; padding: 4px 8px; border-radius: 6px; border: 1px solid var(--border-color); background: var(--card-bg); color: var(--text-color); cursor: pointer; }
+  </style>
+</head>
+<body>
+  <div class="card">
+    <div class="header">
+      <div>
+        <div class="title">
+          <span>Derivative Test for Stability</span>
+          <span class="badge">f'(c) Rule</span>
+        </div>
+        <div class="subtitle">The slope of f(y) at zero determines whether solutions attract or repel</div>
+      </div>
+      <div class="tabs">
+        <button id="p-log" class="tab-btn active" onclick="setPreset('logistic')">y(2 - y)</button>
+        <button id="p-stab" class="tab-btn" onclick="setPreset('stable')">Stable: 2 - y</button>
+        <button id="p-unst" class="tab-btn" onclick="setPreset('unstable')">Unstable: y - 1</button>
+        <button id="p-semi" class="tab-btn" onclick="setPreset('semi')">Semi: (y - 1)²</button>
+      </div>
+    </div>
+
+    <div class="grid">
+      <div class="canvas-wrap">
+        <canvas id="cv" width="460" height="260"></canvas>
+        <div class="legend">
+          <div>
+            <span style="color:#10b981;">― f(y) &gt; 0 (↑)</span> &nbsp;
+            <span style="color:#f43f5e;">― f(y) &lt; 0 (↓)</span> &nbsp;
+            <span style="color:#06b6d4;">● c</span>
+          </div>
+          <div style="font-size:10px;">Click critical point to inspect</div>
+        </div>
+      </div>
+
+      <div class="panel">
+        <div class="box">
+          <div class="box-header">
+            <span>Critical Point Analysis</span>
+            <b id="badge-stat" style="color:#10b981; font-family:monospace;">STABLE SINK</b>
+          </div>
+          <div class="val-grid">
+            <div class="metric">
+              <span>Critical Point c</span>
+              <b id="v-c" style="color:var(--cyan);">y = 2.00</b>
+            </div>
+            <div class="metric">
+              <span>Value f(c)</span>
+              <b>0.00</b>
+            </div>
+          </div>
+          <div class="df-row">
+            <span style="color:var(--text-muted);">Derivative <b>f'(c)</b>:</span>
+            <b id="v-df" style="color:#10b981;">-2.00 &lt; 0</b>
+          </div>
+        </div>
+
+        <div id="v-callout" class="callout stable">
+          <span id="v-text"></span>
+        </div>
+
+        <div id="v-toggle-row" style="display:flex; justify-content:space-between; align-items:center; font-size:11px;">
+          <span style="color:var(--text-muted);">Select point:</span>
+          <button id="v-toggle-btn" class="toggle-btn" onclick="toggleCritPoint()">Switch to c = 0</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    const cv = document.getElementById('cv');
+    const ctx = cv.getContext('2d');
+
+    let currentPreset = 'logistic';
+    let selectedC = 2;
+
+    const presets = {
+      logistic: {
+        f: y => y * (2 - y),
+        df: y => 2 - 2 * y,
+        critPoints: [0, 2],
+        yMin: -1.2, yMax: 3.2,
+        zMin: -2.5, zMax: 2.0
+      },
+      stable: {
+        f: y => 2 - y,
+        df: y => -1,
+        critPoints: [2],
+        yMin: -0.5, yMax: 4.5,
+        zMin: -2.5, zMax: 2.5
+      },
+      unstable: {
+        f: y => y - 1,
+        df: y => 1,
+        critPoints: [1],
+        yMin: -1.5, yMax: 3.5,
+        zMin: -2.5, zMax: 2.5
+      },
+      semi: {
+        f: y => (y - 1) * (y - 1),
+        df: y => 2 * (y - 1),
+        critPoints: [1],
+        yMin: -0.5, yMax: 2.5,
+        zMin: -0.5, zMax: 2.5
+      }
+    };
+
+    function setPreset(key) {
+      currentPreset = key;
+      ['p-log', 'p-stab', 'p-unst', 'p-semi'].forEach(id => {
+        document.getElementById(id).className = 'tab-btn';
+      });
+      const map = { logistic: 'p-log', stable: 'p-stab', unstable: 'p-unst', semi: 'p-semi' };
+      document.getElementById(map[key]).className = 'tab-btn active';
+
+      selectedC = presets[key].critPoints[presets[key].critPoints.length - 1];
+      update();
+    }
+
+    function toggleCritPoint() {
+      if (currentPreset === 'logistic') {
+        selectedC = (selectedC === 2) ? 0 : 2;
+        update();
+      }
+    }
+
+    function toScreen(y, z) {
+      const cfg = presets[currentPreset];
+      return {
+        x: ((y - cfg.yMin) / (cfg.yMax - cfg.yMin)) * cv.width,
+        y: cv.height - ((z - cfg.zMin) / (cfg.zMax - cfg.zMin)) * cv.height
+      };
+    }
+
+    function update() {
+      const cfg = presets[currentPreset];
+      const df = cfg.df(selectedC);
+
+      document.getElementById('v-c').textContent = `y = ${selectedC.toFixed(2)}`;
+      const bStat = document.getElementById('badge-stat');
+      const vDf = document.getElementById('v-df');
+      const cBox = document.getElementById('v-callout');
+      const cTxt = document.getElementById('v-text');
+      const tRow = document.getElementById('v-toggle-row');
+
+      tRow.style.display = (currentPreset === 'logistic') ? 'flex' : 'none';
+      if (currentPreset === 'logistic') {
+        document.getElementById('v-toggle-btn').textContent = (selectedC === 2) ? 'Switch to c = 0' : 'Switch to c = 2';
+      }
+
+      if (df < -1e-4) {
+        bStat.textContent = 'STABLE SINK';
+        bStat.style.color = '#10b981';
+        vDf.textContent = `${df.toFixed(2)} < 0 (Negative)`;
+        vDf.style.color = '#10b981';
+        cBox.className = 'callout stable';
+        cTxt.innerHTML = '<b>f\'(c) &lt; 0 (Stable Attractor):</b> The curve slopes downward. Left of c, <span style="color:#10b981;">f(y) &gt; 0</span> pushes solutions <b>UP (↑)</b>. Right of c, <span style="color:#f43f5e;">f(y) &lt; 0</span> pushes solutions <b>DOWN (↓)</b>. Both sides are pulled into c!';
+      } else if (df > 1e-4) {
+        bStat.textContent = 'UNSTABLE SOURCE';
+        bStat.style.color = '#f43f5e';
+        vDf.textContent = `+${df.toFixed(2)} > 0 (Positive)`;
+        vDf.style.color = '#f43f5e';
+        cBox.className = 'callout unstable';
+        cTxt.innerHTML = '<b>f\'(c) &gt; 0 (Unstable Repeller):</b> The curve slopes upward. Left of c, <span style="color:#f43f5e;">f(y) &lt; 0</span> pushes solutions <b>DOWN (↓)</b>. Right of c, <span style="color:#10b981;">f(y) &gt; 0</span> pushes solutions <b>UP (↑)</b>. Both sides push away from c!';
+      } else {
+        bStat.textContent = 'SEMI-STABLE (f\'=0)';
+        bStat.style.color = '#f59e0b';
+        vDf.textContent = '0.00 (Flat)';
+        vDf.style.color = '#f59e0b';
+        cBox.className = 'callout semi';
+        cTxt.innerHTML = '<b>f\'(c) = 0 (Inconclusive):</b> The tangent is completely flat! The curve doesn\'t cross zero; it touches and bounces. Solutions increase on both sides (attracted from below, repelled from above).';
+      }
+
+      draw();
+    }
+
+    function draw() {
+      ctx.clearRect(0, 0, cv.width, cv.height);
+      const cfg = presets[currentPreset];
+
+      // Axes
+      const o = toScreen(0, 0);
+      ctx.strokeStyle = 'rgba(255,255,255,0.2)';
+      ctx.lineWidth = 1.5;
+      ctx.beginPath();
+      ctx.moveTo(0, o.y); ctx.lineTo(cv.width, o.y);
+      if (o.x >= 0 && o.x <= cv.width) {
+        ctx.moveTo(o.x, 0); ctx.lineTo(o.x, cv.height);
+      }
+      ctx.stroke();
+
+      ctx.fillStyle = 'rgba(255,255,255,0.4)';
+      ctx.font = '10px sans-serif';
+      ctx.fillText('y (phase line)', cv.width - 70, o.y - 6);
+      ctx.fillText('f(y)', (o.x > 30 ? o.x - 30 : 6), 16);
+
+      // Phase arrows along the axis
+      const step = (cfg.yMax - cfg.yMin) / 18;
+      for (let y = cfg.yMin + step/2; y <= cfg.yMax; y += step) {
+        const val = cfg.f(y);
+        const p = toScreen(y, 0);
+        if (Math.abs(val) > 0.05) {
+          ctx.fillStyle = (val > 0) ? '#10b981' : '#f43f5e';
+          ctx.beginPath();
+          const d = (val > 0) ? 1 : -1;
+          ctx.moveTo(p.x + d*6, p.y);
+          ctx.lineTo(p.x - d*4, p.y - 4);
+          ctx.lineTo(p.x - d*4, p.y + 4);
+          ctx.fill();
+        }
+      }
+
+      // Curve z = f(y)
+      const n = 120;
+      for (let i = 0; i < n; i++) {
+        const y1 = cfg.yMin + (i/n) * (cfg.yMax - cfg.yMin);
+        const y2 = cfg.yMin + ((i+1)/n) * (cfg.yMax - cfg.yMin);
+        const z1 = cfg.f(y1), z2 = cfg.f(y2);
+        const p1 = toScreen(y1, z1), p2 = toScreen(y2, z2);
+
+        ctx.strokeStyle = (z1+z2)/2 >= 0 ? '#10b981' : '#f43f5e';
+        ctx.lineWidth = 2.5;
+        ctx.beginPath();
+        ctx.moveTo(p1.x, p1.y); ctx.lineTo(p2.x, p2.y);
+        ctx.stroke();
+      }
+
+      // Tangent line at selectedC
+      const slope = cfg.df(selectedC);
+      const span = 0.8;
+      const ptA = toScreen(selectedC - span, -slope * span);
+      const ptB = toScreen(selectedC + span, slope * span);
+
+      ctx.strokeStyle = '#f59e0b';
+      ctx.lineWidth = 2;
+      ctx.setLineDash([4, 4]);
+      ctx.beginPath();
+      ctx.moveTo(ptA.x, ptA.y); ctx.lineTo(ptB.x, ptB.y);
+      ctx.stroke();
+      ctx.setLineDash([]);
+
+      // Critical points
+      cfg.critPoints.forEach(cp => {
+        const pt = toScreen(cp, 0);
+        const isSel = Math.abs(cp - selectedC) < 0.05;
+        ctx.fillStyle = isSel ? '#06b6d4' : '#94a3b8';
+        ctx.beginPath();
+        ctx.arc(pt.x, pt.y, isSel ? 6 : 4, 0, Math.PI * 2);
+        ctx.fill();
+
+        ctx.fillStyle = isSel ? '#06b6d4' : '#cbd5e1';
+        ctx.font = 'bold 11px monospace';
+        ctx.fillText(`c=${cp}`, pt.x - 10, pt.y + 18);
+      });
+    }
+
+    cv.addEventListener('click', (e) => {
+      const rect = cv.getBoundingClientRect();
+      const cfg = presets[currentPreset];
+      const clickY = cfg.yMin + ((e.clientX - rect.left) / rect.width) * (cfg.yMax - cfg.yMin);
+
+      let closest = cfg.critPoints[0];
+      let minD = Math.abs(clickY - closest);
+      cfg.critPoints.forEach(cp => {
+        if (Math.abs(clickY - cp) < minD) {
+          minD = Math.abs(clickY - cp);
+          closest = cp;
+        }
+      });
+      selectedC = closest;
+      update();
+    });
+
+    update();
+  </script>
+</body>
+</html>

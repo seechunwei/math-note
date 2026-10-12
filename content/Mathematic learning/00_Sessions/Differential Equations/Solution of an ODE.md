@@ -109,15 +109,22 @@ $$
    - Therefore, demanding that $y^{(n)}$ be differentiable would impose an unneeded constraint beyond what the ODE demands.
 
 3. **Why $y^{(n)}$ must be continuous ($C^n(I)$)**:
-   - We require $y^{(n)}$ to be continuous on $I$ so that the LHS $F\left(x, \phi(x), \dots, \phi^{(n)}(x)\right)$ is continuous in $x$.
-   - Thus, a classical solution belongs to the function class **$C^n(I)$** (the space of $n$-times continuously differentiable functions).
+   - *Real-Analysis Caveat*: Merely requiring $y^{(n)}$ to exist does **not** automatically make it continuous (a derivative can exist everywhere while failing to be continuous, such as $x^2 \sin(1/x)$ at $x = 0$).
+   - **The Equation Itself Forces It (The Main Reason)**:
+     - Consider an $n$-th order ODE written in normal (explicit) form:
+       $$
+       y^{(n)}(x) = f\left(x, y(x), y'(x), \dots, y^{(n-1)}(x)\right)
+       $$
+     - In classical ODE theory, the governing function $f$ is assumed to be **continuous** on its domain (a fundamental prerequisite for existence and uniqueness theorems like Peano and Picard–Lindelöf).
+     - If $y$ is a solution, the lower derivatives $y, y', \dots, y^{(n-1)}$ are differentiable and thus continuous.
+     - The right-hand side $x \mapsto f\left(x, y(x), \dots, y^{(n-1)}(x)\right)$ is therefore a composition of continuous functions, making the entire RHS **continuous in $x$**.
+     - Because the ODE establishes that $y^{(n)}(x)$ is *identically equal* to the RHS for all $x \in I$:
+       $$
+       y^{(n)}(x) = [\text{Continuous function of } x]
+       $$
+       **$y^{(n)}$ is forced to be continuous!**
+   - Requiring $y \in C^n(I)$ (the space of $n$-times continuously differentiable functions) is therefore not an arbitrary constraint—it is an unavoidable consequence of the differential equation having continuous data.
 
-```
-Differentiability Cascade:
-y  ───────►  y'  ───────►  y''  ───────► ... ───────►  y^(n-1)  ───────►  y^(n)
-[Diff & Cont] [Diff & Cont] [Diff & Cont]          [Diff & Cont]       [Only Cont Needed]
-                                                                        (No y^(n+1) in ODE!)
-```
 
 ---
 
@@ -779,6 +786,8 @@ Geometrically, a singular solution often acts as an **envelope** to the family o
 >   - Integration frequently results in inseparable transcendental or algebraic relations, yielding **implicit solutions**.
 >   - Nonlinear ODEs frequently possess **singular solutions** (often arising when division by zero occurs during separation of variables, such as dividing by $y^{1/2}$).
 
+Example of implicit solution for non linear ODE:
+[[MAT223 Tutotial 1#^ff6f2d]]
 ### Visual: 1-Parameter Family, Particular Solution, and Singular Solution
 
 <div align="center">
@@ -828,18 +837,18 @@ Geometrically, a singular solution often acts as an **envelope** to the family o
 
 ## 9. Summary & Mental Model Checklist
 
-| Concept | Requirement / Definition | Why It Matters / Pitfall |
-| :--- | :--- | :--- |
-| **Domain of Solution** | Must be a single connected **interval $I$**. | Disconnected domains allow piecewise independent constants, destroying the $n$-parameter family. |
-| **Smoothness Requirement** | $\phi \in C^n(I)$ ($n$-times continuously differentiable). | $y, \dots, y^{(n-1)}$ are differentiable; $y^{(n)}$ needs only continuity to evaluate the ODE continuously. |
-| **Function vs. Solution** | Solution = Function + Interval of Validity. | $y = 1/x$ has domain $\mathbb{R} \setminus \{0\}$, but produces two separate ODE solutions: one on $(0, \infty)$ and one on $(-\infty, 0)$. |
-| **Implicit Solution** | $G(x, y) = 0$ where $\exists \text{ real } \phi(x)$ on $I$ satisfying $G=0$ and the ODE. | A relation is not necessarily a function; validity requires differentiability on $I$. |
-| **The Empty Set Trap** | $x^2 + y^2 + 10 = 0$ formally differentiates to $x + y y' = 0$, but has **no real points**. | Formal differentiation is only a necessary condition. No real function $\implies$ **NOT** an implicit solution! |
-| **Boundary Breakdown** | Endpoints often have vertical tangents ($G_y = 0$). | $x^2 + y^2 = 25$ is an implicit solution on the **open** interval $(-5, 5)$, not $[-5, 5]$. |
-| **$n$-Parameter Family** | Set of solutions $G(x, y, c_1, \dots, c_n) = 0$ containing $n$ arbitrary constants. | Direct consequence of integrating an $n$-th order ODE $n$ times. |
-| **Particular Solution** | Solution free of arbitrary parameters (constants fixed). | Arises by specifying constants to satisfy initial conditions (e.g., $x^2 + y^2 = 25$ with $c = 5$). |
-| **Singular Solution** | Solution satisfying the ODE that **cannot** be obtained from the family. | E.g., $y \equiv 0$ for $y' = x y^{1/2}$. Often forms an envelope tangent to the family. |
-| **Linear vs. Nonlinear** | Linear $\implies$ explicit & no singular solutions. Nonlinear $\implies$ often implicit & may have singular solutions. | Key architectural dividing line in ODE solvability and uniqueness. |
+| Concept                    | Requirement / Definition                                                                                               | Why It Matters / Pitfall                                                                                                                    |
+| :------------------------- | :--------------------------------------------------------------------------------------------------------------------- | :------------------------------------------------------------------------------------------------------------------------------------------ |
+| **Domain of Solution**     | Must be a single connected **interval $I$**.                                                                           | Disconnected domains allow piecewise independent constants, destroying the $n$-parameter family.                                            |
+| **Smoothness Requirement** | $\phi \in C^n(I)$ ($n$-times continuously differentiable).                                                             | $y, \dots, y^{(n-1)}$ are differentiable; $y^{(n)}$ needs only continuity to evaluate the ODE continuously.                                 |
+| **Function vs. Solution**  | Solution = Function + Interval of Validity.                                                                            | $y = 1/x$ has domain $\mathbb{R} \setminus \{0\}$, but produces two separate ODE solutions: one on $(0, \infty)$ and one on $(-\infty, 0)$. |
+| **Implicit Solution**      | $G(x, y) = 0$ where $\exists \text{ real } \phi(x)$ on $I$ satisfying $G=0$ and the ODE.                               | A relation is not necessarily a function; validity requires differentiability on $I$.                                                       |
+| **The Empty Set Trap**     | $x^2 + y^2 + 10 = 0$ formally differentiates to $x + y y' = 0$, but has **no real points**.                            | Formal differentiation is only a necessary condition. No real function $\implies$ **NOT** an implicit solution!                             |
+| **Boundary Breakdown**     | Endpoints often have vertical tangents ($G_y = 0$).                                                                    | $x^2 + y^2 = 25$ is an implicit solution on the **open** interval $(-5, 5)$, not $[-5, 5]$.                                                 |
+| **$n$-Parameter Family**   | Set of solutions $G(x, y, c_1, \dots, c_n) = 0$ containing $n$ arbitrary constants.                                    | Direct consequence of integrating an $n$-th order ODE $n$ times.                                                                            |
+| **Particular Solution**    | Solution free of arbitrary parameters (constants fixed).                                                               | Arises by specifying constants to satisfy initial conditions (e.g., $x^2 + y^2 = 25$ with $c = 5$).                                         |
+| **Singular Solution**      | Solution satisfying the ODE that **cannot** be obtained from the family.                                               | E.g., $y \equiv 0$ for $y' = x y^{1/2}$. Often forms an envelope tangent to the family.                                                     |
+| **Linear vs. Nonlinear**   | Linear $\implies$ explicit & no singular solutions. Nonlinear $\implies$ often implicit & may have singular solutions. | Key architectural dividing line in ODE solvability and uniqueness.                                                                          |
 
 ---
 

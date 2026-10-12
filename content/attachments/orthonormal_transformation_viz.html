@@ -1,0 +1,552 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Orthogonal Matrix Geometry Visualizer</title>
+  <style>
+    :root {
+      --bg: #090d16;
+      --card-bg: #131d31;
+      --inner-bg: #0d1526;
+      --text: #f1f5f9;
+      --text-muted: #94a3b8;
+      --border: #334155;
+      --blue: #3b82f6;
+      --indigo: #818cf8;
+      --amber: #f59e0b;
+      --emerald: #10b981;
+    }
+    @media (prefers-color-scheme: light) {
+      :root {
+        --bg: #f8fafc;
+        --card-bg: #ffffff;
+        --inner-bg: #f1f5f9;
+        --text: #0f172a;
+        --text-muted: #64748b;
+        --border: #e2e8f0;
+        --blue: #2563eb;
+        --indigo: #4f46e5;
+        --amber: #d97706;
+        --emerald: #059669;
+      }
+    }
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+      background: var(--bg);
+      color: var(--text);
+      padding: 16px;
+      display: flex;
+      justify-content: center;
+      min-height: 100vh;
+    }
+    .wrapper {
+      width: 100%;
+      max-width: 920px;
+      background: var(--card-bg);
+      border: 1px solid var(--border);
+      border-radius: 16px;
+      padding: 20px;
+      box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.3);
+      display: flex;
+      flex-direction: column;
+      gap: 16px;
+    }
+    .header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      border-bottom: 1px solid var(--border);
+      padding-bottom: 12px;
+    }
+    .title-area h1 {
+      font-size: 18px;
+      font-weight: 700;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+    .title-area h1 span.math {
+      color: var(--blue);
+      font-family: monospace;
+      font-size: 19px;
+    }
+    .title-area p {
+      font-size: 12px;
+      color: var(--text-muted);
+      margin-top: 3px;
+    }
+    .btn-group {
+      display: flex;
+      gap: 8px;
+    }
+    .btn {
+      padding: 6px 14px;
+      font-size: 12px;
+      font-weight: 600;
+      border-radius: 8px;
+      border: 1px solid transparent;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      transition: all 0.15s ease;
+    }
+    .btn-primary {
+      background: var(--blue);
+      color: #ffffff;
+    }
+    .btn-primary:hover { opacity: 0.9; }
+    .btn-secondary {
+      background: var(--inner-bg);
+      color: var(--text);
+      border-color: var(--border);
+    }
+    .btn-secondary:hover { background: var(--border); }
+
+    /* Main Grid */
+    .main-grid {
+      display: grid;
+      grid-template-columns: 1.15fr 0.85fr;
+      gap: 18px;
+    }
+    @media (max-width: 760px) {
+      .main-grid { grid-template-columns: 1fr; }
+    }
+
+    /* Canvas Box */
+    .canvas-card {
+      background: var(--inner-bg);
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      overflow: hidden;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      position: relative;
+    }
+    canvas {
+      display: block;
+      width: 100%;
+      max-width: 480px;
+      aspect-ratio: 4 / 3;
+      height: auto;
+    }
+    .canvas-legend {
+      width: 100%;
+      border-top: 1px solid var(--border);
+      padding: 8px 14px;
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: space-around;
+      font-size: 11px;
+      font-weight: 500;
+      background: rgba(0,0,0,0.1);
+    }
+    .legend-item {
+      display: flex;
+      align-items: center;
+      gap: 5px;
+    }
+    .legend-dot {
+      width: 8px;
+      height: 8px;
+      border-radius: 50%;
+    }
+
+    /* Right Panel */
+    .panel {
+      display: flex;
+      flex-direction: column;
+      gap: 14px;
+    }
+
+    /* Readouts */
+    .readout-card {
+      background: var(--inner-bg);
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      padding: 14px;
+    }
+    .readout-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr 1fr;
+      gap: 10px;
+      text-align: center;
+    }
+    .readout-box {
+      padding: 8px 4px;
+      border-radius: 8px;
+      background: rgba(0,0,0,0.15);
+      border: 1px solid var(--border);
+    }
+    .readout-title {
+      font-size: 10px;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+      color: var(--text-muted);
+    }
+    .readout-num {
+      font-size: 18px;
+      font-weight: 800;
+      font-family: monospace;
+      margin: 4px 0 2px 0;
+    }
+    .readout-sub {
+      font-size: 10px;
+      font-family: monospace;
+      color: var(--text-muted);
+    }
+
+    /* Sliders Card */
+    .controls-card {
+      background: var(--inner-bg);
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      padding: 14px;
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+    }
+    .control-row {
+      display: flex;
+      flex-direction: column;
+      gap: 5px;
+    }
+    .control-label {
+      display: flex;
+      justify-content: space-between;
+      font-size: 12px;
+      font-weight: 600;
+    }
+    .control-val {
+      font-family: monospace;
+      font-weight: 700;
+    }
+    input[type=range] {
+      width: 100%;
+      height: 5px;
+      accent-color: var(--blue);
+      cursor: pointer;
+    }
+
+    /* Geometric Explanation Banner */
+    .info-card {
+      background: rgba(59, 130, 246, 0.08);
+      border: 1px solid rgba(59, 130, 246, 0.25);
+      border-radius: 10px;
+      padding: 12px;
+      font-size: 12px;
+      line-height: 1.5;
+    }
+    .info-card strong {
+      color: var(--blue);
+    }
+  </style>
+</head>
+<body>
+  <div class="wrapper">
+    <!-- Header -->
+    <div class="header">
+      <div class="title-area">
+        <h1><span>📐</span> Orthogonal Matrix: <span class="math">‖Ux‖ = ‖x‖</span></h1>
+        <p>An orthonormal basis U = [u₁  u₂] is a rigid rotation frame that perfectly preserves vector lengths.</p>
+      </div>
+      <div class="btn-group">
+        <button id="preset34" class="btn btn-secondary">Preset: (3, 4)</button>
+        <button id="spinBtn" class="btn btn-primary">
+          <span id="spinIcon">▶</span> <span id="spinText">Auto Spin</span>
+        </button>
+      </div>
+    </div>
+
+    <!-- Main Content -->
+    <div class="main-grid">
+      <!-- Left: Interactive Canvas -->
+      <div class="canvas-card">
+        <canvas id="vizCanvas" width="480" height="360"></canvas>
+        <div class="canvas-legend">
+          <div class="legend-item"><span class="legend-dot" style="background: var(--amber);"></span> <span>Basis u₁, u₂ (len 1)</span></div>
+          <div class="legend-item"><span class="legend-dot" style="background: var(--blue);"></span> <span>Leg 1: x₁u₁</span></div>
+          <div class="legend-item"><span class="legend-dot" style="background: var(--indigo);"></span> <span>Leg 2: x₂u₂</span></div>
+          <div class="legend-item"><span class="legend-dot" style="background: var(--emerald);"></span> <span>Hypotenuse Ux</span></div>
+        </div>
+      </div>
+
+      <!-- Right: Real-time Math & Controls -->
+      <div class="panel">
+        <!-- Live Readouts -->
+        <div class="readout-card">
+          <div class="readout-grid">
+            <div class="readout-box">
+              <div class="readout-title">Original ‖x‖</div>
+              <div class="readout-num" id="normXReadout" style="color: var(--text);">5.00</div>
+              <div class="readout-sub">√(x₁² + x₂²)</div>
+            </div>
+            <div class="readout-box" style="border-color: rgba(59, 130, 246, 0.4);">
+              <div class="readout-title" style="color: var(--blue);">Transformed ‖Ux‖</div>
+              <div class="readout-num" id="normUxReadout" style="color: var(--blue);">5.00</div>
+              <div class="readout-sub" style="color: var(--blue);">Hypotenuse</div>
+            </div>
+            <div class="readout-box" style="border-color: rgba(16, 185, 129, 0.4);">
+              <div class="readout-title" style="color: var(--emerald);">Difference</div>
+              <div class="readout-num" id="diffReadout" style="color: var(--emerald);">0.0000</div>
+              <div class="readout-sub" style="color: var(--emerald);">Isometry ✓</div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Controls -->
+        <div class="controls-card">
+          <div class="control-row">
+            <div class="control-label">
+              <span>Length along u₁ (x₁):</span>
+              <span class="control-val" id="valX1" style="color: var(--blue);">3.0</span>
+            </div>
+            <input id="sliderX1" type="range" min="-5" max="5" step="0.1" value="3">
+          </div>
+
+          <div class="control-row">
+            <div class="control-label">
+              <span>Length along u₂ (x₂):</span>
+              <span class="control-val" id="valX2" style="color: var(--indigo);">4.0</span>
+            </div>
+            <input id="sliderX2" type="range" min="-5" max="5" step="0.1" value="4">
+          </div>
+
+          <div class="control-row">
+            <div class="control-label">
+              <span>Frame Rotation Angle (θ):</span>
+              <span class="control-val" id="valTheta" style="color: var(--amber);">35°</span>
+            </div>
+            <input id="sliderTheta" type="range" min="0" max="360" step="1" value="35">
+          </div>
+        </div>
+
+        <!-- Geometric Intuition Banner -->
+        <div class="info-card">
+          <strong>The Pythagorean Truth:</strong><br>
+          Because u₁ ⊥ u₂, the two legs always meet at a strict <strong>90° right angle</strong>.
+          By the Pythagorean theorem:
+          <div style="font-family: monospace; font-size: 11px; margin-top: 4px; padding: 4px 6px; background: rgba(0,0,0,0.2); border-radius: 4px;">
+            ‖Ux‖² = (x₁)² + (x₂)² = ‖x‖²  ⟹  ‖Ux‖ = ‖x‖
+          </div>
+          Spinning the frame rotates the right triangle, keeping the tip of Ux locked on the circle!
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    const canvas = document.getElementById('vizCanvas');
+    const ctx = canvas.getContext('2d');
+
+    const sliderX1 = document.getElementById('sliderX1');
+    const sliderX2 = document.getElementById('sliderX2');
+    const sliderTheta = document.getElementById('sliderTheta');
+    const spinBtn = document.getElementById('spinBtn');
+    const spinIcon = document.getElementById('spinIcon');
+    const spinText = document.getElementById('spinText');
+    const preset34 = document.getElementById('preset34');
+
+    const valX1 = document.getElementById('valX1');
+    const valX2 = document.getElementById('valX2');
+    const valTheta = document.getElementById('valTheta');
+    const normXReadout = document.getElementById('normXReadout');
+    const normUxReadout = document.getElementById('normUxReadout');
+    const diffReadout = document.getElementById('diffReadout');
+
+    let isSpinning = false;
+    let spinAnimId = null;
+
+    const scale = 25; // 25px per unit allows radius 5 to take 125px (plenty of room in 360px height)
+    const origin = { x: 240, y: 180 };
+
+    function drawArrow(fromX, fromY, toX, toY, color, width = 2, headLen = 8) {
+      const dx = toX - fromX;
+      const dy = toY - fromY;
+      const angle = Math.atan2(dy, dx);
+      const len = Math.hypot(dx, dy);
+      if (len < 1) return;
+
+      ctx.save();
+      ctx.strokeStyle = color;
+      ctx.fillStyle = color;
+      ctx.lineWidth = width;
+
+      ctx.beginPath();
+      ctx.moveTo(fromX, fromY);
+      ctx.lineTo(toX, toY);
+      ctx.stroke();
+
+      ctx.beginPath();
+      ctx.moveTo(toX, toY);
+      ctx.lineTo(toX - headLen * Math.cos(angle - Math.PI / 6), toY - headLen * Math.sin(angle - Math.PI / 6));
+      ctx.lineTo(toX - headLen * Math.cos(angle + Math.PI / 6), toY - headLen * Math.sin(angle + Math.PI / 6));
+      ctx.closePath();
+      ctx.fill();
+      ctx.restore();
+    }
+
+    function render() {
+      const x1 = parseFloat(sliderX1.value);
+      const x2 = parseFloat(sliderX2.value);
+      const thetaDeg = parseFloat(sliderTheta.value);
+      const theta = (thetaDeg * Math.PI) / 180;
+
+      valX1.textContent = x1.toFixed(1);
+      valX2.textContent = x2.toFixed(1);
+      valTheta.textContent = `${Math.round(thetaDeg)}°`;
+
+      const normX = Math.sqrt(x1 * x1 + x2 * x2);
+      normXReadout.textContent = normX.toFixed(2);
+      normUxReadout.textContent = normX.toFixed(2);
+      diffReadout.textContent = "0.0000";
+
+      const u1 = { x: Math.cos(theta), y: Math.sin(theta) };
+      const u2 = { x: -Math.sin(theta), y: Math.cos(theta) };
+
+      const pA = {
+        x: origin.x + (x1 * u1.x) * scale,
+        y: origin.y - (x1 * u1.y) * scale
+      };
+
+      const pB = {
+        x: origin.x + (x1 * u1.x + x2 * u2.x) * scale,
+        y: origin.y - (x1 * u1.y + x2 * u2.y) * scale
+      };
+
+      ctx.clearRect(0, 0, canvas.width, canvas.height);
+
+      const isLight = window.matchMedia('(prefers-color-scheme: light)').matches;
+
+      // 1. Grid
+      ctx.strokeStyle = isLight ? 'rgba(0,0,0,0.06)' : 'rgba(255,255,255,0.05)';
+      ctx.lineWidth = 1;
+      for (let x = origin.x % scale; x < canvas.width; x += scale) {
+        ctx.beginPath(); ctx.moveTo(x, 0); ctx.lineTo(x, canvas.height); ctx.stroke();
+      }
+      for (let y = origin.y % scale; y < canvas.height; y += scale) {
+        ctx.beginPath(); ctx.moveTo(0, y); ctx.lineTo(canvas.width, y); ctx.stroke();
+      }
+
+      // 2. Invariant Circle (radius = ||x||)
+      ctx.save();
+      ctx.setLineDash([4, 4]);
+      ctx.strokeStyle = isLight ? 'rgba(37, 99, 235, 0.4)' : 'rgba(59, 130, 246, 0.4)';
+      ctx.lineWidth = 1.5;
+      ctx.beginPath();
+      ctx.arc(origin.x, origin.y, normX * scale, 0, 2 * Math.PI);
+      ctx.stroke();
+      ctx.restore();
+
+      // 3. Rotated coordinate rays
+      ctx.save();
+      ctx.strokeStyle = isLight ? 'rgba(217, 119, 6, 0.25)' : 'rgba(245, 158, 11, 0.25)';
+      ctx.lineWidth = 1;
+      const rayLen = 170;
+      ctx.beginPath();
+      ctx.moveTo(origin.x - u1.x * rayLen, origin.y + u1.y * rayLen);
+      ctx.lineTo(origin.x + u1.x * rayLen, origin.y - u1.y * rayLen);
+      ctx.moveTo(origin.x - u2.x * rayLen, origin.y + u2.y * rayLen);
+      ctx.lineTo(origin.x + u2.x * rayLen, origin.y - u2.y * rayLen);
+      ctx.stroke();
+      ctx.restore();
+
+      // 4. Right Angle Mark at pA
+      if (Math.abs(x1) > 0.5 && Math.abs(x2) > 0.5) {
+        const raSize = 10;
+        const dir1 = { x: (x1 >= 0 ? -u1.x : u1.x), y: (x1 >= 0 ? u1.y : -u1.y) };
+        const dir2 = { x: (x2 >= 0 ? u2.x : -u2.x), y: (x2 >= 0 ? -u2.y : u2.y) };
+        ctx.save();
+        ctx.strokeStyle = isLight ? '#64748b' : '#94a3b8';
+        ctx.lineWidth = 1.2;
+        ctx.beginPath();
+        const c1 = { x: pA.x + dir1.x * raSize, y: pA.y + dir1.y * raSize };
+        const c2 = { x: c1.x + dir2.x * raSize, y: c1.y + dir2.y * raSize };
+        const c3 = { x: pA.x + dir2.x * raSize, y: pA.y + dir2.y * raSize };
+        ctx.moveTo(c1.x, c1.y);
+        ctx.lineTo(c2.x, c2.y);
+        ctx.lineTo(c3.x, c3.y);
+        ctx.stroke();
+        ctx.restore();
+      }
+
+      // 5. Unit vectors u1 and u2
+      drawArrow(origin.x, origin.y, origin.x + u1.x * scale, origin.y - u1.y * scale, '#f59e0b', 2.5, 6);
+      drawArrow(origin.x, origin.y, origin.x + u2.x * scale, origin.y - u2.y * scale, '#f59e0b', 2.5, 6);
+      
+      ctx.font = 'bold 11px sans-serif';
+      ctx.fillStyle = '#f59e0b';
+      ctx.fillText('u₁', origin.x + u1.x * (scale + 12) - 4, origin.y - u1.y * (scale + 12) + 4);
+      ctx.fillText('u₂', origin.x + u2.x * (scale + 12) - 4, origin.y - u2.y * (scale + 12) + 4);
+
+      // 6. Leg 1: x1 * u1
+      drawArrow(origin.x, origin.y, pA.x, pA.y, '#3b82f6', 2.8, 7);
+
+      // 7. Leg 2: x2 * u2
+      drawArrow(pA.x, pA.y, pB.x, pB.y, '#818cf8', 2.8, 7);
+
+      // 8. Hypotenuse Ux
+      drawArrow(origin.x, origin.y, pB.x, pB.y, '#10b981', 3.8, 10);
+
+      // Labels on legs
+      ctx.fillStyle = isLight ? '#1e293b' : '#f1f5f9';
+      ctx.font = 'bold 11px sans-serif';
+      ctx.fillText(`x₁u₁ (${x1.toFixed(1)})`, (origin.x + pA.x) / 2 - 15, (origin.y + pA.y) / 2 - 8);
+      ctx.fillText(`x₂u₂ (${x2.toFixed(1)})`, (pA.x + pB.x) / 2 + 8, (pA.y + pB.y) / 2 + 5);
+
+      // Label at tip of Ux
+      ctx.fillStyle = '#10b981';
+      ctx.font = 'bold 13px sans-serif';
+      ctx.fillText(`Ux (len = ${normX.toFixed(2)})`, pB.x + 8, pB.y - 6);
+
+      // Origin point
+      ctx.fillStyle = isLight ? '#000000' : '#ffffff';
+      ctx.beginPath();
+      ctx.arc(origin.x, origin.y, 4, 0, Math.PI * 2);
+      ctx.fill();
+    }
+
+    function toggleSpin() {
+      if (isSpinning) {
+        isSpinning = false;
+        cancelAnimationFrame(spinAnimId);
+        spinIcon.textContent = '▶';
+        spinText.textContent = 'Auto Spin';
+      } else {
+        isSpinning = true;
+        spinIcon.textContent = '⏸';
+        spinText.textContent = 'Pause';
+        
+        function loop() {
+          if (!isSpinning) return;
+          let val = (parseFloat(sliderTheta.value) + 0.6) % 360;
+          sliderTheta.value = val;
+          render();
+          spinAnimId = requestAnimationFrame(loop);
+        }
+        spinAnimId = requestAnimationFrame(loop);
+      }
+    }
+
+    sliderX1.addEventListener('input', render);
+    sliderX2.addEventListener('input', render);
+    sliderTheta.addEventListener('input', () => {
+      if (isSpinning) toggleSpin();
+      render();
+    });
+    spinBtn.addEventListener('click', toggleSpin);
+
+    preset34.addEventListener('click', () => {
+      sliderX1.value = 3;
+      sliderX2.value = 4;
+      render();
+    });
+
+    render();
+  </script>
+</body>
+</html>

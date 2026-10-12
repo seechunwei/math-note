@@ -1,0 +1,391 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <title>Isocline vs Line Element Visualizer</title>
+  <style>
+    :root {
+      --bg-color: #121214;
+      --card-bg: #1c1c1f;
+      --inner-bg: #26262b;
+      --text-color: #f4f4f5;
+      --text-muted: #a1a1aa;
+      --border-color: #3f3f46;
+      --indigo: #6366f1;
+      --emerald: #10b981;
+      --amber: #f59e0b;
+      --rose: #f43f5e;
+      --cyan: #06b6d4;
+    }
+    @media (prefers-color-scheme: light) {
+      :root {
+        --bg-color: #f4f4f5;
+        --card-bg: #ffffff;
+        --inner-bg: #f8fafc;
+        --text-color: #18181b;
+        --text-muted: #71717a;
+        --border-color: #e4e4e7;
+      }
+    }
+    * { box-sizing: border-box; margin: 0; padding: 0; font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif; }
+    body { background: var(--bg-color); color: var(--text-color); padding: 12px; }
+    .card { background: var(--card-bg); border: 1px solid var(--border-color); border-radius: 12px; padding: 16px; max-width: 960px; margin: 0 auto; box-shadow: 0 4px 16px rgba(0,0,0,0.2); }
+    .header { display: flex; justify-content: space-between; align-items: center; border-bottom: 1px solid var(--border-color); padding-bottom: 12px; margin-bottom: 14px; gap: 8px; flex-wrap: wrap; }
+    .title { font-size: 15px; font-weight: 700; display: flex; align-items: center; gap: 8px; }
+    .badge { font-size: 11px; padding: 2px 7px; border-radius: 4px; font-family: monospace; background: rgba(99,102,241,0.15); color: var(--indigo); border: 1px solid rgba(99,102,241,0.3); }
+    .subtitle { font-size: 12px; color: var(--text-muted); margin-top: 3px; }
+    .tabs { display: flex; gap: 6px; background: var(--inner-bg); padding: 4px; border-radius: 8px; border: 1px solid var(--border-color); }
+    .tab-btn { padding: 5px 12px; font-size: 12px; font-weight: 600; border-radius: 6px; border: none; cursor: pointer; color: var(--text-muted); background: transparent; transition: all 0.2s; }
+    .tab-btn.active { background: var(--indigo); color: #fff; }
+    .tab-btn.active.non-auto { background: var(--amber); color: #fff; }
+    
+    .grid { display: grid; grid-template-columns: 1.25fr 0.75fr; gap: 14px; }
+    @media (max-width: 768px) { .grid { grid-template-columns: 1fr; } }
+    
+    .canvas-wrap { background: var(--inner-bg); border: 1px solid var(--border-color); border-radius: 10px; padding: 10px; text-align: center; }
+    canvas { width: 100%; height: auto; border-radius: 6px; display: block; }
+    
+    .legend { display: flex; justify-content: center; gap: 14px; margin-top: 10px; font-size: 11px; flex-wrap: wrap; }
+    .legend-item { display: flex; align-items: center; gap: 5px; }
+    .legend-dot { width: 10px; height: 10px; border-radius: 50%; }
+    .legend-line { width: 16px; height: 3px; border-radius: 2px; }
+
+    .panel { display: flex; flex-direction: column; gap: 10px; }
+    .box { background: var(--inner-bg); border: 1px solid var(--border-color); border-radius: 8px; padding: 11px; }
+    .box-header { display: flex; justify-content: space-between; font-size: 11px; font-weight: 700; text-transform: uppercase; color: var(--text-muted); margin-bottom: 8px; }
+    
+    .val-row { display: flex; justify-content: space-between; align-items: center; padding: 6px 10px; background: var(--card-bg); border: 1px solid var(--border-color); border-radius: 6px; margin-bottom: 6px; font-family: monospace; font-size: 12px; }
+    
+    .control-group { margin-bottom: 10px; font-size: 12px; }
+    .slider-header { display: flex; justify-content: space-between; margin-bottom: 4px; }
+    input[type=range] { width: 100%; cursor: pointer; accent-color: var(--indigo); }
+    
+    .checkbox-row { display: flex; gap: 12px; font-size: 11px; margin-top: 6px; }
+    .checkbox-row label { display: flex; align-items: center; gap: 5px; cursor: pointer; }
+    
+    .callout { padding: 11px; border-radius: 8px; font-size: 12px; line-height: 1.5; border: 1px solid; }
+    .callout.auto { background: rgba(99,102,241,0.08); border-color: rgba(99,102,241,0.25); color: var(--text-color); }
+    .callout.non-auto { background: rgba(245,158,11,0.08); border-color: rgba(245,158,11,0.25); color: var(--text-color); }
+  </style>
+</head>
+<body>
+  <div class="card">
+    <div class="header">
+      <div>
+        <div class="title">
+          <span>Isocline vs. Line Element Visualizer</span>
+          <span id="type-badge" class="badge">AUTONOMOUS</span>
+        </div>
+        <div id="subtitle" class="subtitle">An isocline is the track (curve). Line elements are the tilted dashes sitting on it.</div>
+      </div>
+      <div class="tabs">
+        <button id="btn-auto" class="tab-btn active" onclick="setMode('auto')">Autonomous: dy/dt = y</button>
+        <button id="btn-nonauto" class="tab-btn" onclick="setMode('nonauto')">Non-Autonomous: dy/dt = t + y</button>
+      </div>
+    </div>
+
+    <div class="grid">
+      <!-- Left Column: Canvas -->
+      <div class="canvas-wrap">
+        <canvas id="cv" width="520" height="380"></canvas>
+        <div class="legend">
+          <div class="legend-item">
+            <span class="legend-line" style="background:var(--cyan); border:1px dashed var(--cyan);"></span>
+            <span>Active Isocline (f = k)</span>
+          </div>
+          <div class="legend-item">
+            <span class="legend-line" style="background:var(--emerald);"></span>
+            <span>Line Elements on Isocline</span>
+          </div>
+          <div class="legend-item">
+            <span class="legend-line" style="background:#52525b;"></span>
+            <span>Background Field</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- Right Column: Controls & Intuition -->
+      <div class="panel">
+        <div class="box">
+          <div class="box-header">
+            <span>Target Slope Parameter</span>
+            <span id="eqn-badge" style="color:var(--cyan); font-family:monospace;">f(y) = k</span>
+          </div>
+
+          <div class="control-group">
+            <div class="slider-header">
+              <span>Target Slope <b>k</b>:</span>
+              <span id="lbl-k" style="font-family:monospace; font-weight:700; color:var(--emerald);">1.00</span>
+            </div>
+            <input id="rng-k" type="range" min="-3" max="3" step="0.25" value="1.0" oninput="onSlopeChange()">
+          </div>
+
+          <div class="checkbox-row">
+            <label><input type="checkbox" id="chk-field" checked onchange="draw()"> Show Background Field</label>
+            <label><input type="checkbox" id="chk-family" checked onchange="draw()"> Show Isocline Family</label>
+          </div>
+        </div>
+
+        <div class="box">
+          <div class="box-header">
+            <span>Geometric Inspection</span>
+          </div>
+          <div class="val-row">
+            <span style="color:var(--cyan);">Active Isocline Equation:</span>
+            <b id="val-iso-eqn">y = 1.00</b>
+          </div>
+          <div class="val-row">
+            <span style="color:var(--emerald);">Line Element Slope:</span>
+            <b id="val-slope">m = 1.00</b>
+          </div>
+          <div class="val-row">
+            <span style="color:var(--amber);">Element Tilt Angle:</span>
+            <b id="val-angle">θ = 45.0°</b>
+          </div>
+          <div class="val-row">
+            <span style="color:var(--text-muted);">Isocline Geometry:</span>
+            <b id="val-geo" style="color:var(--indigo);">Horizontal Line</b>
+          </div>
+        </div>
+
+        <div id="callout-box" class="callout auto">
+          <b>Key Takeaway:</b>
+          <div id="callout-text" style="margin-top:4px;">
+            The <b>cyan line</b> is the isocline (where all slopes equal <i>k</i>). Notice it is completely <b>horizontal</b>. The <b>green dashes</b> are the line elements: they all share the exact same tilt, cutting right across the isocline!
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    let mode = 'auto'; // 'auto' or 'nonauto'
+    const cv = document.getElementById('cv');
+    const ctx = cv.getContext('2d');
+    
+    // Bounds in math coordinates
+    const xMin = -4, xMax = 4;
+    const yMin = -3, yMax = 3;
+
+    function toScreenX(x) {
+      return (x - xMin) / (xMax - xMin) * cv.width;
+    }
+    function toScreenY(y) {
+      return cv.height - (y - yMin) / (yMax - yMin) * cv.height;
+    }
+
+    function slopeFunc(t, y) {
+      if (mode === 'auto') {
+        return y; // dy/dt = y
+      } else {
+        return t + y; // dy/dt = t + y
+      }
+    }
+
+    function setMode(newMode) {
+      mode = newMode;
+      const btnAuto = document.getElementById('btn-auto');
+      const btnNonAuto = document.getElementById('btn-nonauto');
+      const typeBadge = document.getElementById('type-badge');
+      const eqnBadge = document.getElementById('eqn-badge');
+      const calloutBox = document.getElementById('callout-box');
+      const calloutText = document.getElementById('callout-text');
+      const valGeo = document.getElementById('val-geo');
+
+      if (mode === 'auto') {
+        btnAuto.className = 'tab-btn active';
+        btnNonAuto.className = 'tab-btn';
+        typeBadge.textContent = 'AUTONOMOUS';
+        typeBadge.style.color = 'var(--indigo)';
+        typeBadge.style.background = 'rgba(99,102,241,0.15)';
+        typeBadge.style.borderColor = 'rgba(99,102,241,0.3)';
+        eqnBadge.textContent = 'y = k';
+        calloutBox.className = 'callout auto';
+        valGeo.textContent = 'Horizontal Line';
+        valGeo.style.color = 'var(--indigo)';
+        calloutText.innerHTML = 'Because <i>t</i> does not appear in <i>dy/dt = y</i>, setting slope to <i>k</i> gives <b>y = k</b> (a <b>horizontal line</b>). Every green line element on this line has the exact same tilt.';
+      } else {
+        btnAuto.className = 'tab-btn';
+        btnNonAuto.className = 'tab-btn active non-auto';
+        typeBadge.textContent = 'NON-AUTONOMOUS';
+        typeBadge.style.color = 'var(--amber)';
+        typeBadge.style.background = 'rgba(245,158,11,0.15)';
+        typeBadge.style.borderColor = 'rgba(245,158,11,0.3)';
+        eqnBadge.textContent = 't + y = k';
+        calloutBox.className = 'callout non-auto';
+        valGeo.textContent = 'Slanted Line (Slope -1)';
+        valGeo.style.color = 'var(--amber)';
+        calloutText.innerHTML = 'In <i>dy/dt = t + y</i>, setting slope to <i>k</i> gives <b>y = -t + k</b>. The isocline is now a <b>slanted diagonal line</b>! Points with the same slope are spread diagonally across time.';
+      }
+      onSlopeChange();
+    }
+
+    function onSlopeChange() {
+      const k = parseFloat(document.getElementById('rng-k').value);
+      document.getElementById('lbl-k').textContent = k.toFixed(2);
+      document.getElementById('val-slope').textContent = 'm = ' + k.toFixed(2);
+      
+      const angleDeg = (Math.atan(k) * 180 / Math.PI).toFixed(1);
+      document.getElementById('val-angle').textContent = 'θ = ' + angleDeg + '°';
+
+      if (mode === 'auto') {
+        document.getElementById('val-iso-eqn').textContent = 'y = ' + k.toFixed(2);
+      } else {
+        const sign = k >= 0 ? '+ ' + k.toFixed(2) : '- ' + Math.abs(k).toFixed(2);
+        document.getElementById('val-iso-eqn').textContent = 'y = -t ' + sign;
+      }
+
+      draw();
+    }
+
+    function drawLineElement(cx, cy, slope, len, color, lineWidth) {
+      const angle = Math.atan(slope);
+      // In screen coords, dy is inverted
+      const dx = (len / 2) * Math.cos(angle);
+      const dy = (len / 2) * Math.sin(angle);
+
+      ctx.save();
+      ctx.strokeStyle = color;
+      ctx.lineWidth = lineWidth;
+      ctx.lineCap = 'round';
+      ctx.beginPath();
+      ctx.moveTo(cx - dx, cy + dy);
+      ctx.lineTo(cx + dx, cy - dy);
+      ctx.stroke();
+      ctx.restore();
+    }
+
+    function draw() {
+      ctx.clearRect(0, 0, cv.width, cv.height);
+
+      const isLight = window.matchMedia && window.matchMedia('(prefers-color-scheme: light)').matches;
+      const axisColor = isLight ? '#a1a1aa' : '#52525b';
+      const gridColor = isLight ? '#e4e4e7' : '#27272a';
+      const bgFieldColor = isLight ? '#cbd5e1' : '#3f3f46';
+
+      // 1. Draw Grid Lines
+      ctx.strokeStyle = gridColor;
+      ctx.lineWidth = 1;
+      for (let x = Math.ceil(xMin); x <= Math.floor(xMax); x++) {
+        ctx.beginPath();
+        ctx.moveTo(toScreenX(x), 0);
+        ctx.lineTo(toScreenX(x), cv.height);
+        ctx.stroke();
+      }
+      for (let y = Math.ceil(yMin); y <= Math.floor(yMax); y++) {
+        ctx.beginPath();
+        ctx.moveTo(0, toScreenY(y));
+        ctx.lineTo(cv.width, toScreenY(y));
+        ctx.stroke();
+      }
+
+      // 2. Draw Axes
+      ctx.strokeStyle = axisColor;
+      ctx.lineWidth = 1.5;
+      // x-axis (y = 0)
+      ctx.beginPath();
+      ctx.moveTo(0, toScreenY(0));
+      ctx.lineTo(cv.width, toScreenY(0));
+      ctx.stroke();
+      // y-axis (t = 0)
+      ctx.beginPath();
+      ctx.moveTo(toScreenX(0), 0);
+      ctx.lineTo(toScreenX(0), cv.height);
+      ctx.stroke();
+
+      // Axis labels
+      ctx.fillStyle = axisColor;
+      ctx.font = '11px sans-serif';
+      ctx.fillText('t', cv.width - 14, toScreenY(0) - 6);
+      ctx.fillText('y', toScreenX(0) + 6, 14);
+
+      // 3. Draw Background Field (if checked)
+      const showField = document.getElementById('chk-field').checked;
+      if (showField) {
+        const stepX = 0.5;
+        const stepY = 0.4;
+        for (let x = xMin; x <= xMax; x += stepX) {
+          for (let y = yMin; y <= yMax; y += stepY) {
+            const m = slopeFunc(x, y);
+            drawLineElement(toScreenX(x), toScreenY(y), m, 11, bgFieldColor, 1.2);
+          }
+        }
+      }
+
+      // 4. Draw Isocline Family (if checked)
+      const showFamily = document.getElementById('chk-family').checked;
+      if (showFamily) {
+        const familyK = [-2, -1, 0, 1, 2];
+        familyK.forEach(fk => {
+          ctx.save();
+          ctx.strokeStyle = isLight ? 'rgba(99,102,241,0.25)' : 'rgba(99,102,241,0.2)';
+          ctx.lineWidth = 1;
+          ctx.setLineDash([4, 4]);
+          ctx.beginPath();
+          if (mode === 'auto') {
+            const sy = toScreenY(fk);
+            ctx.moveTo(0, sy);
+            ctx.lineTo(cv.width, sy);
+          } else {
+            // y = -t + fk
+            const yStart = -xMin + fk;
+            const yEnd = -xMax + fk;
+            ctx.moveTo(toScreenX(xMin), toScreenY(yStart));
+            ctx.lineTo(toScreenX(xMax), toScreenY(yEnd));
+          }
+          ctx.stroke();
+          ctx.restore();
+        });
+      }
+
+      // 5. Draw Active Isocline (Cyan Line)
+      const k = parseFloat(document.getElementById('rng-k').value);
+      ctx.save();
+      ctx.strokeStyle = '#06b6d4'; // Cyan
+      ctx.lineWidth = 2.5;
+      ctx.beginPath();
+      if (mode === 'auto') {
+        const sy = toScreenY(k);
+        ctx.moveTo(0, sy);
+        ctx.lineTo(cv.width, sy);
+      } else {
+        const yStart = -xMin + k;
+        const yEnd = -xMax + k;
+        ctx.moveTo(toScreenX(xMin), toScreenY(yStart));
+        ctx.lineTo(toScreenX(xMax), toScreenY(yEnd));
+      }
+      ctx.stroke();
+      ctx.restore();
+
+      // 6. Draw Line Elements ON the Active Isocline (Emerald Green)
+      const elementCount = 13;
+      for (let i = 0; i <= elementCount; i++) {
+        const tVal = xMin + (i / elementCount) * (xMax - xMin);
+        let yVal;
+        if (mode === 'auto') {
+          yVal = k;
+        } else {
+          yVal = -tVal + k;
+        }
+
+        if (yVal >= yMin - 0.2 && yVal <= yMax + 0.2) {
+          const sx = toScreenX(tVal);
+          const sy = toScreenY(yVal);
+          
+          // Draw a small anchor dot on the isocline
+          ctx.fillStyle = '#06b6d4';
+          ctx.beginPath();
+          ctx.arc(sx, sy, 2.5, 0, Math.PI * 2);
+          ctx.fill();
+
+          // Draw the line element with slope k
+          drawLineElement(sx, sy, k, 18, '#10b981', 2.5);
+        }
+      }
+    }
+
+    // Initialize
+    onSlopeChange();
+  </script>
+</body>
+</html>

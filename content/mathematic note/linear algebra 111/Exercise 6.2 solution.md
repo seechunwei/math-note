@@ -594,7 +594,7 @@ $$
 
 Suppose $U$ is a square matrix with orthonormal columns. Then, by Theorem 4, the columns of $U$ is  linearly independent. Thus, by Invertible Matrix Theorem, $U$ is invertible. $\blacksquare$
 
-Extra 36)
+Extra 36) ^e95fad
 
 Suppose $U$ is a $n\times n$ orthogonal matrix. By definition, the columns of $U$ is orthonormal. By exercise 35, we know that $U$ is invertible and by Theorem 6 we know that $U^{T}U=I$. Notice that $U^{T}$ is the left inverse of $U$. Since the inverse is unique it follow that $UU^{T}=I$. $\blacksquare$
 

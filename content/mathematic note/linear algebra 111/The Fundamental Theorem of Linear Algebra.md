@@ -50,6 +50,8 @@ $$
 
 #### The orthogonality
 
+^3fbc8c
+
 $Ax$ is the dot product of each row of $A$ and $x$, thus every $x\in N(A)$ is perpendicular to every row of $A$. Thus,
 
 $$
@@ -57,7 +59,7 @@ N(A) \perp R(A^{T})
 $$
 The fourth subspace is the left nullspace $N(A^{T})$. What is that? If a matrix leads to $R(A)$ and $N(A)$, then its transpose must lead to $R(A^{T})$ and $N(A^{T})$.  
 
-Since $R(A^{T})\perp N(A)$, by taking transpose $R(A)\perp N(A^{T})$.( The column space of $A$ is orthogonal to $N(A^{T})$). What is $N(A^{T})$? It is the solution set for $A^{T}y=0$.
+Since Row space $R(A^{T})\perp N(A)$, by taking transpose $R(A)\perp N(A^{T})$.( The column space of $A$ is orthogonal to $N(A^{T})$). What is $N(A^{T})$? It is the solution set for $A^{T}y=0$.
 
 ![[Pasted image 20260629222257.png]]
 
