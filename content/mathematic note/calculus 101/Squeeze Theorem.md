@@ -55,11 +55,11 @@ $$
 Thus, we can create an inequality between these 3 area by restricting $\theta \in\left( 0, \frac{\pi}{2} \right)$
 
 $$
-\begin{array}
-/ \frac{1}{2}\cos \theta \sin \theta< \frac{1}{2}\theta < \frac{\sin \theta}{2\cos \theta} \\
-
-\end{array}
+\begin{matrix}
+\frac{1}{2}\cos \theta \sin \theta< \frac{1}{2}\theta < \frac{\sin \theta}{2\cos \theta} \\
+\end{matrix}
 $$
+
 
 First, multiply the entire inequality by $2$ to clear the fractions:
 

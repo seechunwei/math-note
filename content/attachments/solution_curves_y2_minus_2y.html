@@ -1,0 +1,170 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <script src="https://www.gstatic.com/antigravity/web/dev/tailwindcss.min.js"></script>
+</head>
+<body class="bg-transparent text-[var(--foreground)] antialiased p-2 select-none">
+  <div class="bg-[var(--card)] text-[var(--foreground)] border border-[var(--border)] rounded-xl p-4 shadow-md max-w-[850px] mx-auto">
+    <!-- Header -->
+    <div class="flex items-center justify-between pb-3 mb-3 border-b border-[var(--border)] flex-wrap gap-2">
+      <div>
+        <h2 class="text-sm font-bold tracking-tight flex items-center gap-2">
+          <span>Solution Curves & Phase Line</span>
+          <span class="text-xs px-2 py-0.5 rounded font-mono bg-indigo-500/10 text-indigo-400 border border-indigo-500/20">dy/dx = y² - 2y</span>
+        </h2>
+        <p class="text-xs text-[var(--muted-foreground)]">Visualizing equilibrium lines, inflection line y = 1, and monotonicity</p>
+      </div>
+
+      <!-- Quick Legend Badges -->
+      <div class="flex items-center gap-2 text-xs">
+        <span class="inline-flex items-center gap-1.5 px-2 py-1 rounded bg-rose-500/10 border border-rose-500/20 text-rose-400 font-medium">
+          <span class="w-2 h-2 rounded-full border border-rose-400"></span> y = 2 (Unstable Repeller)
+        </span>
+        <span class="inline-flex items-center gap-1.5 px-2 py-1 rounded bg-emerald-500/10 border border-emerald-500/20 text-emerald-400 font-medium">
+          <span class="w-2 h-2 rounded-full bg-emerald-400"></span> y = 0 (Stable Attractor)
+        </span>
+      </div>
+    </div>
+
+    <!-- Main SVG Diagram -->
+    <div class="bg-black/30 rounded-lg border border-[var(--border)] p-2 overflow-hidden">
+      <svg viewBox="0 0 760 380" class="w-full h-auto select-none" style="font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;">
+        <!-- Defs for arrowheads -->
+        <defs>
+          <marker id="arr-up" markerWidth="6" markerHeight="6" refX="3" refY="3" orient="auto">
+            <path d="M0,6 L3,0 L6,6 Z" fill="#10b981" />
+          </marker>
+          <marker id="arr-down" markerWidth="6" markerHeight="6" refX="3" refY="3" orient="auto">
+            <path d="M0,0 L3,6 L6,0 Z" fill="#f43f5e" />
+          </marker>
+        </defs>
+
+        <!-- ==================== LEFT: PHASE LINE PANEL ==================== -->
+        <g transform="translate(10, 0)">
+          <rect x="0" y="20" width="105" height="340" rx="8" fill="rgba(255,255,255,0.02)" stroke="rgba(255,255,255,0.08)" />
+          <text x="52" y="42" font-size="11" font-weight="700" fill="#94a3b8" text-anchor="middle">Phase Line</text>
+
+          <!-- Vertical line -->
+          <line x1="52" y1="55" x2="52" y2="345" stroke="#475569" stroke-width="2" />
+
+          <!-- Top arrow y > 2 (UP) -->
+          <line x1="52" y1="140" x2="52" y2="100" stroke="#10b981" stroke-width="2.5" marker-end="url(#arr-up)" />
+          <text x="75" y="125" font-size="10" font-family="monospace" fill="#10b981" font-weight="bold">y' &gt; 0</text>
+
+          <!-- Middle arrow 0 < y < 2 (DOWN) -->
+          <line x1="52" y1="195" x2="52" y2="240" stroke="#f43f5e" stroke-width="2.5" marker-end="url(#arr-down)" />
+          <text x="75" y="222" font-size="10" font-family="monospace" fill="#f43f5e" font-weight="bold">y' &lt; 0</text>
+
+          <!-- Bottom arrow y < 0 (UP) -->
+          <line x1="52" y1="320" x2="52" y2="280" stroke="#10b981" stroke-width="2.5" marker-end="url(#arr-up)" />
+          <text x="75" y="305" font-size="10" font-family="monospace" fill="#10b981" font-weight="bold">y' &gt; 0</text>
+
+          <!-- Critical point y = 2 (Repeller: hollow circle) -->
+          <circle cx="52" cy="165" r="5" fill="#0f172a" stroke="#f43f5e" stroke-width="2.5" />
+          <text x="40" y="169" font-size="11" font-family="monospace" font-weight="bold" fill="#f43f5e" text-anchor="end">y = 2</text>
+
+          <!-- Critical point y = 0 (Attractor: solid circle) -->
+          <circle cx="52" cy="260" r="5" fill="#10b981" stroke="#10b981" stroke-width="2" />
+          <text x="40" y="264" font-size="11" font-family="monospace" font-weight="bold" fill="#10b981" text-anchor="end">y = 0</text>
+        </g>
+
+        <!-- ==================== RIGHT: SOLUTION CURVES (x-y PLANE) ==================== -->
+        <!-- Background Grid Lines -->
+        <g stroke="rgba(255,255,255,0.05)" stroke-width="1">
+          <line x1="140" y1="70" x2="730" y2="70" />
+          <line x1="140" y1="165" x2="730" y2="165" />
+          <line x1="140" y1="212" x2="730" y2="212" />
+          <line x1="140" y1="260" x2="730" y2="260" />
+          <line x1="140" y1="320" x2="730" y2="320" />
+          <line x1="285" y1="20" x2="285" y2="360" />
+          <line x1="430" y1="20" x2="430" y2="360" />
+          <line x1="575" y1="20" x2="575" y2="360" />
+        </g>
+
+        <!-- Main Vertical Axis (x = 0 at px 430) -->
+        <line x1="430" y1="360" x2="430" y2="25" stroke="rgba(255,255,255,0.35)" stroke-width="1.5" />
+        <text x="435" y="32" font-size="11" fill="#94a3b8" font-weight="bold">y</text>
+
+        <!-- Equilibrium Asymptote 1: y = 2 (Repeller, Dashed Red) -->
+        <line x1="135" y1="165" x2="730" y2="165" stroke="#f43f5e" stroke-width="2" stroke-dasharray="6 4" />
+        <rect x="635" y="153" width="95" height="18" rx="4" fill="rgba(244,63,94,0.15)" stroke="rgba(244,63,94,0.3)" />
+        <text x="682" y="166" font-size="10" font-family="monospace" fill="#f43f5e" font-weight="bold" text-anchor="middle">y = 2 (Repeller)</text>
+
+        <!-- Inflection Line: y = 1 (Dashed Amber) -->
+        <line x1="135" y1="212" x2="730" y2="212" stroke="#eab308" stroke-width="1.2" stroke-dasharray="3 3" opacity="0.6" />
+        <text x="145" y="207" font-size="10" font-family="monospace" fill="#eab308">Inflection Line y = 1 (y'' = 0)</text>
+
+        <!-- Equilibrium Asymptote 2 & x-axis: y = 0 (Attractor, Emerald Green) -->
+        <line x1="135" y1="260" x2="730" y2="260" stroke="#10b981" stroke-width="2.5" stroke-dasharray="6 4" />
+        <rect x="635" y="248" width="95" height="18" rx="4" fill="rgba(16,185,129,0.15)" stroke="rgba(16,185,129,0.3)" />
+        <text x="682" y="261" font-size="10" font-family="monospace" fill="#10b981" font-weight="bold" text-anchor="middle">y = 0 (Attractor)</text>
+        <text x="735" y="255" font-size="11" fill="#94a3b8" font-weight="bold">x</text>
+
+        <!-- ==================== REGION 1: y > 2 (Increasing, Concave Up) ==================== -->
+        <!-- Curve 1 -->
+        <path d="M 270,163 C 330,161 355,145 385,45" fill="none" stroke="#38bdf8" stroke-width="2.5" />
+        <!-- Curve 2 -->
+        <path d="M 400,163 C 460,161 485,145 515,45" fill="none" stroke="#38bdf8" stroke-width="2.5" />
+        <!-- Curve 3 -->
+        <path d="M 520,163 C 570,161 595,145 625,45" fill="none" stroke="#38bdf8" stroke-width="2.5" />
+
+        <text x="310" y="80" font-size="10" fill="#38bdf8" font-weight="600">y' &gt; 0, y'' &gt; 0</text>
+        <text x="310" y="92" font-size="9" fill="#94a3b8">Increasing, Concave Up (⌣)</text>
+
+        <!-- ==================== REGION 2: 0 < y < 2 (Decreasing S-Curves) ==================== -->
+        <!-- S-Curve 1 (centered at x = 320) -->
+        <path d="M 180,167 C 240,169 285,185 320,212 C 355,240 400,257 470,259" fill="none" stroke="#a855f7" stroke-width="2.5" />
+        <circle cx="320" cy="212" r="3.5" fill="#fbbf24" />
+
+        <!-- S-Curve 2 (centered at x = 460) -->
+        <path d="M 320,167 C 380,169 425,185 460,212 C 495,240 540,257 610,259" fill="none" stroke="#a855f7" stroke-width="2.5" />
+        <circle cx="460" cy="212" r="3.5" fill="#fbbf24" />
+
+        <!-- Region 2 Annotations -->
+        <g transform="translate(180, 188)">
+          <text x="0" y="0" font-size="9.5" fill="#f43f5e" font-weight="600">y' &lt; 0, y'' &lt; 0 (Concave Down ⌢)</text>
+        </g>
+        <g transform="translate(465, 235)">
+          <text x="0" y="0" font-size="9.5" fill="#10b981" font-weight="600">y' &lt; 0, y'' &gt; 0 (Concave Up ⌣)</text>
+        </g>
+
+        <!-- ==================== REGION 3: y < 0 (Increasing, Concave Down) ==================== -->
+        <!-- Curve 1 -->
+        <path d="M 270,360 C 295,300 330,263 400,261" fill="none" stroke="#38bdf8" stroke-width="2.5" />
+        <!-- Curve 2 -->
+        <path d="M 390,360 C 415,300 450,263 520,261" fill="none" stroke="#38bdf8" stroke-width="2.5" />
+        <!-- Curve 3 -->
+        <path d="M 510,360 C 535,300 570,263 640,261" fill="none" stroke="#38bdf8" stroke-width="2.5" />
+
+        <text x="560" y="325" font-size="10" fill="#38bdf8" font-weight="600">y' &gt; 0, y'' &lt; 0</text>
+        <text x="560" y="337" font-size="9" fill="#94a3b8">Increasing, Concave Down (⌢)</text>
+      </svg>
+    </div>
+
+    <!-- Summary Readout Cards -->
+    <div class="grid grid-cols-1 md:grid-cols-3 gap-2 mt-3 text-xs">
+      <div class="bg-black/20 p-2.5 rounded-lg border border-[var(--border)]">
+        <div class="font-bold text-sky-400 mb-1">Top Region (y &gt; 2)</div>
+        <p class="text-[var(--muted-foreground)] leading-relaxed">
+          <strong class="text-white">y' &gt; 0</strong> (increasing) &amp; <strong class="text-white">y'' &gt; 0</strong> (concave up ⌣). Curves peel away from $y = 2$ and shoot to $+\infty$.
+        </p>
+      </div>
+
+      <div class="bg-black/20 p-2.5 rounded-lg border border-[var(--border)]">
+        <div class="font-bold text-purple-400 mb-1">Middle Region (0 &lt; y &lt; 2)</div>
+        <p class="text-[var(--muted-foreground)] leading-relaxed">
+          <strong class="text-white">y' &lt; 0</strong> (decreasing S-curve). Curves leave $y = 2$ (concave down ⌢), cross <strong class="text-amber-400">inflection line y = 1</strong>, and level off at $y = 0$ (concave up ⌣).
+        </p>
+      </div>
+
+      <div class="bg-black/20 p-2.5 rounded-lg border border-[var(--border)]">
+        <div class="font-bold text-sky-400 mb-1">Bottom Region (y &lt; 0)</div>
+        <p class="text-[var(--muted-foreground)] leading-relaxed">
+          <strong class="text-white">y' &gt; 0</strong> (increasing) &amp; <strong class="text-white">y'' &lt; 0</strong> (concave down ⌢). Curves rise from $-\infty$ and gently level off against $y = 0$.
+        </p>
+      </div>
+    </div>
+  </div>
+</body>
+</html>
