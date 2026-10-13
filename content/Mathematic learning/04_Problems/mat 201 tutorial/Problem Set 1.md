@@ -1,5 +1,8 @@
-## Problem Set 1
-
+---
+aliases:
+  - /mathematic-note/04_Problems/mat-201-tutorial/Problem_Set_1
+  - /mathematic-note/04_Problems/mat-201-tutorial/Problem-Set-1
+---
 Instructions: Please make a genuine attempt at the problems before coming to the tutorial, especially the standard problems. Group discussion and peer assistance are strongly encouraged. Working through a problem yourself—even if you get stuck—is an essential part of learning. 
 
 Problems marked with an asterisk (*) will be discussed during the tutorial, if time permits. Since tutorial time is limited, the tutor may focus on the key ideas and approaches rather than writing down every detail step in the solution. Come prepared with your own attempts and questions so that you can follow and understand the discussion. 
