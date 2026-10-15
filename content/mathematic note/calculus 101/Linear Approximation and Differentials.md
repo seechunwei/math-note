@@ -132,7 +132,14 @@ $$
 
 ![[Pasted image 20260623220219.png]]
 
-And this is the reason why we can perform the substitution rule by the algorithm. 
+> [!remark]
+> And this is the reason why we can perform the substitution rule by the algorithm. 
+> 
+> Before this we only take $\frac{dy}{dx}$ as a whole object (differential of a function or slope of a function). After we introduce the differential, now it become a fraction
+> $$
+> \lim_{ \Delta x \to 0 } \frac{\Delta y}{\Delta x}= \frac{dy}{dx}
+> $$
+> 
 
 The change in $y$ of $f$ is
 $$

@@ -110,20 +110,19 @@ $$
 
 3. **Why $y^{(n)}$ must be continuous ($C^n(I)$)**:
    - *Real-Analysis Caveat*: Merely requiring $y^{(n)}$ to exist does **not** automatically make it continuous (a derivative can exist everywhere while failing to be continuous, such as $x^2 \sin(1/x)$ at $x = 0$).
-   - **The Equation Itself Forces It (The Main Reason)**:
-     - Consider an $n$-th order ODE written in normal (explicit) form:
+   - **Reason 1: Darboux’s Theorem (Derivatives Cannot Have Jump Discontinuities)**:
+     - By Darboux’s Theorem (the Intermediate Value Theorem for derivatives), any valid derivative $y^{(n)}$ must satisfy the intermediate value property—it can **never possess a jump discontinuity**.
+     - If an equation has jump discontinuities (e.g. $\frac{dy}{dx} = -1$ for $x < 0$ and $+1$ for $x \ge 0$), no classically differentiable function can satisfy it at $x = 0$. Demanding continuity ensures we stay within the domain of well-behaved classical derivatives.
+   - **Reason 2: The Fundamental Theorem of Calculus (Integration as the Inverse of Differentiation)**:
+     - The process of solving an ODE fundamentally relies on successive integration to undo differentiation:
        $$
-       y^{(n)}(x) = f\left(x, y(x), y'(x), \dots, y^{(n-1)}(x)\right)
+       y^{(n-1)}(x) = y^{(n-1)}(x_0) + \int_{x_0}^x y^{(n)}(t)\,dt
        $$
-     - In classical ODE theory, the governing function $f$ is assumed to be **continuous** on its domain (a fundamental prerequisite for existence and uniqueness theorems like Peano and Picard–Lindelöf).
-     - If $y$ is a solution, the lower derivatives $y, y', \dots, y^{(n-1)}$ are differentiable and thus continuous.
-     - The right-hand side $x \mapsto f\left(x, y(x), \dots, y^{(n-1)}(x)\right)$ is therefore a composition of continuous functions, making the entire RHS **continuous in $x$**.
-     - Because the ODE establishes that $y^{(n)}(x)$ is *identically equal* to the RHS for all $x \in I$:
+     - By the **Fundamental Theorem of Calculus (FTC)**, differentiating an integral recovers the integrand identically:
        $$
-       y^{(n)}(x) = [\text{Continuous function of } x]
+       \frac{d}{dx}\left[\int_{x_0}^x f(t)\,dt\right] = f(x) \quad \text{holds identically if and only if } f(x) \text{ is continuous on } I.
        $$
-       **$y^{(n)}$ is forced to be continuous!**
-   - Requiring $y \in C^n(I)$ (the space of $n$-times continuously differentiable functions) is therefore not an arbitrary constraint—it is an unavoidable consequence of the differential equation having continuous data.
+     - Requiring $y^{(n)}$ to be continuous on $I$ guarantees that integration and differentiation remain exact, rigorous inverses throughout the entire interval of definition.
 
 
 ---

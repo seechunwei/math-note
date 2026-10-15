@@ -15,12 +15,12 @@ Think of $g$ as the 'area so far' function;
 ![[Pasted image 20260623142908.png]]
 
 
-if we let $f(x)=x$ and $a=0$, then we have a quadratic function where domain is $[0,\infty)$ 
+if we let $f(x)=2x$ and $a=0$, then we have a quadratic function where domain is $[0,\infty)$ 
 
 $$
 g(x)= x^{2}
 $$
-If we sketch the derivative of the function $g$. Then we get back the graph $f(x)=x$. Thus, we suspect that $g'=f$.
+If we sketch the derivative of the function $g$. Then we get back the graph $f(x)=21x$. Thus, we suspect that $g'=f$.
 
 ### General
 To see why this might be generally true we consider any continuous function $f$ with $f(x)\geq 0$. Then, $g(x)= \int_{a}^{x} f(x) \, dx$ can be interpreted as the area under the graph of $f$ from $a$ to $x$,
@@ -59,10 +59,47 @@ $$
 > is continuous on $[a,b]$ and differentiable on $(a,b)$, and $g'(x)=f(x)$.
 > 
 
+^1cbb3f
+
 Or we can write this theorem as when $f$ is continuous 
 $$
 \frac{d}{dx}\int_{a}^{x} f(t) \, dt=f(x) 
 $$
+
+#### Why does FTC1 require $f$ to be continuous? (Counterexample)
+
+If $f$ is not continuous, $g(x) = \int_{a}^{x} f(t) \, dt$ may fail to be differentiable at the points of discontinuity.
+
+Consider the step function on $[-1, 1]$:
+
+$$
+f(t) = \begin{cases}
+0 & \text{if } t < 0 \\
+1 & \text{if } t \geq 0
+\end{cases}
+$$
+
+Although $f$ is Riemann integrable, its area function $g(x) = \int_{0}^{x} f(t) \, dt$ is:
+
+$$
+g(x) = \begin{cases}
+0 & \text{if } x < 0 \\
+x & \text{if } x \geq 0
+\end{cases}
+$$
+
+Checking the derivative $g'(0)$ using one-sided limits:
+
+- **Left-hand derivative:**
+  $$
+  \lim_{h \to 0^-} \frac{g(h) - g(0)}{h} = \lim_{h \to 0^-} \frac{0 - 0}{h} = 0
+  $$
+- **Right-hand derivative:**
+  $$
+  \lim_{h \to 0^+} \frac{g(h) - g(0)}{h} = \lim_{h \to 0^+} \frac{h - 0}{h} = 1
+  $$
+
+Because the one-sided limits do not match, **$g'(0)$ does not exist** ($g$ has a sharp corner/kink at $x = 0$), even though $f(0) = 1$ is well-defined. Thus, the conclusion $g'(x) = f(x)$ fails without the continuity requirement.
 
 > [!NOTE] The Fundamental Theorem of Calculus, Part 2
 > If $f$ is continuous on $[a,b]$, then 
