@@ -1,0 +1,240 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <style>
+    :root {
+      --bg-color: #121214;
+      --card-bg: #1c1c1f;
+      --inner-bg: #26262b;
+      --text-color: #f4f4f5;
+      --text-muted: #a1a1aa;
+      --border-color: #3f3f46;
+      --purple: #c084fc;
+      --sky: #38bdf8;
+      --amber: #fbbf24;
+      --emerald: #34d399;
+      --pink: #f472b6;
+    }
+    @media (prefers-color-scheme: light) {
+      :root {
+        --bg-color: #f4f4f5;
+        --card-bg: #ffffff;
+        --inner-bg: #f8fafc;
+        --text-color: #18181b;
+        --text-muted: #71717a;
+        --border-color: #e4e4e7;
+        --purple: #9333ea;
+        --sky: #0284c7;
+        --amber: #d97706;
+        --emerald: #059669;
+        --pink: #db2777;
+      }
+    }
+    * { box-sizing: border-box; margin: 0; padding: 0; font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif; }
+    body { background: var(--bg-color); color: var(--text-color); padding: 12px; }
+    .card { background: var(--card-bg); border: 1px solid var(--border-color); border-radius: 12px; padding: 14px; max-width: 920px; margin: 0 auto; box-shadow: 0 4px 14px rgba(0,0,0,0.12); }
+    .header { display: flex; justify-content: space-between; align-items: center; border-bottom: 1px solid var(--border-color); padding-bottom: 10px; margin-bottom: 12px; flex-wrap: wrap; gap: 8px; }
+    .title { font-size: 14px; font-weight: 700; display: flex; align-items: center; gap: 8px; }
+    .badge { font-size: 11px; padding: 3px 8px; border-radius: 5px; font-family: monospace; font-weight: 700; background: rgba(192, 132, 252, 0.15); color: var(--purple); border: 1px solid rgba(192, 132, 252, 0.3); }
+    .subtitle { font-size: 11px; color: var(--text-muted); margin-top: 2px; }
+    .grid { display: grid; grid-template-columns: 1.15fr 0.85fr; gap: 14px; }
+    @media (max-width: 768px) { .grid { grid-template-columns: 1fr; } }
+    .visual-box { background: var(--inner-bg); border: 1px solid var(--border-color); border-radius: 10px; padding: 10px; display: flex; flex-direction: column; align-items: center; justify-content: center; }
+    svg { width: 100%; height: auto; max-height: 320px; user-select: none; }
+    .side-panel { display: flex; flex-direction: column; gap: 10px; }
+    .box { background: var(--inner-bg); border: 1px solid var(--border-color); border-radius: 8px; padding: 10px; }
+    .box-title { font-size: 10px; font-weight: 700; text-transform: uppercase; color: var(--text-muted); margin-bottom: 8px; letter-spacing: 0.5px; }
+    .slider-row { margin-bottom: 8px; }
+    .slider-header { display: flex; justify-content: space-between; font-size: 11px; margin-bottom: 4px; }
+    input[type=range] { width: 100%; cursor: pointer; accent-color: var(--purple); }
+    .val-row { display: flex; justify-content: space-between; align-items: center; padding: 6px 10px; background: var(--card-bg); border: 1px solid var(--border-color); border-radius: 6px; margin-bottom: 6px; font-size: 12px; }
+    .val-row.total { font-weight: 700; border-color: var(--purple); color: var(--purple); }
+    .val-row.lower { color: var(--sky); }
+    .val-row.upper { color: var(--amber); }
+    .mono { font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace; font-size: 12px; }
+    .callout { padding: 9px 11px; border-radius: 8px; font-size: 11px; line-height: 1.5; border: 1px solid var(--border-color); background: var(--card-bg); }
+    .callout-title { font-weight: 700; margin-bottom: 4px; display: flex; align-items: center; gap: 6px; color: var(--emerald); }
+    .dot { width: 8px; height: 8px; border-radius: 50%; display: inline-block; }
+  </style>
+</head>
+<body>
+  <div class="card">
+    <div class="header">
+      <div>
+        <div class="title">
+          <span>Geometric Proof: sin(α + β)</span>
+          <span class="badge">Stacked Triangles</span>
+        </div>
+        <div class="subtitle">Visual decomposition of total height into two perpendicular projections</div>
+      </div>
+      <div class="badge" id="badgeAngle">α + β = 50°</div>
+    </div>
+
+    <div class="grid">
+      <!-- Left: SVG Visualization -->
+      <div class="visual-box">
+        <svg id="geoSvg" viewBox="0 0 460 300"></svg>
+      </div>
+
+      <!-- Right: Controls & Logic -->
+      <div class="side-panel">
+        <!-- Sliders -->
+        <div class="box">
+          <div class="box-title">Adjust Angles</div>
+          <div class="slider-row">
+            <div class="slider-header">
+              <span style="color: var(--emerald); font-weight: 600;">α (Base Angle)</span>
+              <span id="labelAlpha" class="mono" style="color: var(--emerald);">30°</span>
+            </div>
+            <input id="sliderAlpha" type="range" min="15" max="50" value="30">
+          </div>
+          <div class="slider-row" style="margin-bottom: 0;">
+            <div class="slider-header">
+              <span style="color: var(--pink); font-weight: 600;">β (Stacked Angle)</span>
+              <span id="labelBeta" class="mono" style="color: var(--pink);">20°</span>
+            </div>
+            <input id="sliderBeta" type="range" min="10" max="38" value="20">
+          </div>
+        </div>
+
+        <!-- Height Breakdown -->
+        <div class="box">
+          <div class="box-title">Vertical Height Invariant</div>
+          <div class="val-row total">
+            <span><span class="dot" style="background: var(--purple);"></span> Total: sin(α + β)</span>
+            <span id="numTotal" class="mono">0.766</span>
+          </div>
+          <div class="val-row lower">
+            <span><span class="dot" style="background: var(--sky);"></span> Lower: sin α · cos β</span>
+            <span id="numLower" class="mono">0.470</span>
+          </div>
+          <div class="val-row upper">
+            <span><span class="dot" style="background: var(--amber);"></span> Upper: cos α · sin β</span>
+            <span id="numUpper" class="mono">0.296</span>
+          </div>
+        </div>
+
+        <!-- Angle Chase Callout -->
+        <div class="callout">
+          <div class="callout-title">📐 Why is the top angle α?</div>
+          <div>
+            1. Slanted base has angle <b>α</b> with ground.<br>
+            2. Stacked leg is perpendicular (90° turn) → angle with horizontal is <b>90° - α</b>.<br>
+            3. In the top right triangle (90° corner), the remaining vertex angle is <b>180° - 90° - (90° - α) = α</b>.
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    const svg = document.getElementById('geoSvg');
+    const sliderAlpha = document.getElementById('sliderAlpha');
+    const sliderBeta = document.getElementById('sliderBeta');
+    const labelAlpha = document.getElementById('labelAlpha');
+    const labelBeta = document.getElementById('labelBeta');
+    const badgeAngle = document.getElementById('badgeAngle');
+    const numTotal = document.getElementById('numTotal');
+    const numLower = document.getElementById('numLower');
+    const numUpper = document.getElementById('numUpper');
+
+    function toRad(deg) { return deg * Math.PI / 180; }
+
+    function draw() {
+      const aDeg = parseFloat(sliderAlpha.value);
+      const bDeg = parseFloat(sliderBeta.value);
+      labelAlpha.textContent = aDeg + '°';
+      labelBeta.textContent = bDeg + '°';
+      badgeAngle.textContent = 'α + β = ' + (aDeg + bDeg) + '°';
+
+      const a = toRad(aDeg);
+      const b = toRad(bDeg);
+
+      const sinA = Math.sin(a), cosA = Math.cos(a);
+      const sinB = Math.sin(b), cosB = Math.cos(b);
+      const totalSin = Math.sin(a + b);
+      const lower = sinA * cosB;
+      const upper = cosA * sinB;
+
+      numTotal.textContent = totalSin.toFixed(3);
+      numLower.textContent = lower.toFixed(3);
+      numUpper.textContent = upper.toFixed(3);
+
+      const ox = 50, oy = 250;
+      const R = 230; // Hypotenuse OP = 1 unit
+
+      const ax = ox + R * cosB * cosA;
+      const ay = oy - R * cosB * sinA;
+
+      const px = ox + R * Math.cos(a + b);
+      const py = oy - R * Math.sin(a + b);
+
+      const p_base_x = px, p_base_y = oy;
+      const a_base_x = ax, a_base_y = oy;
+      const qx = px, qy = ay;
+
+      svg.innerHTML = `
+        <line x1="${ox - 10}" y1="${oy}" x2="430" y2="${oy}" stroke="currentColor" stroke-opacity="0.2" stroke-width="1.5" />
+
+        <polygon points="${ox},${oy} ${ax},${ay} ${ax},${oy}" fill="rgba(56, 189, 248, 0.1)" />
+        <polygon points="${ox},${oy} ${ax},${ay} ${px},${py}" fill="rgba(244, 114, 182, 0.08)" />
+        <polygon points="${px},${py} ${qx},${qy} ${ax},${ay}" fill="rgba(251, 191, 36, 0.12)" />
+
+        <!-- Triangle O-A-P lines -->
+        <line x1="${ox}" y1="${oy}" x2="${ax}" y2="${ay}" stroke="#38bdf8" stroke-width="2.5" />
+        <line x1="${ax}" y1="${ay}" x2="${px}" y2="${py}" stroke="#fbbf24" stroke-width="2.5" />
+        <line x1="${ox}" y1="${oy}" x2="${px}" y2="${py}" stroke="#c084fc" stroke-width="2" stroke-dasharray="4,3" />
+
+        <!-- Vertical Drop from P (Total Height) -->
+        <line x1="${px}" y1="${py}" x2="${qx}" y2="${qy}" stroke="#fbbf24" stroke-width="3.5" />
+        <line x1="${qx}" y1="${qy}" x2="${p_base_x}" y2="${p_base_y}" stroke="#38bdf8" stroke-width="3.5" />
+
+        <!-- Connectors -->
+        <line x1="${qx}" y1="${qy}" x2="${ax}" y2="${ay}" stroke="currentColor" stroke-opacity="0.3" stroke-width="1" stroke-dasharray="3,3" />
+        <line x1="${ax}" y1="${ay}" x2="${a_base_x}" y2="${a_base_y}" stroke="#38bdf8" stroke-opacity="0.3" stroke-width="1" stroke-dasharray="3,3" />
+
+        <!-- Right Angle marker at Q -->
+        <polyline points="${qx+8},${qy} ${qx+8},${qy-8} ${qx},${qy-8}" fill="none" stroke="currentColor" stroke-opacity="0.4" stroke-width="1" />
+
+        <!-- Bracket on right for Total Height -->
+        <g transform="translate(370, 0)">
+          <line x1="0" y1="${py}" x2="0" y2="${oy}" stroke="#c084fc" stroke-width="2" />
+          <line x1="-5" y1="${py}" x2="5" y2="${py}" stroke="#c084fc" stroke-width="2" />
+          <line x1="-5" y1="${oy}" x2="5" y2="${oy}" stroke="#c084fc" stroke-width="2" />
+          <text x="10" y="${(py + oy)/2}" fill="#c084fc" font-size="12" dominant-baseline="middle" font-weight="bold">sin(α + β)</text>
+        </g>
+
+        <!-- Segment labels -->
+        <text x="${(ox + px)/2 - 14}" y="${(oy + py)/2 - 8}" fill="#c084fc" font-size="12" font-weight="bold">1</text>
+        <text x="${(ox + ax)/2 + 8}" y="${(oy + ay)/2 + 16}" fill="#38bdf8" font-size="11">cos β</text>
+        <text x="${(ax + px)/2 + 12}" y="${(ay + py)/2 - 4}" fill="#fbbf24" font-size="11">sin β</text>
+
+        <!-- Height labels -->
+        <text x="${px - 8}" y="${(py + qy)/2 + 4}" fill="#fbbf24" font-size="11" text-anchor="end" font-weight="600">cos α sin β</text>
+        <text x="${px - 8}" y="${(qy + p_base_y)/2 + 4}" fill="#38bdf8" font-size="11" text-anchor="end" font-weight="600">sin α cos β</text>
+
+        <!-- Angle arcs at origin -->
+        <path d="M ${ox + 35} ${oy} A 35 35 0 0 0 ${ox + 35*cosA} ${oy - 35*sinA}" fill="none" stroke="#34d399" stroke-width="2" />
+        <text x="${ox + 42}" y="${oy - 8}" fill="#34d399" font-size="11">α</text>
+
+        <path d="M ${ox + 48*cosA} ${oy - 48*sinA} A 48 48 0 0 0 ${ox + 48*Math.cos(a+b)} ${oy - 48*Math.sin(a+b)}" fill="none" stroke="#f472b6" stroke-width="2" />
+        <text x="${ox + 56*Math.cos(a + b/2)}" y="${oy - 56*Math.sin(a + b/2)}" fill="#f472b6" font-size="11">β</text>
+
+        <!-- Angle alpha at top vertex P -->
+        <path d="M ${px} ${py + 22} A 22 22 0 0 1 ${px + 22*sinA} ${py + 22*cosA}" fill="none" stroke="#34d399" stroke-width="1.8" />
+        <text x="${px + 6}" y="${py + 18}" fill="#34d399" font-size="11">α</text>
+
+        <!-- Points -->
+        <circle cx="${ox}" cy="${oy}" r="3" fill="#fff" />
+        <circle cx="${ax}" cy="${ay}" r="3" fill="#38bdf8" />
+        <circle cx="${px}" cy="${py}" r="3.5" fill="#c084fc" />
+      `;
+    }
+
+    sliderAlpha.addEventListener('input', draw);
+    sliderBeta.addEventListener('input', draw);
+    draw();
+  </script>
+</body>
+</html>

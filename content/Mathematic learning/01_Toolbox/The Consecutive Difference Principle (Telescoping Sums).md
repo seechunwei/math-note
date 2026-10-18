@@ -129,6 +129,20 @@ $$
 \sum_{k=1}^{n} k^3 = \frac{n^2(n+1)^2}{4} = \left( \frac{n(n+1)}{2} \right)^2 \quad \text{(Nicomachus's Theorem)}
 $$
 
+#### Case 4: Geometric Series Multiplication Shift ($S_n - rS_n$)
+Start from the unsummed geometric progression:
+$$
+S_n = a + ar + ar^2 + \dots + ar^{n-1}
+$$
+Multiply by the common ratio $r$ to systematically shift every term by one index:
+$$
+rS_n = ar + ar^2 + \dots + ar^n
+$$
+Subtracting the two equations collapses all intermediate terms:
+$$
+(1 - r)S_n = S_n - rS_n = a - ar^n \implies S_n = \frac{a(1 - r^n)}{1 - r} \quad (r \neq 1)
+$$
+
 ---
 
 ### 5. 🌐 Crystallization (Cross-Domain Discovery Questions)
@@ -153,9 +167,13 @@ $$
 > [!question] Question 3: Algebraic Factorization Identities
 > How does expanding the product:
 > $$
-> (x - 1)(x^n + x^{n-1} + \dots + x + 1) = x^{n+1} - 1
+> (x - y)(x^{n-1} + x^{n-2}y + \dots + y^{n-1}) = x^n - y^n
 > $$
-> rely on the exact same discrete cross-term cancellation ladder?
+> and for odd $n$:
+> $$
+> (x + y)(x^{n-1} - x^{n-2}y + \dots + y^{n-1}) = x^n + y^n
+> $$
+> rely on the exact same discrete cross-term cancellation ladder where intermediate terms ($x(-x^{n-2}y) + y(x^{n-2}y) = 0$) vanish pairwise?
 
 > [!question] Question 4: Nicomachus's Algebraic Miracle
 > Why does the sum of cubes uniquely collapse into a pure square of the linear sum:
@@ -169,4 +187,4 @@ $$
 ### 6. 🔗 References & Connected Notes
 
 * **Primary Problem Anchor:** [[Problem Chapter 2 Numbers of Various Sorts#^spivak-ch2-prob6]]
-* **Sibling Toolbox Method:** [[Telescoping sum and negative substitution]]
+* **Parity & Roots Bridge:** [[Problem Chapter 1 Basic Properties of Number#^ee071a]], [[Trichotomy Law Monotonicity to Injectivity]]

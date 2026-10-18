@@ -362,6 +362,8 @@ For the ODE $\frac{dy}{dx} = x y^{1/2}$:
 > 1. The relation: $G(x, \phi(x)) = 0$ for all $x \in I$.
 > 2. The differential equation on $I$.
 
+^6c214e
+
 ### Relation vs. Function: The Circle Example
 
 Consider the geometric relation:

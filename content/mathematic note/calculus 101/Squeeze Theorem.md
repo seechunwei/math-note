@@ -10,6 +10,7 @@ $$\lim_{x \to c} f(x) = L$$
 
 Squeeze theorem is good at applying at trigonometric function which is oscillating within a boundary point.
 
+Proof: [[Sequence#^f7eca2]]
 
 We can use squeeze theorem to prove the fundamental trigonometric limits
 $$
@@ -21,6 +22,7 @@ We cannot direct substitute and factorize. Thus, we can try compare $\theta$ and
 $\theta$ is an arc length while $\sin \theta$ is y-coordinate (vertical length).
 How to compare them? We turn it into area.
 
+[[6.3 Trigonometric Functions of Angles#^c51a3e]]
 
 The area of small triangle form by $(0,0),(\cos \theta,0),(\cos \theta,\sin \theta)$
 

@@ -16,6 +16,8 @@
 > 
 > 5) $\lim_{ x \to a } \frac{f(x)}{g(x)}= \frac{\lim_{ x \to a }f(x)}{\lim_{ x \to a }g(x)}$ if $\lim_{ x \to a }g(x)\neq 0$.
 
+^b6c735
+
 
 If we use the Product Law repeatedly with $g(x)=f(x)$, we obtain the following law.
 
