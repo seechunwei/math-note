@@ -108,98 +108,178 @@ If $\lim_{ n \to \infty }\lvert a_{n} \rvert=5$, then what can you say about $\l
 Cannot say anything, because it might be oscillating between -5 and 5. 
 
 ---
-## Limit of Function and Sequence
+## Limit: Function vs. Sequence vs. Subsequence
 
-We know that an infinite sequence $\langle a_{n} \rangle_{n=1}^{\infty}$ is a function $f(n)$whose domain is positive integer. $f:\mathbb{Z}^{+}\to \mathbb{R}$ such that
+An infinite sequence $\langle a_{n} \rangle_{n=1}^{\infty}$ is a discrete function $f(n)$ whose domain is restricted to positive integers $\mathbb{Z}^{+}$:
 $$
 f(n)=a_{n} \text{ for all }n\in \mathbb{Z}^{+}
 $$
+Similarly, a subsequence $\langle a_{n_k} \rangle$ is a further restriction of a sequence to a strictly increasing index set $n_1 < n_2 < n_3 < \dots$
 
-Thus, imagine the sequence is not discrete just like a normal function $f(x)$ whose domain is real number. 
+Because both represent **sampling a finer domain at discrete milestones**, their theorems and proofs mirror each other!
 
-We can say that $\langle a_{n} \rangle_{n=1}^{\infty}$ is the discrete point of $f(x)$, thus if $f(x)$ approach to $L$ when $x\to a$, then $\langle a_{n} \rangle_{n=1}^{\infty}$ must also approach to $L$.
+### Comparison Summary
 
-But notice that since $\langle a_{n} \rangle_{n=1}^{\infty}$ is discrete, thus it cannot approach to some finite integer nor real number. Thus the limit only exist when we talk about $n\to \infty$.
+| Aspect | Function $\longrightarrow$ Sequence | Sequence $\longrightarrow$ Subsequence |
+| :--- | :--- | :--- |
+| **Domain** | Continuous $\mathbb{R} \longrightarrow$ Discrete $\mathbb{Z}^+$ | Discrete $\mathbb{Z}^+ \longrightarrow$ Sub-indices $\{n_k\} \subseteq \mathbb{Z}^+$ |
+| **Forward Theorem** | $\lim_{x \to \infty} f(x) = L \implies \lim_{n \to \infty} a_n = L$ | $\lim_{n \to \infty} a_n = L \implies \lim_{k \to \infty} a_{n_k} = L$ |
+| **General Converse** | **False** (Counterexample: $f(x) = \sin(\pi x)$) | **False** (Counterexample: $a_n = (-1)^n$) |
+| **Converse with Monotonicity** | **True** (Monotonic $f(x)$ traps real numbers between integers) | **True** (Monotonic $a_n$ traps sequence terms between subsequence terms) |
+| **Divergence to $\pm\infty$** | $f(x) \to \pm\infty \iff a_n \to \pm\infty$ *(if monotonic)* | $a_n \to \pm\infty \iff a_{n_k} \to \pm\infty$ *(if monotonic)* |
+| **Divergence Criterion (Proving DNE)** | 2 sequences with different limits $\implies f(x)$ diverges | 2 subsequences with different limits $\implies a_n$ diverges |
 
-But if $\lim_{ n \to \infty }a_{n}=L$ can we conclude that $\lim_{ n \to \infty }f(x)=L$? Consider the function below
+---
 
-$$
-f(x)=\begin{cases}
-\frac{x}{x+1} &\text{when }x\in \mathbb{Z}^{+} \\
-\sin x &\text{when }x\not\in \mathbb{Z}^{+}
-\end{cases}
-$$
-Notice that $\lim_{ n \to \infty }f(n)=1$ for $n\in \mathbb{Z}^{+}$. But $f(x)=\sin x$ is oscillates infinitely between $-1$ and $1$.
+### 1. The Forward Theorem (Finer $\implies$ Coarser)
 
-The $\lim_{ n \to \infty }$ doesn't give us any information about $[n,n+1]$. 
-
-What if the function is continuous? Is the converse true? No. Consider the function
-$$
-f(x)=\sin(\pi x)
-$$
-Notice that when $x\in \mathbb{Z}^{+}$, $f(x)=0$. (Think about the unit circle). Thus, $\lim_{ n \to \infty }f(n)=0$
-When $x\not\in \mathbb{Z}^{+}$ for example $x=n+\frac{1}{2}$, then
-
-$$
-f(x)=\sin\left( n\pi+ \frac{\pi}{2} \right)
-$$
-For $n =1$, $x= \frac{3}{2}\implies \sin\left(  \frac{3\pi}{2} \right)=-1$
-For $n =2:$ $\sin\left( \frac{5\pi}{2} \right)=1$
-(It oscillate between 1 and -1, thus the limit does not exist)
-
-![[Pasted image 20261018091000.png]]
-
-> [!theorem]
-> Suppose $f$ is a function defined on the real numbers and $\langle a_{n} \rangle_{n=1}^{\infty}$ is a sequence such that
-> 
+> [!theorem] Function Version: Function Limit Implies Sequence Limit
+> Suppose $f$ is a function defined on the real numbers and $\langle a_{n} \rangle_{n=1}^{\infty}$ is a sequence such that $a_{n} = f(n)$ for all $n \in \mathbb{Z}^+$.
 > $$
-> a_{n}=f(n)\text{ for all positive integers }n
+> \text{If } \lim_{ x \to \infty } f(x) = L, \text{ then } \lim_{ n \to \infty } a_{n} = L.
 > $$
-> If $\lim_{ x \to \infty }f(x)=L$, then $\lim_{ n \to \infty }a_{n}=L$.
 
-Proof:
-
-> [!warning]
-> Suppose $\lim_{ n \to \infty }f(x)=L$. By definition, for any $\epsilon>0$
-> there exist a number $N$ such that if $x>N$, then $\lvert f(x)-L \rvert<\epsilon$.
-> 
-> Let $\langle a_{n} \rangle_{n=1}^{\infty}=\{ f(n)|n\in \mathbb{Z}^{+} \}\subseteq \{ f(x)|x\in \mathbb{R} \}$. Thus, if $a \in \langle a_{n} \rangle_{n=1}^{\infty}$, then $a\in \{ f(x)|x\in \mathbb{R} \}$.
-> 
-> [^1]Thus,  for any $\epsilon>0$, there exist a number $N$ such that if $x>N$, then $\lvert f(n)-L \rvert<\epsilon$.  Let $b=\lceil x \rceil$, thus $b\in \mathbb{Z}^{+}$, thus it follow that $b\geq x>N\implies \lvert f(n)-L \rvert<\epsilon$. $\blacksquare$
-> 
-> [^1]: This statement is wrong, because $f(n)$ is a function $f:\mathbb{Z}^{+}\to \mathbb{R}$. Thus, it cannot exist a $x\in \mathbb{R}$ as the candidate that satisfy the condition
-> 
-> Thus, there is nothing to do with the function value, instead the one we should concern is the domain $\mathbb{Z}^{+}\subseteq \mathbb{R}$. We need to show the existence of such integer.
-
-The correct version:
-Suppose $\lim_{ x \to \infty }f(x)=L$. Thus, by definition, for any $\epsilon>0$, there exist a number $N$ such that if $x>N$, then $\lvert f(x)-L \rvert<\epsilon$. 
-Let $n\in \mathbb{Z}^{+}$ such that $n>N$. Since $\mathbb{Z}^{+}\subseteq \mathbb{R}$. It follow that $n\in \mathbb{R}$. Thus, it follow that if $n>N$, then $\lvert a_{n}-L \rvert=\lvert f(n)-L \rvert<\epsilon$. Hence $\lim_{ n \to \infty }a_{n}=L$. $\blacksquare$
+**Proof (Function Version):**
+Suppose $\lim_{ x \to \infty } f(x) = L$. By definition, for any $\epsilon > 0$, there exists a number $N$ such that if $x > N$, then $\lvert f(x) - L \rvert < \epsilon$.
+Let $n \in \mathbb{Z}^+$ such that $n > N$. Since $\mathbb{Z}^+ \subseteq \mathbb{R}$, $n$ is a valid real number in the domain.
+Therefore, if $n > N$, then $\lvert a_{n} - L \rvert = \lvert f(n) - L \rvert < \epsilon$.
+Hence, $\lim_{ n \to \infty } a_{n} = L$. $\blacksquare$
 
 > [!remark]
-> Thus, we can find the limit of sequence by finding the corresponding limit of function and we can apply L'Hospital's Rule
+> Thus, we can find the limit of a sequence by finding the limit of the corresponding continuous function and applying L'Hôpital's Rule.
 
-Remark:
-What if the function $f(x)$ is monotonic, then it won't oscillate, and since the limit of the sequence exist, it means that the function is bounded by the limit. Thus, the converse is true. (in other word it trap the real number in between the integer a region that strictly monotonic, no oscillate)
+> [!theorem] Subsequence Version: Sequence Limit Implies Subsequence Limit
+> If a sequence $\langle a_{n} \rangle$ converges to $L$, then **every** subsequence $\langle a_{n_{k}} \rangle$ converges to the exact same limit $L$:
+> $$
+> \lim_{ n \to \infty } a_{n} = L \implies \lim_{ k \to \infty } a_{n_{k}} = L
+> $$
 
-> [!theorem]
-> If $f(x)$ is monotonic, then the converse is true
+**Proof (Subsequence Version):**
+Suppose $\lim_{ n \to \infty } a_{n} = L$. By definition, for any $\epsilon > 0$, there exists an integer $N$ such that:
+$$
+n > N \implies \lvert a_{n} - L \rvert < \epsilon
+$$
+Since $n_1 < n_2 < n_3 < \dots$ is a strictly increasing sequence of positive integers, it follows by induction that $n_k \geq k$ for all $k \geq 1$.
+Thus, whenever $k > N$, we have $n_k \geq k > N$, which immediately implies:
+$$
+\lvert a_{n_{k}} - L \rvert < \epsilon
+$$
+Hence, by definition, $\lim_{ k \to \infty } a_{n_{k}} = L$. $\blacksquare$
 
+---
+
+### 2. Failure of the General Converse (Coarser Does NOT Imply Finer)
+
+Sampling values only at discrete milestones gives no information about what happens between the steps:
+
+- **Function Version Counterexample**: $f(x) = \sin(\pi x)$
+  - When $x \in \mathbb{Z}^+$, $f(n) = \sin(n\pi) = 0 \implies \lim_{ n \to \infty } a_{n} = 0$ (converges).
+  - But for real $x$, $f(x)$ oscillates endlessly between $-1$ and $1 \implies \lim_{ x \to \infty } f(x)$ does not exist (diverges).
+  ![[Pasted image 20261018091000.png]]
+
+- **Subsequence Version Counterexample**: $a_n = (-1)^n$
+  - The subsequence of even indices $a_{2k} = (-1)^{2k} = 1 \implies \lim_{ k \to \infty } a_{2k} = 1$ (converges).
+  - But the original sequence alternates between $-1$ and $1 \implies \lim_{ n \to \infty } a_{n}$ does not exist (diverges).
+
+---
+
+### 3. When the Converse is True: The Power of Monotonicity
+
+Monotonicity rules out oscillation, allowing us to "trap" the finer values between consecutive coarser values!
+
+> [!theorem] Function Version: Monotonic Function Converse
+> If $f(x)$ is monotonic on $[1, \infty)$, then $\lim_{ n \to \infty } f(n) = L \implies \lim_{ x \to \infty } f(x) = L$.
 ^2faa4a
 
-Proof:
-For any real number $x$, trap it between 2 consecutive integers: $\lfloor x \rfloor\leq x<\lfloor x \rfloor+1$. Since $f$ is non-decreasing, it follow that
+**Proof (Function Version):**
+For any real number $x$, trap it between two consecutive integers: $\lfloor x \rfloor \leq x < \lfloor x \rfloor + 1$.
+Since $f$ is non-decreasing:
 $$
-f(\lfloor x \rfloor )\leq f(x)\leq f(\lfloor x \rfloor +1)
+f(\lfloor x \rfloor) \leq f(x) \leq f(\lfloor x \rfloor + 1)
 $$
+Let $n = \lfloor x \rfloor$. As $x \to \infty$, $n \to \infty$:
+- Left boundary: $f(n) \to L$
+- Right boundary: $f(n+1) \to L$
+By the Squeeze Theorem, $\lim_{ x \to \infty } f(x) = L$. $\blacksquare$
 
-Let $n =\lfloor x \rfloor$. As $x\to \infty$, $n\to \infty$
-- Left boundary: $f(n)\to L$
-- Right boundary: $f(n +1)\to L$
+> [!theorem] Subsequence Version: Monotonic Sequence Converse
+> If $\langle a_{n} \rangle$ is a monotonic sequence and a subsequence $\langle a_{m_k} \rangle$ diverges to $\infty$ (or converges to $L$), then the entire sequence $\langle a_{n} \rangle$ diverges to $\infty$ (or converges to $L$).
 
-By the Squeeze Theorem, $\lim_{ x \to \infty }f(x)=L$. $\blacksquare$.
+**Proof (Subsequence Version - Infinite Divergence Case):**
+Since $m_{1} < m_{2} < m_{3} < \dots$ is a strictly increasing sequence of integers, for any integer $n \geq m_{1}$, define:
+$$
+k(n) = \max\{ j \in \mathbb{Z}^{+} \mid m_{j} \leq n \}
+$$
+By definition of $k(n)$, we have $m_{k(n)} \leq n$. Since $\langle a_n \rangle$ is an increasing sequence, it follows that:
+$$
+a_{m_{k(n)}} \leq a_{n}
+$$
+As $n \to \infty$, the index $n$ eventually surpasses every $m_j$. Therefore, $k(n) \to \infty$, which gives:
+$$
+\lim_{ n \to \infty } a_{m_{k(n)}} = \lim_{ k \to \infty } a_{m_{k}} = \infty
+$$
+Since $a_{m_{k(n)}} \leq a_{n}$ for all $n \geq m_1$ and $\lim_{ n \to \infty } a_{m_{k(n)}} = \infty$, by the Comparison Theorem for sequences, $\lim_{ n \to \infty } a_{n} = \infty$. $\blacksquare$ [[Mathematic learning/04_Problems/mat 201 tutorial/Assignment 1#^ec8d98|Assignment 1]]
 
-> [!remark]
-> Sequence monotonic cannot guarantee anything. 
+> [!tip] Convergent Version
+> For the proof of the convergent version ($a_{n_k} \to L \implies a_n \to L$ for monotonic sequences), see:
+> ![[Mathematic learning/04_Problems/mat 201 tutorial/Assignment 1#^a8290e|Assignment 1]]
+
+---
+
+### 4. Divergence: Types and Divergence Criteria
+
+> [!note] Two Flavors of Divergence
+> In calculus and analysis, **divergence** simply means the limit fails to settle on a single finite real number $L$. This happens in two fundamentally different ways:
+> 1. **Infinite Divergence ($\lim = \pm\infty$):** The values grow unbounded without stopping.
+> 2. **Divergence by Oscillation (Limit Does Not Exist / DNE):** The values never settle because they oscillate among different values.
+
+---
+
+#### A. Infinite Divergence ($\pm\infty$) and Monotonic Converses
+
+> [!theorem] Infinite Divergence & Monotonic Converses
+> - **Function version:**
+>   $$
+>   \lim_{ x \to \infty } f(x) = \pm\infty \implies \lim_{ n \to \infty } a_{n} = \pm\infty
+>   $$
+>   *Converse:* If $f(x)$ is **monotonic**, then $\lim_{ n \to \infty } a_{n} = \pm\infty \implies \lim_{ x \to \infty } f(x) = \pm\infty$.
+>
+> - **Subsequence version:**
+>   $$
+>   \lim_{ n \to \infty } a_{n} = \pm\infty \implies \lim_{ k \to \infty } a_{n_k} = \pm\infty
+>   $$
+>   *Converse:* If $\langle a_n \rangle$ is **monotonic**, then $\lim_{ k \to \infty } a_{m_k} = \pm\infty \implies \lim_{ n \to \infty } a_{n} = \pm\infty$.
+
+---
+
+#### B. Divergence Criteria (Proving DNE via Different Limits)
+
+When an object oscillates, the cleanest way to prove its limit does not exist is by sampling along two paths that produce **different limits**:
+
+> [!theorem] Function Version: Sequential Divergence Criterion
+> The function limit $\lim_{ x \to \infty } f(x)$ **diverges (DNE)** if either:
+> 1. There exists a sequence $x_n \to \infty$ such that $\lim_{ n \to \infty } f(x_n)$ diverges.
+> 2. Or, there exist **two sequences** $x_n \to \infty$ and $y_n \to \infty$ that yield **different limits**:
+>    $$
+>    \lim_{ n \to \infty } f(x_n) \neq \lim_{ n \to \infty } f(y_n)
+>    $$
+>
+> *Example:* For $f(x) = \sin(\pi x)$, choose $x_n = n$ (giving $f(x_n) = 0 \to 0$) and $y_n = 2n + \frac{1}{2}$ (giving $f(y_n) = 1 \to 1$). Since $0 \neq 1$, $\lim_{ x \to \infty } \sin(\pi x)$ does not exist.
+
+
+> [!theorem] Subsequence Version: Subsequence Divergence Criterion
+> A sequence $\langle a_n \rangle$ **diverges (DNE)** if either:
+> 1. There exists a subsequence that diverges.
+> 2. Or, there exist **two subsequences** that converge to **different limits**:
+>    $$
+>    \lim_{ k \to \infty } a_{n_k} \neq \lim_{ k \to \infty } a_{m_k}
+>    $$
+>
+> *Example:* For $a_n = \cos\left(\frac{n\pi}{2}\right)$, the odd subsequence $a_{2k-1} = 0 \to 0$, while the multiple-of-4 subsequence $a_{4k} = 1 \to 1$. Since $0 \neq 1$, the sequence diverges.
+
+^d343bf
+
+
 
 
 
@@ -215,6 +295,8 @@ Proof:
 
 ----
 ## Limit of a Geometric Sequence
+
+^7c95fd
 
 > [!theorem]
 > The sequence $\langle r^{n} \rangle_{n=1}^{\infty}$ is convergent if $-1<r\leq 1$ and divergent for all other values of $r$. In fact,
@@ -297,6 +379,7 @@ a_{n}= \frac{n!}{n^{n}}&= \frac{1\cdot 2 \cdot 3 \cdot \dots \cdot n}{n\cdot n\c
 \end{align}
 $$
 Hence, $0\leq a_{n}\leq \frac{1}{n}$ for all $n\geq 1$. Since $\lim_{ n \to \infty }0=\lim_{ n \to \infty } \frac{1}{n}=0$. It follow that by Squeeze Theorem, $\lim_{ n \to \infty }a_{n}=0$.
+[[201 Tutotial 2#^b60f3d]]
 
 ---
 
@@ -391,6 +474,8 @@ If a sequence is bounded above and below, then the sequence is a bounded sequenc
 
 > [!theorem] Monotone Convergence Theorem, MCT
 > Every bounded monotonic sequence is convergent
+
+^f3edcd
 
 > [!Theorem] Corollary
 > a) Every increasing sequence bounded above is convergent

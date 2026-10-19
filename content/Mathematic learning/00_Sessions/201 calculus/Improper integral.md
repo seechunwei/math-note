@@ -232,6 +232,8 @@ Notice that $x=1$ is a vertical asymptotes. Thus, we need to split into 2 and ap
 > [!theorem]
 > Suppose $p$ is any real number. Then $\int_{0}^{1} \frac{1}{x^{p}} \, dx$ is convergent if $p<1$ and divergent if $p\geq 1$.
 
+^13e611
+
 It is because $0<x<1$. For example $x=0.5$. Then, $(0.5)^{2}=0.025$ and $\frac{1}{0.025}> \frac{1}{0.5}$ (increasing) and vice versa. The condition for convergence is reversed.
 
 ![[Pasted image 20261017180741.png]]
@@ -273,10 +275,40 @@ which is convergent. $\blacksquare$.
 
 ## Comparison Theorem
 
-> [!theorem]
+> [!theorem] Type 1
 > Suppose that $f$ and $g$ are continuous on $[a,\infty)$ with $f(x)\geq g(x)\geq 0$ for all $x\geq a$.
 > - If $\int_{a}^{\infty} f(x)   \, dx$ is convergent, then $\int_{a}^{\infty} g(x) \, dx$ is convergent
 > - If $\int_{a}^{\infty} g(x) \, dx$ is divergent, then $\int_{a}^{\infty} f(x) \, dx$ is divergent
+
+> [!theorem] Type 2
+> Suppose that f and g are continuous on $( a , b ]$ and each has an infinite discontinuity at a. Suppose $f ( x ) \geq g ( x ) \geq 0$ for all $x \in ( a , b ]$ 
+> 
+> 1. If $\int _ { a } ^ { b } f ( x )$ dx is convergent, then $\int _ { a } ^ { b } g ( x )$ dx is convergent. 
+> 
+> 2. If $\int _ { a } ^ { b } g ( x )$ dx is divergent, then $\int _ { a } ^ { b } f ( x )$ dx is divergent. 
+
+> [!remark]
+> Notice that the second statement is the contrapositive of first statement
+
+
+Remark:
+Why both Comparison Theorem need the condition $\geq 0$? It is because without the bottom floor at 0, a function could be smaller than $f(x)$ but approach to $-\infty$. Consider the counter example on $(0,1]$: 
+- Let $f(x)= \frac{1}{\sqrt{ x }}$
+- Let $g(x)=- \frac{1}{x^{2}}$
+
+Notice that $g(x)\leq f(x)$ and $\int_{0}^{1} f(x) \, dx$ is convergent. But $g(x)$ is not convergent.
+
+Now think of another scenario, can $g(x)$ less than $f(x)$ but still oscillating?
+The answer is it can oscillate but we concern about $\int_{a}^{b} g(x) \, dx$ not $g(x)$ itself. Even though $g(x)$ is oscillating, but it is still $\geq 0$, thus the area under the curve is increasing from $a$ to $b$. (a monotonic and bounded above function is convergent) ![[Sequence#^f3edcd]]
+Thus, we can actually construct a more general version of Comparison Theorem:
+
+> [!theorem]
+> Suppose $f$ and $g$ are continuous on $[a,\infty)$. Suppose $0\leq g(x)\leq f(x)$ on $[a,\infty)$. If  $f$ and $g$ are monotonic, then
+> - $f(x)$ convergent implies $g(x)$ convergent
+> - $g(x)$ divergent implies $f(x)$ divergent
+
+and as well as sequence [[Mathematic learning/04_Problems/mat 201 tutorial/Assignment 1#^4a61d0|Assignment 1]]
+Proof:
 
 
 Determine whether $\int_{1}^{\infty} \frac{1+e^{-x}}{\sqrt{ x }} \, dx$ is convergent or divergent.

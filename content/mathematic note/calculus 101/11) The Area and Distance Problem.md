@@ -330,7 +330,8 @@ For any function $f(x)$ and $g(x)$ that are integrable on $[a,b]$ (or continuous
 
 1) $$
 \int_{a}^{b} c \, dx =c(b-a) 
-$$2)
+$$
+2)
 $$
 \int_{a}^{b} [f(x)+g(x)] \, dx= \int_{a}^{b}f(x)  \, dx  + \int_{a}^{b} g(x) \, dx 
 $$
