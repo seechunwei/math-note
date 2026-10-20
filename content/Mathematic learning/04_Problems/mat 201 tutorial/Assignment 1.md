@@ -336,10 +336,30 @@ Hence, we have shown that $n+1>n\implies t_{n}>t_{n+1}$. Thus, by definition $t_
 > $$
 > Even though Euler introduced $\gamma$ in 1735, **to this day, nobody knows whether $\gamma$ is rational or irrational!** It is widely suspected to be transcendental (like $\pi$ and $e$), but a proof remains one of the great open problems in number theory.
 
-5) Prove that if $\operatorname* { l i m } _ { i \to \infty } a _ { 2 i } = \operatorname* { l i m } _ { i \to \infty } a _ { 2 i + 1 } = L , { \mathrm { t h e n ~ } } \operatorname* { l i m } _ { i \to \infty } a _ { i } = L$ 
+5) Prove that if $\operatorname* { l i m } _ { i \to \infty } a _ { 2 i } = \operatorname* { l i m } _ { i \to \infty } a _ { 2 i + 1 } = L , { \mathrm { t h e n ~ } } \operatorname* { l i m } _ { i \to \infty } a _ { i } = L$  ^161900
 
 Note: This problem would provide the justification needed to complete the proof of the Alternating Series Test in Lecture 13.
 
 Proof: 
+Suppose $\lim_{ i \to \infty }a_{2i}=\lim_{ i \to \infty }a_{2i+1}=L$. By definition, for any $\epsilon>0$, there exist $N_{1}$ such that $i>N_{1}\implies \lvert a_{2i}-L \rvert<\epsilon$, and $N_{2}$ such that $i>N_{2}\implies \lvert a_{2i+1}-L \rvert<\epsilon$. 
 
+To avoid confusing index letters, we write the sequence as $\langle a_n \rangle_{n=1}^{\infty}$.
+Choose $N_{3} = \max(2N_1, 2N_2 + 1)$. Suppose $n > N_3$, by the Quotient Remainder Theorem, $n$ must be either even ($n = 2i$) or odd ($n = 2i+1$) for some integer $i$:
 
+- **Case 1 ($n = 2i$ is even):** 
+  Since $n > N_3 \geq 2N_1$, we have $2i > 2N_1 \implies i > N_1$. 
+  By our hypothesis on even terms:
+  $$
+  \lvert a_n - L \rvert = \lvert a_{2i} - L \rvert < \epsilon
+  $$
+
+- **Case 2 ($n = 2i+1$ is odd):** 
+  Since $n > N_3 \geq 2N_2 + 1$, we have $2i+1 > 2N_2 + 1 \implies i > N_2$. 
+  By our hypothesis on odd terms:
+  $$
+  \lvert a_n - L \rvert = \lvert a_{2i+1} - L \rvert < \epsilon
+  $$
+
+In either case, $\lvert a_n - L \rvert < \epsilon$ holds whenever $n > N_3$. 
+
+Hence, by the definition of sequence limits, $\lim_{ n \to \infty } a_n = L$. $\blacksquare$

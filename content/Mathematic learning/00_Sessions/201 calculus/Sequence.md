@@ -279,11 +279,40 @@ When an object oscillates, the cleanest way to prove its limit does not exist is
 
 ^d343bf
 
+---
 
+### 5. Finite Partition Subsequence Theorem (The Converse)
 
+While a single convergent subsequence does **not** guarantee the whole sequence converges (e.g., $a_n = (-1)^n$ has $a_{2k} \to 1$), if we partition the entire sequence into a **finite set of subsequences** that all agree on the same limit, the converse becomes **TRUE**!
 
+> [!theorem] Finite Partition Subsequence Theorem
+> If the index set of a sequence $\langle a_n \rangle$ is partitioned into finitely many subsequences that **all converge to the same limit $L$**, then the entire sequence $\langle a_n \rangle$ converges to $L$:
+> $$
+> \lim_{ i \to \infty } a_{2i} = L \quad \text{and} \quad \lim_{ i \to \infty } a_{2i+1} = L \implies \lim_{ n \to \infty } a_n = L
+> $$
+
+#### The Logical Relationship Among Subsequence Theorems
+
+| Form | Direction | Logical Statement | Meaning |
+| :--- | :--- | :--- | :--- |
+| **Forward Theorem** | Sequence $\implies$ Subsequences | $a_n \to L \implies \text{EVERY } a_{n_k} \to L$ | If the whole sequence settles, every piece must settle. |
+| **Contrapositive** *(Divergence Criterion)* | Bad Subsequence $\implies$ Divergence | 1 diverges OR $L_1 \neq L_2 \implies a_n$ diverges | If the pieces disagree or blow up, the whole sequence diverges. |
+| **Converse (via Partition)** | Subsequences $\implies$ Sequence | **All partition pieces** $\to L \implies a_n \to L$ | If a full partition agrees on the same target $L$, the whole sequence must converge to $L$. |
+
+Proof:
+Let $\epsilon > 0$.
+1. Since $\lim_{ i \to \infty } a_{2i} = L$, there exists $N_1$ such that $i > N_1 \implies \lvert a_{2i} - L \rvert < \epsilon$.
+2. Since $\lim_{ i \to \infty } a_{2i+1} = L$, there exists $N_2$ such that $i > N_2 \implies \lvert a_{2i+1} - L \rvert < \epsilon$.
+
+Let $N = \max(2N_1, 2N_2 + 1)$. For any integer $n > N$:
+- If $n = 2i$ is even: $2i > 2N_1 \implies i > N_1 \implies \lvert a_n - L \rvert < \epsilon$.
+- If $n = 2i+1$ is odd: $2i+1 > 2N_2 + 1 \implies 2i > 2N_2 \implies i > N_2 \implies \lvert a_n - L \rvert < \epsilon$.
+
+Thus, for all $n > N$, $\lvert a_n - L \rvert < \epsilon$. Hence, $\lim_{ n \to \infty } a_n = L$. $\blacksquare$
+[[Mathematic learning/04_Problems/mat 201 tutorial/Assignment 1#^161900|Assignment 1]]]]
 
 ---
+
 ## Uniqueness of limit
 
 > [!theorem]
@@ -564,3 +593,4 @@ Example Assignment Question 2 (b) and (c)
 
 > [!theorem] Order Limit Theorem
 > Let $\left\langle a_{n} \right\rangle$ and $\left\langle b_{n} \right\rangle$ be convergent sequences with $\lim_{ n \to \infty }a_{n}=A$ and $\lim_{ n \to \infty }b_{n}=B$. If there exist an integer $N_{0}$ such that for all $n\geq N_{0}:a_{n}\geq b_{n}$ then $A\geq B$.
+

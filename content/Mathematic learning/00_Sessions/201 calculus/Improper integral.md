@@ -94,8 +94,8 @@ $$
 
 ## The p-Test for Improper Integral
 
-Theorem
-Suppose $p$ is any real number. Then $\int_{1}^{\infty} \frac{1}{x^{p}} \, dx$ is convergent if $p>1$ and divergent if $p<1$.
+> [!theorem]
+> Suppose $p$ is any real number. Then $\int_{1}^{\infty} \frac{1}{x^{p}} \, dx$ is convergent if $p>1$ and divergent if $p<1$.
 
 Why?
 When $p=1$ , $\frac{1}{x^{p}}=\frac{1}{x}$. And notice that $\frac{1}{x}$ is continuous on $[1,\infty)$. Thus,
@@ -177,7 +177,7 @@ $$
 $$
 
 
-Improper Integral of Type 2
+## Improper Integral of Type 2
 What if the unboundedness is at function itself? For example
 $$
 \int_{0}^{1} \frac{1}{x^{2}} \, dx 
@@ -311,9 +311,6 @@ Thus, we can actually construct a more general version of Comparison Theorem: ^9
 > 1. **For Integrals (Area)**: **NOT needed**. As long as $g(x) \geq 0$, the accumulating area is automatically monotonic (it only ever grows). The functions $f(x)$ and $g(x)$ can oscillate freely.
 > 2. **For Functions / Sequences under a finite ceiling ($f \to L$)**: **NEEDED**. Without monotonicity, $g(x)$ can oscillate forever between $0$ and $L$ without converging (e.g., $g(x) = 2 + \sin x \leq 5$, where $f \to 5$ but $g$ oscillates).
 > 3. **For Functions / Sequences pushed to $\infty$ ($g \to \infty$)**: **NOT needed**. If the lower floor blows up to $\infty$ (e.g., $a_n \geq \frac{n}{4} \to \infty$), the upper term is dragged to $\infty$ even if it wobbles.
-
-
-
 
 and as well as sequence [[Mathematic learning/04_Problems/mat 201 tutorial/Assignment 1#^4a61d0|Assignment 1]]
 Proof:
