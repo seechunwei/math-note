@@ -300,12 +300,20 @@ Notice that $g(x)\leq f(x)$ and $\int_{0}^{1} f(x) \, dx$ is convergent. But $g(
 
 Now think of another scenario, can $g(x)$ less than $f(x)$ but still oscillating?
 The answer is it can oscillate but we concern about $\int_{a}^{b} g(x) \, dx$ not $g(x)$ itself. Even though $g(x)$ is oscillating, but it is still $\geq 0$, thus the area under the curve is increasing from $a$ to $b$. (a monotonic and bounded above function is convergent) ![[Sequence#^f3edcd]]
-Thus, we can actually construct a more general version of Comparison Theorem:
+Thus, we can actually construct a more general version of Comparison Theorem: ^96cfa0
 
 > [!theorem]
 > Suppose $f$ and $g$ are continuous on $[a,\infty)$. Suppose $0\leq g(x)\leq f(x)$ on $[a,\infty)$. If  $f$ and $g$ are monotonic, then
 > - $f(x)$ convergent implies $g(x)$ convergent
 > - $g(x)$ divergent implies $f(x)$ divergent
+
+> [!remark] When is Monotonicity Needed?
+> 1. **For Integrals (Area)**: **NOT needed**. As long as $g(x) \geq 0$, the accumulating area is automatically monotonic (it only ever grows). The functions $f(x)$ and $g(x)$ can oscillate freely.
+> 2. **For Functions / Sequences under a finite ceiling ($f \to L$)**: **NEEDED**. Without monotonicity, $g(x)$ can oscillate forever between $0$ and $L$ without converging (e.g., $g(x) = 2 + \sin x \leq 5$, where $f \to 5$ but $g$ oscillates).
+> 3. **For Functions / Sequences pushed to $\infty$ ($g \to \infty$)**: **NOT needed**. If the lower floor blows up to $\infty$ (e.g., $a_n \geq \frac{n}{4} \to \infty$), the upper term is dragged to $\infty$ even if it wobbles.
+
+
+
 
 and as well as sequence [[Mathematic learning/04_Problems/mat 201 tutorial/Assignment 1#^4a61d0|Assignment 1]]
 Proof:

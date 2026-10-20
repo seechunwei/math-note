@@ -309,6 +309,8 @@ Proof:
 > $$
 > 
 
+^fcd59a
+
 Proof:
 When $r=1$. Then it is clear that $\lim_{ n \to \infty }1^{n}=1$.
 
@@ -389,6 +391,8 @@ Hence, $0\leq a_{n}\leq \frac{1}{n}$ for all $n\geq 1$. Since $\lim_{ n \to \inf
 > \lim_{ n \to \infty } f(a_{n})=f(L)
 > $$
 
+^86c70e
+
 Proof:
 We need to show that for any $\epsilon>0$, there exists a number $N$ such that $n>N \implies \lvert f(a_{n})-f(L) \rvert < \epsilon$.
 
@@ -457,17 +461,30 @@ $$
 > [!definition]
 > A sequence $\langle a_{n} \rangle_{n=1}^{\infty}$ is increasing (or non-decreasing) if 
 > $$
-> a_{n+1}>a_{n}\text{ for all }n\geq 1
+> a_{n+1}\geq a_{n}\text{ for all }n\geq 1
 > $$
-> and vice versa
-> 
+> and decreasing (or non-increasing) if $a_{n+1}\leq a_{n}\text{ for all }n\geq 1$.
+
+### 3 Standard Methods to Test Monotonicity
+
+To determine whether a sequence $\langle a_n \rangle$ is increasing or decreasing, we have three standard tools:
+
+| Method | What to Test | When to Use It |
+| :--- | :--- | :--- |
+| **1. Derivative ($f'(x)$)** | Let $f(n) = a_n$.<br>• $f'(x) \geq 0 \implies$ increasing<br>• $f'(x) \leq 0 \implies$ decreasing | Best for **rational functions, roots, and logarithms** (e.g., $\frac{n+1}{9n+1}$, $\frac{\ln n}{n}$). |
+| **2. Difference ($a_{n+1} - a_n$)** | • $a_{n+1} - a_n \geq 0 \implies$ increasing<br>• $a_{n+1} - a_n \leq 0 \implies$ decreasing | Best for **sums, linear terms, and polynomial differences**. |
+| **3. Ratio ($\frac{a_{n+1}}{a_n}$)** *(for $a_n > 0$)* | Compare the ratio to **$1$**:<br>• $\frac{a_{n+1}}{a_n} \geq 1 \implies$ increasing<br>• $\frac{a_{n+1}}{a_n} \leq 1 \implies$ decreasing | Best for **factorials ($n!$) and exponentials ($c^n$)** (cannot differentiate $n!$ with elementary calculus). |
 
 > [!definition]
 > A sequence $\langle a_{n} \rangle_{n=1}^{\infty}$ is bounded above if there exists a number $M$ such that 
 > $$
 > a_{n}\leq M \text{ for all }n\geq 1
 > $$
-> and vice versa
+> and bounded below if there exists a number $m$ such that $a_{n} \geq m \text{ for all } n \geq 1$.
+
+
+
+
 
 If a sequence is bounded above and below, then the sequence is a bounded sequence.
 

@@ -41,6 +41,9 @@ $$
 $$
 where $n$ is a positive integer.
 
+> [!remark]
+> Power rule justified by the Direct Substitution Property ![[1)a) The limit laws#^a2a6d3]]
+> 
 
 10)
 $$
@@ -60,13 +63,22 @@ where $n$ is a positive integer (If $n$ is even, we assume that $a>0$)
 > If $n$ is even, we assume that $\lim_{ x \to a }f(x)>0$.
 
 
-> [!theorem]  Direct Substitution Property
-> If $f$ is a polynomial or a rational function and $a$ in the domain of $f$, then
+> [!theorem] Direct Substitution Property
+> If $f$ is continuous at $a$ (including polynomials, rational, root, trigonometric, exponential, and logarithmic functions on their domains), then:
 > 
 > $$
 > \lim_{ x \to a } f(x)=f(a)
 > $$
+
+^a2a6d3
+
+> [!remark] Why does Direct Substitution work?
+> Direct substitution $\lim_{x \to a} f(x) = f(a)$ is literally the **definition of continuity**!
+> When a function is continuous, we are mathematically justified to evaluate its limit by simply "plugging in" $x = a$ (or pushing the limit inside).
 > 
+
+The Proof:
+[[Sequence#^86c70e]]
 
 In more general
 
