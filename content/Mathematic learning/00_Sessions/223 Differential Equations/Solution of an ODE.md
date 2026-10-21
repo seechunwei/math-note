@@ -361,6 +361,12 @@ For the ODE $\frac{dy}{dx} = x y^{1/2}$:
 > A relation $G(x, y) = 0$ is said to be an **implicit solution** of an ordinary differential equation on an interval $I$, provided that there exists at least one function $\phi(x)$ that satisfies both:
 > 1. The relation: $G(x, \phi(x)) = 0$ for all $x \in I$.
 > 2. The differential equation on $I$.
+> 
+> > [!remark] Form of an Implicit Solution
+> > A solution must be an **equation (relation)**, not just an isolated expression:
+> > * Level-curve form: **$g(x, y) = c$**
+> > * Zero form: **$G(x, y) = 0$** (where $G(x, y) = g(x, y) - c$)
+> > Both represent the exact same implicit solution.
 
 ^6c214e
 
