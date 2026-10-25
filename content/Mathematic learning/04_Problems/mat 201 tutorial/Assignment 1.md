@@ -341,7 +341,7 @@ Hence, we have shown that $n+1>n\implies t_{n}>t_{n+1}$. Thus, by definition $t_
 Note: This problem would provide the justification needed to complete the proof of the Alternating Series Test in Lecture 13.
 
 Proof: 
-Suppose $\lim_{ i \to \infty }a_{2i}=\lim_{ i \to \infty }a_{2i+1}=L$. By definition, for any $\epsilon>0$, there exist $N_{1}$ such that $i>N_{1}\implies \lvert a_{2i}-L \rvert<\epsilon$, and $N_{2}$ such that $i>N_{2}\implies \lvert a_{2i+1}-L \rvert<\epsilon$. 
+Suppose $\lim_{ i \to \infty }a_{2i}=\lim_{ i \to \infty }a_{2i+1}=L$. By definition, for any $\epsilon>0$, there exist $N_{1}$ such that $i>N_{1}\implies \lvert a_{2i}-L \rvert<\epsilon$, and there exist $N_{2}$ such that $i>N_{2}\implies \lvert a_{2i+1}-L \rvert<\epsilon$. 
 
 To avoid confusing index letters, we write the sequence as $\langle a_n \rangle_{n=1}^{\infty}$.
 Choose $N_{3} = \max(2N_1, 2N_2 + 1)$. Suppose $n > N_3$, by the Quotient Remainder Theorem, $n$ must be either even ($n = 2i$) or odd ($n = 2i+1$) for some integer $i$:

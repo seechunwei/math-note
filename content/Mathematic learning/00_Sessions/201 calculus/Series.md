@@ -30,6 +30,10 @@ How? (Actually it is something to do with limit, the expression above omit the p
 
 [^1]: We view it as a sequence $\langle s_{n} \rangle_{n=1}^{\infty}=s_{1},s_{2},\dots$
 
+> [!remark]
+> Since we have $\lim_{ n \to \infty }s_{n}$ convergent implies $\sum_{i=1}^{\infty}a_{i}$ is convergent and $\lim_{ n \to \infty }s_{n}$ divergent implies $\sum_{i=1}^{\infty}a_{i}$ is divergent. (Thus it is a biconditional statement)
+> 
+
 So go back the question, the distance travelled by the tortoise approach 1, but never reaches 1.
 
 > [!question]
@@ -80,6 +84,21 @@ Furthermore,
 2) $\sum_{i=1}^{\infty}(a_{i}+b_{i})=\sum_{i=1}^{\infty}a_{i}+\sum_{i=1}^{\infty}b_{i}$
 3) $\sum_{i=1}^{\infty}(a_{i}-b_{i})=\sum_{i=1}^{\infty}a_{i}-\sum_{i=1}^{\infty}b_{i}$
 
+> [!remark]
+> The converse is not true. For example, let's consider the statement: if $\sum(a_{i}+b_{i})$ converge, then $\sum a_{i}$ and $\sum b_{i}$ must both converge individually.
+> 
+> Let $b_{i}=-a_{i}$ and say $a_{i}=1$, it is clear that $\sum_{i=1}^{\infty}a_{i}=\infty$ while $\sum_{i=1}^{\infty}b_{i}=-\infty$. But notice that
+> 
+> $$
+> \sum_{i=1}^{\infty} (a_{i}+b_{i})=0
+> $$
+> which is reveal that the converse is not true.
+
+^e95560
+
+> [!remark]
+> But the scalar multiplication part is biconditional provided $c  \neq 0$. [[201 Problem set 3#^eea206]]
+
 ## Geometric Series
 
 > [!theorem]
@@ -92,6 +111,8 @@ Furthermore,
 > $$
 > 
 > If $\lvert r \rvert\geq 1$, the geometric is divergent
+
+^4a9158
 
 Is the series $\sum_{i=1}^{\infty}2^{2i}3^{1-i}$ convergent or divergent?
 $$
@@ -150,7 +171,75 @@ As $\langle s_{2^{k}} \rangle_{n=1}^{\infty}$ is a subsequence of $\langle s_{n}
 > 
 
 ---
+## Necessary condition for convergence
+
+What can we know about the term $\lim_{ n \to \infty }a_{n}$ provided the series is convergent?
+
+When the series is convergent, it means that it converge to one value, it means that it is adding or subtracting a term that get smaller when $n\to \infty$, thus we can say $\lim_{ i \to \infty }a_{n}=0$ provided the series is convergent.
 
 > [!theorem]
-> Theorem
 > If a series $\sum_{i=1}^{\infty}a_{i}$ is convergent, then $\lim_{ i \to \infty }a_{i}=0$.
+
+Proof:
+A series $\sum_{i=1}^{\infty}a_{i}$ is convergent iff the partial sum $S_{n}=\sum_{i=1}^{n}a_{i}$ is converge. By definition, there exist a number $L$ such that
+$$
+\begin{align}
+\lim_{ n \to \infty } S_{n}&=\lim_{ n \to \infty } \sum_{i=1}^{n} S_{n}=L
+\end{align}
+$$
+Notice that $\lim_{ n \to \infty }S_{n}=\lim_{ n \to \infty }S_{n-1}$. And note that $a_{n}=S_{n}-S_{n-1}$. Thus,
+$$
+\begin{align}
+\lim_{ n \to \infty } a_{n}&=\lim_{ n \to \infty } (S_{n}-S_{n-1}) \\
+&=L-L \\
+&=0 \tag*{$\blacksquare$}
+\end{align}
+$$
+
+The following useful test is the contrapositive of the theorem. and thus is immediate as a corollary.
+
+> [!theorem] Test for Divergence
+> If $\lim_{ i \to \infty }a_{i}$ does not exist or $\lim_{ i \to \infty }a_{i} \neq 0$, then the series $\sum_{i=1}^{\infty}a_{i}$ is divergent.
+
+Example:
+Is the series $\sum_{i=1}^{\infty} \frac{i^{2}}{5i^{2}+4}$ convergent or divergent?
+
+Since $\lim_{ i \to \infty } \frac{i^{2}}{5i^{2}+4}=\lim_{ i \to \infty } \frac{1}{5+ \frac{4}{i^{2}}}= \frac{1}{5} \neq 0$. By the Test for Divergence, $\sum_{i=1}^{\infty} \frac{i^{2}}{5i^{2}+4}$ is divergent. 
+
+Example:
+Suppose that $\sum_{i=1}^{\infty}a_{i}$ is a convergent series, where $a_{i}\neq 0$ for all $i\geq 1$. Prove that $\sum_{i=1}^{\infty} \frac{1}{a_{i}}$ is a divergent series.
+
+> [!warning]
+> Suppose $\sum_{i=1}^{\infty}a_{i}$ is a convergent series, where $a_{i}\neq 0$ for all $i\geq 1$. It follow that $\lim_{ i \to \infty }a_{i}=0$. Note that
+> $$
+> \begin{align}
+> \sum_{i=1}^{\infty} \frac{1}{a_{i}}=\lim_{ n \to \infty } S_{n}= \lim_{ n \to \infty } \sum_{i=1}^{n} \frac{1}{a_{i}} \\
+> \end{align}
+> $$
+> 
+> Since $\lim_{ i \to \infty } \frac{1}{a_{i}}=\infty \neq 0$. Thus, by test of divergent it follow that $\sum_{i=1}^{\infty} \frac{1}{a_{i}}$ is divergent.
+> 
+> There is one flaw in this solution:
+> What if $\sum_{i=1}^{\infty}a_{i}$ is a alternating convergent series where it oscillates like $a_{i}= \frac{(-1)^{i}}{i}$. [[Sequence#^9a4c78]].
+> 
+> 
+> Even though $\lim_{ i \to \infty }a_{i}=0$ but we do not know $\lim_{ i \to \infty } \frac{1}{a_{i}}$.
+> 
+
+Corrected version:
+Assume, for contradiction, that $\lim_{ i \to \infty } \frac{1}{a_{i}}$ exists. Then
+
+$$
+1= \lim_{ i \to \infty } \left( \frac{1}{a_{i}}\cdot a_{i} \right)=\lim_{ i \to \infty } a_{i}\cdot \lim_{ i \to \infty } \frac{1}{a_{i}}=0
+$$
+
+a contradiction. Hence, $\lim_{ i \to \infty } \frac{1}{a_{i}}$ does not exist. Therefore, by the test for Divergence, $\sum_{i=1}^{\infty} \frac{1}{a_{i}}$ is divergent.
+
+Question
+Conversely, if a series $\sum_{i=1}^{\infty}a_{i}$ is divergent, what can you say about the convergence of the sequence $\langle a_i \rangle_{i=1}^{\infty}$?
+
+The sequence can be converge to 0 while the series is divergent. For example,  harmonic series .
+
+The sequence can be of course divergent as well. Or it can be the limit of sequence does not exist like $\lim_{ n \to \infty }(-1)^{n}$.
+
+So we cannot tell anything.

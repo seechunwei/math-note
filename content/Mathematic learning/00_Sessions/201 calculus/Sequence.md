@@ -93,6 +93,8 @@ It is true for sequence:
 > \lim_{ n \to \infty } \lvert a_{n} \rvert=0 \iff \lim_{ n \to \infty } a_{n}=0
 > $$
 
+^9a4c78
+
 Evaluate $\lim_{ n \to \infty } \frac{(-1)^{n}}{n}$
 
 Since $\lim_{ n \to \infty } \left\lvert  \frac{(-1)^{n}}{n}  \right\rvert=\lim_{ n \to \infty } \frac{1}{n}=0$, by theorem, it follow that $\lim_{ n \to \infty } \frac{(-1)^{n}}{n}=0$.

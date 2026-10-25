@@ -63,7 +63,7 @@ Since the sequence is oscillating infinitely between 3 number, it follow that th
 
 (Ask about the theorem)
 
-(e*) $a _ { n } = { \frac { n ! } { 2 ^ { n } } }$  ^b60f3d
+==(e*)== $a _ { n } = { \frac { n ! } { 2 ^ { n } } }$  ^b60f3d
 
 $$
 \begin{align}

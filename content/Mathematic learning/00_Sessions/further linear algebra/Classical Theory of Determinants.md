@@ -226,7 +226,7 @@ If any two adjacent columns are the exact same vector:
 $$
 \det(\dots, v, v, \dots) = 0
 $$
-*(Geometric meaning: If two edges of a box point in the exact same direction, the box has zero thickness along that direction $\implies$ it is squashed flat $\implies$ volume is 0!)*
+*(Geometric meaning: If two edges of a box point in the exact same direction, the box has zero thickness along that direction $\implies$ it is squashed flat into fewer dimensions $\implies$ volume is 0!)*
 
 #### Rule 3: Normalization (Identity matrix has determinant 1)
 For the standard identity matrix $I_n = \begin{pmatrix} e_1 & e_2 & \dots & e_n \end{pmatrix}$:
@@ -239,7 +239,7 @@ $$
 
 ### 2.3 Why Swapping Columns Flips the Sign
 
-A direct consequence of Rules 1 and 2 is that **swapping any two adjacent columns multiplies the determinant by $-1$**:
+A direct consequence of **Rule 1 (Multilinearity)** and **Rule 2 (Alternating)** is that **swapping any two adjacent columns multiplies the determinant by $-1$**:
 $$
 \det(\dots, v_j, v_i, \dots) = - \det(\dots, v_i, v_j, \dots)
 $$
@@ -257,6 +257,19 @@ $$
 > $$
 > \det(\dots, v_i, v_j, \dots) + \det(\dots, v_j, v_i, \dots) = 0 \implies \det(\dots, v_j, v_i, \dots) = -\det(\dots, v_i, v_j, \dots)
 > $$
+
+> [!remark] Deep Dive: Why is "Collision Zero" the Definition instead of "Sign Flip"?
+> In introductory undergraduate courses over $\mathbb{R}$, authors often define Rule 2 as **"swapping flips the sign"** ($\det = -\det$, called skew-symmetry) and then deduce that identical columns give $0$ by arguing:
+> $$
+> \det = -\det \implies 2 \det = 0 \implies \det = 0
+> $$
+> However, in rigorous abstract algebra (e.g., Bourbaki, Serge Lang, Hoffman & Kunze), mathematicians **strictly define** an alternating form by the collision property $\det(\dots, v, v, \dots) = 0$. Here is why:
+> 1. **The "Divide by 2" Obstacle:** To conclude $\det = 0$ from $2\det = 0$, you must divide by $2$. But in fields of characteristic $2$ (such as binary arithmetic $\mathbb{F}_2 = \{0, 1\}$ in computer science and coding theory), $1 + 1 = 0$, meaning $2 = 0$. There, $2\det = 0$ gives $0 \cdot \det = 0$ (which is always true and proves nothing!).
+> 2. **Universal Validity:** Notice that our 2-line proof above expanding $(v_i + v_j)$ never divides by anything! Therefore, **"Collision Zero $\implies$ Sign Flip" holds universally across all fields in mathematics**.
+> 3. **Formal Terminology:**
+>    - **Alternating:** $f(\dots, v, v, \dots) = 0$ (identical inputs vanish).
+>    - **Skew-Symmetric / Antisymmetric:** $f(\dots, w, v, \dots) = -f(\dots, v, w, \dots)$ (swapping inputs negates).
+>    - Over $\mathbb{R}$ and $\mathbb{C}$, **Alternating $\iff$ Skew-Symmetric** (both concepts are completely equivalent).
 
 ---
 
@@ -453,6 +466,17 @@ $$
 $$
 *(This is just the compact shorthand for all $n^n$ expanded terms before killing the zeros).*
 
+> [!remark]
+> Why we need $ij$ for $a_{ij},e_{i}$? It is because we need to expand for each column the $ij$ simply means row $i$ from column $j$. (That's why we need $n$ different running index for $n$ columns)
+> 
+> One column can be express as
+> $$
+> A_{j}= \sum_{i_{j}=1}^{n} a_{i_{j},j}e_{i_{j}} 
+> $$
+> 
+> And it is like expand in a another expand , that's why got $n$ summation. $\sum_{i_{1}=1}^{n}\dots \sum_{i_{n}=1}^{n}$. And since it is multilinear, eventually we can factor out $\det(e_{i_{1}}\dots e_{i_{n}})$. Imagine factor out last column and last expression is $a_{1n}\det(A_{1}+\dots+A_{n-1}+e_{i_{n}})$ and last 2 expression is $a_{i_{n-1}}\det(A_{1}+\dots+A_{n-1}+e_{i_{n-1}})$. So when we expand all, eventually $\det$ will only contained vector in standard basis.
+
+ 
 #### Step 2: Eliminate terms using Rule 2 (Alternating property)
 Rule 2 kills any term where two or more indices repeat ($i_p = i_q \implies \det = 0$).
 The only terms that survive are those where all indices $(i_1, \dots, i_n)$ are **completely distinct**. This is precisely a **permutation $\sigma \in S_n$**!
@@ -462,10 +486,10 @@ $$
 \det(A) = \sum_{\sigma \in S_n} \Big(a_{\sigma(1), 1} a_{\sigma(2), 2} \cdots a_{\sigma(n), n}\Big) \det(e_{\sigma(1)}, e_{\sigma(2)}, \dots, e_{\sigma(n)})
 $$
 
-#### Step 3: Evaluate $\det(e_{\sigma(1)}, \dots, e_{\sigma(n)})$ using Rule 3 (Normalization)
-To sort $(e_{\sigma(1)}, \dots, e_{\sigma(n)})$ back into $(e_1, \dots, e_n)$ takes $\operatorname{inv}(\sigma)$ swaps. Each swap multiplies the value by $-1$:
+#### Step 3: Evaluate $\det(e_{\sigma(1)}, \dots, e_{\sigma(n)})$ using the Sign-Flip Property and Rule 3 (Normalization)
+As proven in Section 2.3, each swap of adjacent columns multiplies the determinant by $-1$. To sort $(e_{\sigma(1)}, \dots, e_{\sigma(n)})$ back into the standard order $(e_1, \dots, e_n)$ takes $\operatorname{inv}(\sigma)$ swaps:
 $$
-\det(e_{\sigma(1)}, \dots, e_{\sigma(n)}) = (-1)^{\operatorname{inv}(\sigma)} \det(e_1, \dots, e_n) = \operatorname{sgn}(\sigma) \cdot 1 = \operatorname{sgn}(\sigma)
+\det(e_{\sigma(1)}, \dots, e_{\sigma(n)}) = (-1)^{\operatorname{inv}(\sigma)} \det(e_1, \dots, e_n) \overset{\text{Rule 3}}{=} \operatorname{sgn}(\sigma) \cdot 1 = \operatorname{sgn}(\sigma)
 $$
 
 Substituting this back gives the formula:

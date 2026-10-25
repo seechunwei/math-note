@@ -156,6 +156,8 @@ Element in $C$ is $\{ \emptyset \}$ which is not $A$
 >==Definition 1.2.4==.   Kazimierz Kuratowski
 Given two elements a and b, the ordered pair (a, b) is defined to be the set $\{ \{ a \},\{ a,b \} \}$.
 
+^6f10f7
+
 Definition (Hausdorff)
 Given two elements a and b, the ordered pair (a, b) is defined to be the set {{a, 1},{b, 2}}.
 

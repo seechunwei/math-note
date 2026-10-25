@@ -94,8 +94,12 @@ $$
 
 ## The p-Test for Improper Integral
 
+^4f99a4
+
 > [!theorem]
-> Suppose $p$ is any real number. Then $\int_{1}^{\infty} \frac{1}{x^{p}} \, dx$ is convergent if $p>1$ and divergent if $p<1$.
+> Suppose $p$ is any real number. Then $\int_{1}^{\infty} \frac{1}{x^{p}} \, dx$ is convergent if $p>1$ and divergent if $p\leq1$.
+
+^4c03e8
 
 Why?
 When $p=1$ , $\frac{1}{x^{p}}=\frac{1}{x}$. And notice that $\frac{1}{x}$ is continuous on $[1,\infty)$. Thus,
@@ -306,6 +310,8 @@ Thus, we can actually construct a more general version of Comparison Theorem: ^9
 > Suppose $f$ and $g$ are continuous on $[a,\infty)$. Suppose $0\leq g(x)\leq f(x)$ on $[a,\infty)$. If  $f$ and $g$ are monotonic, then
 > - $f(x)$ convergent implies $g(x)$ convergent
 > - $g(x)$ divergent implies $f(x)$ divergent
+
+^bf6817
 
 > [!remark] When is Monotonicity Needed?
 > 1. **For Integrals (Area)**: **NOT needed**. As long as $g(x) \geq 0$, the accumulating area is automatically monotonic (it only ever grows). The functions $f(x)$ and $g(x)$ can oscillate freely.
