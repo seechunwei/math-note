@@ -77,6 +77,50 @@ From 2 example above somehow it suggest that for there is a strong relation with
 > $$
 > As $n\to \infty$ the terms $a_{n}$ cannot approach to 0. Thus, by the divergence test $\sum_{i=1}^{\infty}a_{i}$ is divergent. As well as the integral $\int_{1}^{\infty} f(x) \, dx$
 
+
+Proof:
+![[integral_test_comparison.png]]
+Comparing the areas of the shaded rectangles with the area under the graph $y=f(x)$ from $1$ to $n$, we see that
+
+$$
+\sum_{i=2}^{n} f(i)\leq \int_{1}^{n}f(x)   \, dx \leq \sum_{i=1}^{n-1} f(i)
+$$
+
+Backward direction:
+Comparison Theorem approach:
+Suppose $\int_{1}^{\infty} f(x) \, dx$ is convergent. We need to show that $\sum_{i=1}^{\infty}f(i)$ is convergent.
+
+Note that
+$$
+s_{n}=f(1)+\sum_{i=2}^{n} f(i)\leq f(1)+\int_{1}^{n} f(x) \, dx 
+$$
+The inequality hold for $n\geq 2$. Since they are positive and $\sum_{i=1}^{n}f(i)$ is monotonic increasing and $f(1)+\int_{1}^{\infty} f(x) \, dx$ is convergent, it follow that by Comparison Theorem for Monotone Sequence $\sum_{i=1}^{\infty}f(i)$ is convergent.
+
+MCT approach:
+Then
+$$
+\begin{align}
+s_{n}= f(1)+ \sum_{i=2}^{n} f(i)\leq f(1)+ \int_{1}^{n} f(x) \, dx \leq f(1)+\int_{1}^{\infty} f(x) \, dx 
+\end{align}
+$$
+
+For every $n\geq 2$, implying that $\langle s_{n} \rangle_{n=1}^{\infty}$ is bounded above.
+Since $f$ is positive, the sequence $\langle s_{n} \rangle_{n=1}^{\infty}$ is increasing. Hence, by MCT, $\lim_{ n \to \infty }s_{n}$ exist and this $\sum_{i=1}^{\infty}f(i)$ is convergent. $\blacksquare$
+
+Forward direction: We prove its contrapositive, suppose $\int_{1}^{\infty} f(x) \, dx$ is divergent. We need to show $\sum_{i=1}^{\infty}f(i)$ is divergent.
+
+Note that
+$$
+s_{n}=\sum_{i=1}^{n-1}f(i)+f(n)\geq\int_{1}^{n} f(x) \, dx  +f(n)
+$$
+for $n\geq 2$. Thus, by Comparison Theorem for Monotone Sequence, it follow that $\sum_{i=1}^{\infty}f(i)$ is divergent.
+
+
+
+> [!remark]
+> Notice that if we want to use Comparison Theorem for Monotonic Sequence then we need to compare it with a sequence $T(n)=f(1)+\int_{1}^{\infty}f(x)  \, dx$ rather then a real number $f(1)+\int_{0}^{\infty} f(x) \, dx$.
+
+
 > [!remark]
 > The integral test is the bridge from p-test to p series test but not only this. (it is very useful for series containing rational function)
 
@@ -144,5 +188,69 @@ Since $\int_{3}^{\infty} \frac{1}{\left( x- \frac{5}{2} \right)^{3}} \, dx$ is c
 > We cannot compare with $\frac{1}{i^{3}}$ because $\frac{1}{\left( i-\frac{5}{2} \right)^{3}}> \frac{1}{i^{3}}$ while $\sum_{i=1}^{\infty} \frac{1}{i^{3}}$ is convergent which tell us nothing.
 
 Example 
-Test  the convergence of the series $\sum_{i=1}^{\infty} \frac{1}{i^{2}+1}$
+Comparison test approach:
+Test  the convergence of the series $\sum_{i=1}^{\infty} \frac{1}{i^{2}+1}$.
+$$
+\frac{1}{i^{2}+1}\leq\frac{1}{i^{2}}
+$$
+
+By p-series test, it follow that $\sum_{i=1}^{\infty}\frac{1}{i^{2}}$ is convergent. Note that $\frac{1}{i^{2}+1}\geq 0$ and $\frac{1}{i^{2}}\geq 0$ for all $i\geq 1$.
+
+By comparison test, it follow that $\sum_{i=1}^{\infty} \frac{1}{i^{2}+1}$ is convergent. 
+
+Integral test approach:
+In this approach we no need to create an inequality to compare or it is useful if we cannot create such inequality that can apply comparison test.
+
+Note that function $f(x)= \frac{1}{1+x^{2}}$ is continuous, positive, and decreasing on $[1,\infty)$ and so we can use the Integral Test.
+
+$$
+\begin{align}
+\int_{1}^{\infty}  \frac{1}{x^{2}+1} \, dx &=\lim_{ t \to \infty } \int_{1}^{t}  \frac{1}{x^{2}+1} \, dx  \\
+&=\lim_{ t \to \infty } [\tan ^{-1}x]^{t}_{1} \\
+&= \lim_{ t \to \infty } [\tan ^{-1}t-\tan ^{-1}1] \\
+&= \frac{\pi}{2}-\frac{\pi}{4} \\
+&= \frac{\pi}{4}
+\end{align}
+$$
+
+By integral test, it follow that $\sum_{i=1}^{\infty} \frac{1}{i^{2}+1}$ is convergent.
+
+> [!remark]
+> By using integral test, we can know the limit or the sum if the function continuous, positive and decreasing on $[1,\infty)$
+
+
+Determine whether the series $\sum_{i=1}^{\infty} \frac{\ln i}{i}$ converges or diverges.
+
+Consider the function $f(x)=\frac{\ln x}{x}$, it is continuous and positive on $[1,\infty)$, but we don't know if it is decreasing. Let's consider its derivative.
+
+$$
+\begin{align}
+f'(x)&= \frac{x\left( \frac{1}{x} \right)-\ln x}{x^{2}} \\
+&= \frac{1-\ln x}{x^{2}}
+\end{align}
+$$
+Hence, $f'(x)<0$ when $\ln x>1\implies x>e$.
+
+It follow that $f$ is continuous, positive, decreasing on $[3,\infty]$. Therefore we can use the Integral Test.
+
+$$
+\begin{align}
+\int_{3}^{\infty}  \frac{\ln x}{x} \, dx&= \lim_{ t \to \infty } \int_{3}^{t} \frac{\ln x}{x}   \, dx 
+\end{align}
+$$
+
+Let $u=\ln x\implies du= \frac{1}{x}dx\implies dx=xdu$. 
+When $x=3$, $u=e^{3}$ and when $x=t$, $u=e^{t}$
+Thus,
+
+$$
+\begin{align}
+\int_{3}^{\infty} \frac{\ln x}{x}   \, dx &= \lim_{ t \to \infty } \int_{e^{3}}^{e^{t}}{u}   \, du \\
+&=\lim_{ t \to \infty } \left[ \frac{u^{2}}{2} \right]^{e^{t}}_{e^{3}} \\
+&=\lim_{ t \to \infty } \left[ \frac{e^{2t}}{2}- \frac{e^{6}}{2} \right]  \\
+&=\infty
+\end{align}
+$$
+
+Thus, by integral test, it follow that $\sum_{i=3}^{\infty} \frac{\ln i}{i}$ is divergent. Therefore, $\sum_{i=1}^{\infty} \frac{\ln i}{i}$ is divergent.
 

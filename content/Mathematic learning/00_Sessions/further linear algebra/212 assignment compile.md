@@ -14,98 +14,23 @@ Step 3: Therefore, S is a basis for V.
 
 (a) Evaluate the student's proof. Identify the first incorrect step and explain why the reasoning is invalid. 
 
-The student proof is incorrect in step 2. Consider the theorem below:
-
-> [!theorem]
-> If there exist a 0 vector in a subset of a vector space $V$ , then the vector set is a linearly dependent set in $V$
-
-The student is trying to use the converse of this theorem to show that the vector set is linearly independent which is not true. Hence, the student cannot use the Basis Theorem to show that the 3 vectors span $V$.
 
 ---
 
 
 (b) Construct a nontrivial linear combination of $u , v ,$ w that equals the zero vector. Explain how your result affects the student's conclusion. 
 
-Let
-$$
-u=\begin{pmatrix}
-1 \\
-1 \\
-0
-\end{pmatrix},v= \begin{pmatrix}
-1 \\
-0 \\
-1
-\end{pmatrix},w=\begin{pmatrix}
-2 \\
-1 \\
-1
-\end{pmatrix}
-$$
-
-
-Consider the vector equation:
-$$
-c_1 u + c_2 v + c_3 w = \mathbf{0}
-$$
-
-Notice that, 
-$$
-u + v - w = \mathbf{0} 
-$$
-
-Since the scalars $(c_1, c_2, c_3) = (1, 1, -1) \neq (0, 0, 0)$, this is a nontrivial solution for the vector equation. By definition, the set $\{u, v, w\}$ is linearly dependent. 
-
-A basis must be linearly independent, so $S$ cannot be a basis for $V = \mathbb{C}^3$, directly contradicting the student's conclusion in Step 3.
-
 ---
 
 
 (c) The student revises the argument by replacing w with $p = ( 1 , - 1 , 1 )$ Determine whether u, v, p is a basis for V. Justify your evaluation. 
 
-Consider the matrix $A=\begin{bmatrix}u^{T} & v^{T} & p^{T}\end{bmatrix}$, by invertible matrix theorem, $A$ is invertible iff $\det A \neq 0$.
-
-Find $\det(A)$:
-$$
-\begin{align}
-\det(A) &= \begin{vmatrix}
-1 & 1 & 1  \\
-1 & 0 & -1  \\
-0 & 1 & 1 
-\end{vmatrix} \\
-&= \begin{vmatrix}
-1 & 1 & 1  \\
-0 & -1 & -2  \\
-0 & 1 & 1 
-\end{vmatrix} && (R^{1}_{2}(-1)) \\
-&= \begin{vmatrix}
-1 & 1 & 1 \\
-0 & -1 & -2 \\
-0 & 0 & -1
-\end{vmatrix} && (R^{2}_{3}(1)) \\
-&= (1)(-1)(-1) = 1
-\end{align}
-$$
-
-Thus, it follow that $\det A=1(-1)(-1)=1 \neq 0$. Thus, by 
-invertible matrix theorem, it follow that $A$ is invertible. Thus, the column of $A$ span $Col(A)$ which is $V=\mathbb{C}^{3}$ and the column of $A$ which is $\{ u^{T},v^{T},p^{T}\}$ are linearly independent. Hence, $\{ u,v,p \}$ is a basis for $V=\mathbb{C}^{3}$.
 
 ---
 
 
 (d) Explain why the condition that a set contains exactly three nonzero vectors in V is insufficient to conclude that the set is a basis. State the additional condition needed. 
 
-By definition, a subset of a vector space $V$ is a **basis** if and only if it satisfies two conditions:
-1. It is linearly independent.
-2. It spans $V$.
-
-The condition is insufficient because it cannot deduce that the set of vector is linearly independent. We can see a counter example in (b).
-
-When 3 vectors in $V=\mathbb{C}^{3}$ are linearly dependent, It cannot span $V$ by the Basis Theorem. 
-
-The additional condition needed:
-Since $dim(V)=dim(\mathbb{C}^{3})=3$  and the number of vectors in the set matches the dimension of the space,
-By the Basis theorem, the required additional condition is the three vectors are linearly independent or they span $V$. Either condition will do.
 
 ---
 
@@ -221,105 +146,130 @@ u_{1}=a+bx+0x^{2} \in V
 $$
 Thus, $U\subseteq V$.
 
-For any element $w_{1}\in W$ such that $w_{1}=cx^{2}$ for some $c\in \mathbb{C}$, it follow that
-$$
-w_{1}=0+0x+cx^{2}\in V
-$$
+To show that a subset of vector space $V$ is a subspaces, we must verify three criteria:
+i) zero vector: $0 \in S$
+ii) close under addition: if $a, b \in S$ then $a + b \in S$
+iii) close under scalar multiplication: if $a \in S$ and $k \in \mathbb{C}$, then $ka \in S$
 
-Check 0 vector:
-Let $a=0$ and $b=0$. Thus,
+For $U = \{a + bx \mid a, b \in \mathbb{C}\}$:
+i) Let $a$ and $b$ equal to zero.
+Then,
 $$
-u_{1}=0+0x=0\in U
+0 + 0x = 0 \in U
 $$
-and let $c=0$. Thus,
+Hence, $0 \in U$.
+
+ii) Let $u_1(x), u_2(x) \in U$.
+Thus, $u_1 = a_1 + b_1 x$ for some $a_1, b_1 \in \mathbb{C}$
+$u_2 = a_2 + b_2 x$ for some $a_2, b_2 \in \mathbb{C}$
 $$
 \begin{align}
-w_{1}&=0x^{2}=0\in W
+u_1 + u_2 &= (a_1 + b_1 x) + (a_2 + b_2 x) \\
+&= (a_1 + a_2) + (b_1 x + b_2 x) \\
+&= (a_1 + a_2) + (b_1 + b_2)x
 \end{align}
 $$
+Since $a_1 + a_2 \in \mathbb{C}$ and $b_1 + b_2 \in \mathbb{C}$, $u_1 + u_2 \in U$.
+Hence, $U$ is closed under addition.
 
-Closure under addition:
-For any $u_{1}=a+bx\in U$ and $u_{2}=c+dx\in U$, we have 
-
+iii) Suppose $u_1(x) = a + bx \in U$ for some $a, b \in \mathbb{C}$ and $k \in \mathbb{C}$.
 $$
 \begin{align}
-u_{1}+u_{2}&=(a+bx)+(c+dx) \\
-&=(a+c)+(bx+dx) \\
-&=(a+c)+(b+d)x 
+k(u_1) &= k(a + bx) \\
+&= ka + kbx
 \end{align}
 $$
+Since $ka, kb \in \mathbb{C}$, $k u_1 \in U$.
+Hence, $U$ is closed under scalar multiplication.
 
-Since $a+c\in \mathbb{C}$ and $b+d\in \mathbb{C}$, it follow that $u_{1}+u_{2}\in U$.
+Therefore, $U$ is a subspace of $V$.
 
-For any $w_{1}=ax^{2}\in W$ and $w_{2}=bx^{2}\in W$. We have
+For $W = \{cx^2 \mid c \in \mathbb{C}\}$:
+i) Let $c$ equal to zero.
+Then,
+$$
+0x^2 = 0 \in W
+$$
+Hence, $0 \in W$.
+
+ii) Let $w_1, w_2 \in W$.
+Thus, $w_1 = c_1 x^2$ for some $c_1 \in \mathbb{C}$
+$w_2 = c_2 x^2$ for some $c_2 \in \mathbb{C}$
 $$
 \begin{align}
-w_{1}+w_{2}&=ax^{2}+bx^{2} \\
-&=(a+b)x^{2} 
+w_1 + w_2 &= c_1 x^2 + c_2 x^2 \\
+&= (c_1 + c_2)x^2
 \end{align}
 $$
-Since $a+b\in \mathbb{C}$, it follow that $w_{1}+w_{2}\in W$.
+Since $c_1 + c_2 \in \mathbb{C}$, $w_1 + w_2 \in W$.
+Hence, $W$ is closed under addition.
 
-Closure under multiplication:
-For any $u_{1}=a+bx\in U$ and $c\in \mathbb{C}$. It follow that
+iii) Suppose $w_1 = cx^2 \in W$ for some $c \in \mathbb{C}$ and $k \in \mathbb{C}$.
 $$
 \begin{align}
-cu_{1}&=c(a+bx) \\
-&=ca+ bc x 
+k(w_1) &= k(cx^2) \\
+&= (kc)x^2
 \end{align}
 $$
+Since $kc \in \mathbb{C}$, $k w_1 \in W$.
+Hence, $W$ is closed under scalar multiplication.
 
-Since $ca\in \mathbb{C}$ and $bc\in \mathbb{C}$, it follow that $cu_{1}\in U$.
-
-For any $w_{1}=ax^{2}\in W$ and $c\in \mathbb{C}$, it follow that
-$$
-\begin{align}
-cw_{1}&=cax^{2}
-\end{align}
-$$
-Since $ca\in \mathbb{C}$, it follow that $cw_{1}\in W$.
-
-Thus, $U$ and $W$ are subspace of $V$.
+Therefore, $W$ is a subspace of $V$.
 
 > [!remark]
-> Since $U\subseteq V$ and $W\subseteq V$, it follow if an element is in $U$ or $W$ then it is also an element in $V$. Thus, the above property like associative, distributive, commutative and so on are justified by the axiom of vector space $V$  
+> Since $U\subseteq V$ and $W\subseteq V$, it follow if an element is in $U$ or $W$ then it is also an element in $V$. Thus, the property above like associative, distributive, commutative and so on are justified by the axiom of vector space $V$  
+> 
+> Note that $\mathbb{C}$ is a field, thus it is closure under addition and scalar multiplication.
+
 
 ---
 
 
 (b) Determine $U \cap W$
-
-Let $p(x) \in U \cap W$. Since $p(x) \in U$, $p(x) = a + bx$ for some $a, b \in \mathbb{C}$. Since $p(x) \in W$, $p(x) = cx^2$ for some $c \in \mathbb{C}$.
-Equating the two:
+ Let $p(x) \in U \cap W$.
+Then $p(x) = a + bx \in U$ and $p(x) = cx^2 \in W$.
+Thus,
 $$
 \begin{align}
-a + bx &= cx^2
+p(x) = a + bx &= cx^2 \\
+a + bx - cx^2 &= 0
 \end{align}
 $$
+Since this is the zero polynomial, all coefficient must be zero.
+Then $a = b = c = 0$.
+Hence, $p(x) = 0$.
+Therefore,
+$$
+p(x) \in U \cap W \implies 0 \in U \cap W \implies U \cap W = \{0\}
+$$
 
-It follow that $a=b=c=0$. Thus, $u_{1}=0+0x+0cx^{2}$ which is the 0 vector in $V$. Hence, $U\cap W=\{ 0 \}$.
 
 (c) Determine $U + W$ and hence decide whether $V = U + W$
-
+By definition, $U + W = \{u + w \mid u \in U, w \in W\}$.
+Let $u_1 = a + bx \in U$ for some $a, b \in \mathbb{C}$
+$w_1 = cx^2 \in W$ for some $c \in \mathbb{C}$
 $$
 \begin{align}
-U+W&=\{ u+w| u\in U,w\in W \} \\
-&=\{ (a+bx)+cx^{2}|a,b,c\in \mathbb{C} \} \\
-&= \{ a+bx+cx^{2}|a,b,c\in \mathbb{C} \}
+u_1 + w_1 &= (a + bx) + cx^2 \\
+&= a + bx + cx^2
 \end{align}
 $$
-Comparing this with the definition of $V$:
-$$
-V=\{ a_{1}+a_{2}x+a_{3}x^{2}|a_{1},a_{2},a_{3}\in \mathbb{C} \}
-$$
-
-By identifying $a_{1}=a,a_{2}=b$ and $a_{3}=c$, every element $V$ can be written as an element of $U+W$ and vice versa. Hence, $V=U+W$. $\blacksquare$
+Since $a, b, c \in \mathbb{C}$, then $U + W = \{a + bx + cx^2 \mid a, b, c \in \mathbb{C}\}$.
+$V = P_2(\mathbb{C}) = \{a + bx + cx^2 \mid a, b, c \in \mathbb{C}\}$.
+Therefore, $V = U + W$.
 
 
 (d) Determine whether $V = U \oplus W$ . Justify your answer. 
 
-Yes, $V = U \oplus W$. By theorem, a vector space is the direct sum $V = U \oplus W$ if and only if $V = U + W$ and $U \cap W = \{ 0 \}$. Since both conditions were shown in (b) and (c), it follows that $V = U \oplus W$. $\blacksquare$ 
+ By the theorem, the vector space $V$ is a direct sum of subspaces $U$ and $W$ iff
+i) $V = U + W$
+ii) $U \cap W = \{0\}$
 
+Since both condition is show in (b) and (c).
+Therefore,
+$$
+V = U \oplus W
+$$
 
 ---
 

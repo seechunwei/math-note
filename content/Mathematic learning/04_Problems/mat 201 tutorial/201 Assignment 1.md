@@ -266,16 +266,6 @@ for all $n\geq 1$.
 
 Hence, we have shown that $n+1>n\implies t_{n}>t_{n+1}$. Thus, by definition $t_{n}$ is a strictly decreasing sequence. And by (a) we know that $t_{n}$ is bounded below by $0$. Thus, by Monotone Convergence Theorem, it follow that the sequence $\langle t_{n} \rangle_{n=1}^{\infty}$ is convergent. $\blacksquare$
 
-> [!remark]
-> Notice that the $1+\frac{1}{2}+\frac{1}{3}+\dots+\frac{1}{n}$ is the harmonic series. From the lecture slide 9, we know that the harmonic series is divergent and $\lim_{ n \to \infty }\ln n =\infty$. Thus, $\lim_{ n \to \infty }t_{n}$ is a $\infty-\infty$ type of indeterminate form.
-> 
-> The harmonic series accumulates area via discrete rectangle of $f(x)=\frac{1}{x}$ while $\ln n$ accumulates area smoothly under the exact same curve, they diverge at the same logarithmic speed!!
-> 
-> When you subtract $\ln n$, you strip away that shared infinite growth, leaving behind only the accumulated "excess area" between the rectangles and the smooth curve. 
-> $$
-> \gamma=\lim_{ n \to \infty } \left( \sum_{i=1}^{n} \frac{1}{k}-\ln n \right)\approx 0.5772\dots
-> $$
-> Even though Euler introduced $\gamma$ in 1735, **to this day, nobody knows whether $\gamma$ is rational or irrational!** It is widely suspected to be transcendental (like $\pi$ and $e$), but a proof remains one of the great open problems in number theory.
 
 ---
 

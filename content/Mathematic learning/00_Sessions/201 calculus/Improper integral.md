@@ -306,7 +306,7 @@ Now think of another scenario, can $g(x)$ less than $f(x)$ but still oscillating
 The answer is it can oscillate but we concern about $\int_{a}^{b} g(x) \, dx$ not $g(x)$ itself. Even though $g(x)$ is oscillating, but it is still $\geq 0$, thus the area under the curve is increasing from $a$ to $b$. (a monotonic and bounded above function is convergent) ![[Sequence#^f3edcd]]
 Thus, we can actually construct a more general version of Comparison Theorem: ^96cfa0
 
-> [!theorem]
+> [!theorem] **Comparison Principle for Monotone Functions/Sequences**:
 > Suppose $f$ and $g$ are continuous on $[a,\infty)$. Suppose $0\leq g(x)\leq f(x)$ on $[a,\infty)$. If  $f$ and $g$ are monotonic, then
 > - $f(x)$ convergent implies $g(x)$ convergent
 > - $g(x)$ divergent implies $f(x)$ divergent
