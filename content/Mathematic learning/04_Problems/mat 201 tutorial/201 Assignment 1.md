@@ -1,3 +1,9 @@
+---
+author:
+  - SEE CHUN WEI (24302351)
+  - CH'NG MING KANG (24304323)
+---
+
 1) Prove by induction that ${ \lim_{ x \to \infty }\frac { e ^ { x } } { x ^ { n } } } = \infty$ for every positive integer n. Use L'Hospital's $x \to \infty$ Rule to assist your induction. 
 (This shows that the exponential function grows faster than $x ^ { n }$ for any positive integer n.) 
 
@@ -111,12 +117,13 @@ a_{n}>1\implies \sqrt[3]{ a_{n} }> \sqrt[3]{ 1}=1
 \end{align}
 $$
 
-Hence, $P(n+1)$ is true. By principle of mathematical induction, it follow that $a_{n}>1$ for all $n\in \mathbb{Z}^{+}$.
+Hence, $P(n+1)$ is true. By principle of mathematical induction, it follow that $a_{n}>1$ for all $n\in \mathbb{Z}^{+}$. 
 
 
 (b) Assuming the fact that the sequence $\langle a _ { n } \rangle _ { n = 1 } ^ { \infty }$ is decreasing, deduce that the sequence is convergent. 
 
 Notice that from (a), we know that the sequence $\langle a_{n} \rangle_{n=1}^{\infty}$ is bounded below by $1$ because $a_{n}\geq1$ for all $n\geq 1$. Thus, by The Monotone Convergence Theorem, it follow that it is convergent.
+
 
 (c) Determine the limit of the sequence $\langle a _ { n } \rangle _ { n = 1 } ^ { \infty }$
 
@@ -141,15 +148,6 @@ Thus, $L=0$ or $L=1$ or $L=-1$. Since $a_{n}>1$ for all $n\geq 1$. Thus, it foll
 
 Suppose $\langle a _ { n } \rangle _ { n = 1 } ^ { \infty }$ is an increasing sequence and suppose $\langle a _ { n _ { k } } \rangle _ { k = 1 } ^ { \infty }$ is a subsequence such that $\operatorname* { l i m } _ { k \to \infty } a _ { n _ { k } } = \infty$ . Prove that $\lim_{ n \to \infty }a_{n}=\infty$. 
 
-We want to trap the interval between the consecutive step $a_{n_{k}}$ and $a_{nk+1}$ 
-
-Proof:
-For any integer $n$, there exist a integer $n_{k}$ such that $n_{k}<n$ for some $k\in \mathbb{Z}^{+}$. Since $\langle a_n \rangle_{n=1}^{\infty}$ is an increasing sequence, it follow that
-$$
-a_{n_{k}}\leq a_{n}
-$$
-Note that $\lim_{ k \to \infty }a_{n_{k}}=\infty$. By Comparison Theorem, it follow that $\lim_{ n \to \infty }a_{n}=\infty$.
-
 Proof:
 *(Note: To avoid confusion between the running index $n$ and the subsequence indices $n_k$, we denote the subsequence indices by $m_k$ instead of $n_k$.)* ^ec8d98
 
@@ -163,7 +161,7 @@ $$
 
 Thus, as $n\to \infty$, the index $n$ eventually surpasses every $m_{j}$. Therefore, $k(n)\to \infty$, which means $\lim_{ n \to \infty }a_{m_{k(n)}}=\lim_{ k \to \infty }a_{m_{k}}=\infty$.
 
-Since $a_{m_{k(n)}}\leq a_{n}$ for all $n\geq m_{1}$ and $\lim_{ n \to \infty }a_{m_{k(n)}}=\infty$, by the Comparison Theorem, it follow that $\lim_{ n \to \infty }a_{n}=\infty$. $\blacksquare$
+Since $a_{m_{k(n)}}\leq a_{n}$ for all $n\geq m_{1}$ and $\lim_{ n \to \infty }a_{m_{k(n)}}=\infty$, by the Comparison Theorem for Monotonic Sequence, it follow that $\lim_{ n \to \infty }a_{n}=\infty$. $\blacksquare$
 
 ---
 

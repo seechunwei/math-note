@@ -73,6 +73,8 @@ Hence, $\lim_{ n \to \infty }s_{n}$ does not exist because the term oscillate be
 
 ## Standard Laws for Series
 
+^80f337
+
 If the series $\sum_{i=1}^{\infty}a_{i}$ and $\sum_{i=1}^{\infty}b_{i}$ are convergent, then the series 
 $$
 \sum_{i=1}^{\infty} ca_{i},\sum_{i=1}^{\infty} (a_{i}+b_{i}),\sum_{i=1}^{\infty} (a_{i}-b_{i})

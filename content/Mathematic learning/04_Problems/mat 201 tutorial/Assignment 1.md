@@ -88,7 +88,7 @@ Notice that $x^{2}> 0$, thus it follow that $\sqrt[3]{ x^{2} }> 0$. Thus, $f'(x)
 
 Hence, $f(x)$ is a strictly increasing function. By definition it follow that $x_{1}>x_{2}\implies f(x_{1})> f(x_{2})$.
  
-Notice that $5>1=1^{3}$. Thus, it follow that 
+Notice that $5>1$. Thus, it follow that 
 $$
 f(5)>f(1^{3})\implies \sqrt[3]{ 5 }>\sqrt[3]{ 1^{3} }=1
 $$
@@ -140,12 +140,13 @@ Suppose $\langle a _ { n } \rangle _ { n = 1 } ^ { \infty }$ is an increasing se
 
 We want to trap the interval between the consecutive step $a_{n_{k}}$ and $a_{nk+1}$ 
 
-Proof:
-For any integer $n$, there exist a integer $n_{k}$ such that $n_{k}<n$ for some $k\in \mathbb{Z}^{+}$. Since $\langle a_n \rangle_{n=1}^{\infty}$ is an increasing sequence, it follow that
-$$
-a_{n_{k}}\leq a_{n}
-$$
-Note that $\lim_{ k \to \infty }a_{n_{k}}=\infty$. By Comparison Theorem, it follow that $\lim_{ n \to \infty }a_{n}=\infty$.
+> [!warning]
+> Proof:
+> For any integer $n$, there exist a integer $n_{k}$ such that $n_{k}<n$ for some $k\in \mathbb{Z}^{+}$. Since $\langle a_n \rangle_{n=1}^{\infty}$ is an increasing sequence, it follow that
+> $$
+> a_{n_{k}}\leq a_{n}
+> $$
+> Note that $\lim_{ k \to \infty }a_{n_{k}}=\infty$. By Comparison Theorem, it follow that $\lim_{ n \to \infty }a_{n}=\infty$.
 
 > [!remark] Remark
 > Flaw 1:
@@ -178,7 +179,7 @@ $$
 
 Thus, as $n\to \infty$, the index $n$ eventually surpasses every $m_{j}$. Therefore, $k(n)\to \infty$, which means $\lim_{ n \to \infty }a_{m_{k(n)}}=\lim_{ k \to \infty }a_{m_{k}}=\infty$.
 
-Since $a_{m_{k(n)}}\leq a_{n}$ for all $n\geq m_{1}$ and $\lim_{ n \to \infty }a_{m_{k(n)}}=\infty$, by the Comparison Theorem, it follow that $\lim_{ n \to \infty }a_{n}=\infty$. $\blacksquare$
+Since $a_{m_{k(n)}}\leq a_{n}$ for all $n\geq m_{1}$ and $\lim_{ n \to \infty }a_{m_{k(n)}}=\infty$, by the Comparison Theorem for Monotonic Sequence, it follow that $\lim_{ n \to \infty }a_{n}=\infty$. $\blacksquare$
 
 ---
 
