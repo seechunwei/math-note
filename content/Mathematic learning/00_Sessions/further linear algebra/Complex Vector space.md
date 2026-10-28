@@ -15,6 +15,44 @@ $$
 
 where $i_{n}$ is the vector with $n-th$ entry is $i$ and other entry is $0$.
 
+> [!theorem] Dimension of a Complex Vector Space over $\mathbb{R}$ (Realification)
+> Let $V$ be a finite-dimensional vector space over $\mathbb{C}$. By restricting scalar multiplication to the real numbers $\mathbb{R}$, $V$ becomes a vector space over $\mathbb{R}$ (denoted $V_{\mathbb{R}}$).
+> 
+> If $\dim_{\mathbb{C}}(V) = n$, then:
+> $$\dim_{\mathbb{R}}(V) = 2 \dim_{\mathbb{C}}(V) = 2n$$
+
+^3475e4
+
+> [!proof] Basis Construction & Proof
+> Let $\mathcal{B} = \{v_1, v_2, \dots, v_n\}$ be a basis of $V$ over $\mathbb{C}$. 
+> Then the set of $2n$ vectors:
+> $$\mathcal{B}_{\mathbb{R}} = \{v_1, iv_1, \; v_2, iv_2, \; \dots, \; v_n, iv_n\}$$
+> forms a basis of $V$ over $\mathbb{R}$.
+> 
+> 1. **Spanning over $\mathbb{R}$:**
+>    Any $v \in V$ can be written over $\mathbb{C}$ as $v = \sum_{j=1}^n c_j v_j$ for complex scalars $c_j \in \mathbb{C}$.
+>    Decompose each scalar into real and imaginary parts: $c_j = a_j + i b_j$ where $a_j, b_j \in \mathbb{R}$:
+>    $$v = \sum_{j=1}^n (a_j + i b_j) v_j = \sum_{j=1}^n a_j v_j + \sum_{j=1}^n b_j (iv_j)$$
+>    Since $a_j, b_j \in \mathbb{R}$, $v$ is expressed as a real linear combination of $\mathcal{B}_{\mathbb{R}}$. Thus, $\operatorname{span}_{\mathbb{R}}(\mathcal{B}_{\mathbb{R}}) = V$.
+> 
+> 2. **Linear Independence over $\mathbb{R}$:**
+>    Suppose a real linear combination evaluates to the zero vector:
+>    $$\sum_{j=1}^n a_j v_j + \sum_{j=1}^n b_j (iv_j) = \mathbf{0} \quad (a_j, b_j \in \mathbb{R})$$
+>    Regrouping by complex scalars:
+>    $$\sum_{j=1}^n (a_j + i b_j) v_j = \mathbf{0}$$
+>    Since $\{v_1, \dots, v_n\}$ is linearly independent over $\mathbb{C}$, every complex coefficient must vanish:
+>    $$a_j + i b_j = 0 + 0i \implies a_j = 0 \quad \text{and} \quad b_j = 0 \quad \text{for all } j$$
+>    Hence, all $2n$ real coefficients are zero, proving $\mathcal{B}_{\mathbb{R}}$ is linearly independent over $\mathbb{R}$.
+> 
+> $$\therefore \dim_{\mathbb{R}}(V) = |\mathcal{B}_{\mathbb{R}}| = 2n = 2 \dim_{\mathbb{C}}(V)$$
+
+> [!note] Field Extension Perspective (Tower Law)
+> In abstract algebra, this is an application of the field extension degree formula:
+> $$\dim_{\mathbb{R}}(V) = [\mathbb{C} : \mathbb{R}] \cdot \dim_{\mathbb{C}}(V) = 2 \dim_{\mathbb{C}}(V)$$
+> because the field degree $[\mathbb{C} : \mathbb{R}] = 2$ with standard basis $\{1, i\}$ over $\mathbb{R}$.
+
+
+
 ---
 
 ## Sum and Direct Sum
@@ -64,6 +102,9 @@ $cu_{1}\in U$ and $cw_{1}\in W$. Thus, $cv_{1}\in U+W$. Thus, it is a subspace. 
 > $$
 
 ### Equivalent Conditions for Direct Sum
+
+^0339db
+
 For two subspaces $U, W \subseteq V$, the following statements are equivalent:
 1. $V = U \oplus W$ (every $v \in V$ has a unique representation $v = u + w$).
 2. $V = U + W$ and $U \cap W = \{0\}$.
@@ -110,9 +151,76 @@ $U \cap W = \{0\}$ ensures that the two subspaces share no non-zero vectors. The
 > > - $(\implies)$ Suppose the combined set is linearly independent. If $v \in U \cap W$, then $v = \sum a_i u_i$ and $v = \sum b_j w_j$. Subtracting gives $\sum a_i u_i - \sum b_j w_j = 0$. By linear independence, all coefficients are $0$, so $v = 0$. Thus $U \cap W = \{0\}$.
 > > - $(\impliedby)$ Suppose $U \cap W = \{0\}$. If $\sum a_i u_i + \sum b_j w_j = 0$, then $\sum a_i u_i = -\sum b_j w_j \in U \cap W = \{0\}$. Since $\{u_i\}$ and $\{w_j\}$ are bases of $U$ and $W$, this forces all $a_i = 0$ and $b_j = 0$. Hence the combined set is linearly independent.
 
+^e822c9
+
 > [!warning] Distinction: "Subspace" vs. "Direct Sum"
 > - **$U + W$ is ALWAYS a subspace of $V$:** No independence is needed. Even if $U = W$ (identical bases), $U + U = U$ is still a valid subspace.
 > - **Linear independence characterizes the DIRECT sum ($U \oplus W$):** The linear independence of the combined basis is what guarantees the decomposition $v = u + w$ is unique (no non-zero overlap).
+
+
+### Generalization: Extension to $k \ge 3$ Subspaces & The Intersection Trap
+
+> [!warning] The Intersection Trap for $k \ge 3$ Subspaces
+> It is tempting to assume that $W_1 \oplus \dots \oplus W_k \iff \bigcap_{i=1}^k W_i = \{0\}$ or that pairwise intersections $W_i \cap W_j = \{0\}$ suffice. **Both assumptions are FALSE!**
+> 
+> **Why? Look at the algebra:**
+> - **For 2 subspaces:** A non-trivial relation is $u + w = \mathbf{0} \implies u = -w$. 
+>   The left side is in $U$, the right is in $W$, so $u \in U \cap W$. Hence, linear dependence directly means $U \cap W \neq \{0\}$.
+> - **For 3 subspaces:** A non-trivial relation is $w_1 + w_2 + w_3 = \mathbf{0} \implies w_3 = -(w_1 + w_2)$.
+>   The left side is in $W_3$, but the right side lives in the **sum** $(W_1 + W_2)$!
+>   Therefore, linear dependence means:
+>   $$W_3 \cap (W_1 + W_2) \neq \{0\}$$
+>   It does **not** mean $w_3 \in W_1 \cap W_2 \cap W_3$.
+> 
+> **Geometric Counterexample in $\mathbb{R}^2$ [[FLA tutorial 2#^ea0d58]]:**
+> Let $W_1$ be the $x$-axis, $W_2$ be the $y$-axis, and $W_3$ be the line $y = x$.
+> - All pairwise intersections are trivial: $W_1 \cap W_2 = \{0\}$, $W_1 \cap W_3 = \{0\}$, $W_2 \cap W_3 = \{0\}$.
+> - The mutual intersection is trivial: $W_1 \cap W_2 \cap W_3 = \{0\}$.
+> - **Yet the sum is NOT direct:** $(1, 1) = (1, 0) + (0, 1)$ shows that $(1, 1) \in W_3 \cap (W_1 + W_2)$, so representations of vectors are not unique!
+> 
+> **Intuition: Equality ($w_1 = w_2 = w_3$) vs. Summing to Zero ($w_1 + w_2 + w_3 = \mathbf{0}$):**
+> - The intersection condition $W_1 \cap W_2 \cap W_3 = \{0\}$ only asks about a single vector belonging to all three simultaneously:
+>   $$w_1 = w_2 = w_3 = v \implies v = \mathbf{0}$$
+>   It only guarantees that if vectors from each subspace are forced to be the **exact same vector**, they must be $\mathbf{0}$.
+> - The direct sum condition $W_1 \oplus W_2 \oplus W_3$ is far stronger: it demands that their **sum cannot cancel out**:
+>   $$w_1 + w_2 + w_3 = \mathbf{0} \implies w_1 = w_2 = w_3 = \mathbf{0}$$
+>   Here, the vectors $w_1, w_2, w_3$ can be completely distinct! In $(1, 0) + (0, 1) + (-1, -1) = (0, 0)$, none of the three vectors are equal to each other, so $W_1 \cap W_2 \cap W_3 = \{0\}$ was completely powerless to prevent them from balancing to $\mathbf{0}$.
+
+
+> [!theorem] Universal Direct Sum Theorem ($k$ Subspaces)
+> Let $U_1, U_2, \dots, U_k$ be subspaces of $V$. The sum $U_1 + \dots + U_k$ is a **direct sum** (denoted $U_1 \oplus \dots \oplus U_k$) if and only if any of the following equivalent conditions hold:
+> 1. **Unique Representation in the Sum:** Every vector $v \in U_1 + \dots + U_k$ can be written uniquely as:
+>    $$v = u_1 + u_2 + \dots + u_k \quad \text{where } u_1 \in U_1, \; u_2 \in U_2, \; \dots, \; u_k \in U_k$$
+> 2. **Trivial Zero Representation:** If arbitrary vectors $u_1 \in U_1, \dots, u_k \in U_k$ satisfy:
+>    $$u_1 + u_2 + \dots + u_k = \mathbf{0}$$
+>    then every single vector must be zero: $u_1 = u_2 = \dots = u_k = \mathbf{0}$.
+> 3. **True Intersection Condition:** For every $j \in \{1, \dots, k\}$, the subspace $U_j$ intersects the sum of all the other subspaces only at zero:
+>    $$U_j \cap \left( \sum_{i \neq j} U_i \right) = \{0\}$$
+> 4. **Linear Independence of Combined Bases:** If $\mathcal{B}_j$ is a basis for each subspace $U_j$, then the combined union:
+>    $$\mathcal{B} = \bigcup_{j=1}^k \mathcal{B}_j$$
+>    is **linearly independent** (and forms a basis of $U_1 \oplus \dots \oplus U_k$).
+> 5. **Dimension of the Sum (Finite-Dimensional):**
+>    $$\dim(U_1 \oplus \dots \oplus U_k) = \sum_{j=1}^k \dim(U_j)$$
+
+> [!proof] Justification of Statement 2 (Why Zero Sum Forces $u_j = \mathbf{0}$)
+> - **Equivalence with Uniqueness (Statement 1):** If a vector $v$ has two representations $v = \sum u_j = \sum u_j'$, subtracting them yields:
+>   $$\sum_{j=1}^k (u_j - u_j') = \mathbf{0}$$
+>   Because each subspace is closed under subtraction, each difference $(u_j - u_j') \in U_j$. Statement 2 guarantees that any vectors from the subspaces summing to $\mathbf{0}$ must individually be $\mathbf{0}$, forcing $u_j - u_j' = \mathbf{0} \implies u_j = u_j'$ for all $j$. Thus, the representation is unique.
+> - **Equivalence with True Intersection (Statement 3):** 
+>   Suppose $u_1 + \dots + u_k = \mathbf{0}$. Isolate any arbitrary vector $u_j$:
+>   $$u_j = -\sum_{i \neq j} u_i$$
+>   The left side lives in $U_j$, while the right side lives in the sum of all other subspaces $\sum_{i \neq j} U_i$. Therefore:
+>   $$u_j \in U_j \cap \left( \sum_{i \neq j} U_i \right) = \{\mathbf{0}\} \implies u_j = \mathbf{0}$$
+>   Repeating this isolation for each $j \in \{1, \dots, k\}$ forces every $u_j = \mathbf{0}$.
+>   *(Physical Intuition: To cancel out a non-zero vector $u_j \in U_j$, the remaining subspaces must together be capable of constructing its exact opposite $-u_j$. Since they share no common directions with $U_j$ beyond $\{\mathbf{0}\}$, it is impossible to cancel out non-zero components).*
+
+> [!remark] When Does the Direct Sum Equal the Whole Space $V$?
+> The conditions above only prove that the subspaces have no redundant overlap (i.e. the sum is **direct**, living as a subspace inside $V$).
+> 
+> To conclude that the direct sum equals the **entire ambient space** $V$ ($V = U_1 \oplus \dots \oplus U_k$), you must additionally confirm that they **span** all of $V$:
+> 1. **General Case:** Show $U_1 + \dots + U_k = V$ (every vector in $V$ can be formed by adding vectors from the subspaces).
+> 2. **Finite-Dimensional Shortcut:** If the sum is already direct, simply check if the total dimension matches:
+>    $$\sum_{j=1}^k \dim(U_j) = \dim(V)$$
 
 
 
