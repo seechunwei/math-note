@@ -862,4 +862,4 @@ Example of implicit solution for non linear ODE:
 ## 🔗 Related Notes & Next Steps
 - [[Mathematic learning/00_Sessions/Calculus/Chapter 3 Functions|Chapter 3 Functions]] — Domain, codomain, and relations vs functions
 - [[Mathematic learning/00_Sessions/Calculus/Basic Properties of Numbers|Basic Properties of Numbers]] — Supremum, infimum, and intervals of $\mathbb{R}$
-- [[Mathematic learning/00_Sessions/further linear algebra/Classical Theory of Determinants|Classical Theory of Determinants]] — Linear independence of solution families (Wronskian preview)
+- [[Classical Theory of Determinants|Classical Theory of Determinants]] — Linear independence of solution families (Wronskian preview)

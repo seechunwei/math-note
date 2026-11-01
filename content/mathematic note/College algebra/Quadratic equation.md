@@ -17,7 +17,7 @@ we know that the $r$ is the horizontal step that move the graph in opposite dire
 Notice that this is exactly the form where we will get in completing the square
 $$
 \begin{align}
-a\left( \left( x+\frac{b}{2a} \right)^{2}-\left( \frac{b}{2a} \right)^{2}+\frac{c}{a} \\ \right)
+a\left( \left( x+\frac{b}{2a} \right)^{2}-\left( \frac{b}{2a} \right)^{2}+\frac{c}{a}  \right)
 \end{align}
 $$
 

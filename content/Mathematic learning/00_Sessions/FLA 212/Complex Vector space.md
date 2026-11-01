@@ -46,6 +46,9 @@ where $i_{n}$ is the vector with $n-th$ entry is $i$ and other entry is $0$.
 > 
 > $$\therefore \dim_{\mathbb{R}}(V) = |\mathcal{B}_{\mathbb{R}}| = 2n = 2 \dim_{\mathbb{C}}(V)$$
 
+> [!remark]
+> In other word if $\{ v_{1},\dots,v_{n} \}$ is a basis over $\mathbb{C}$, then $\{ v_{1},iv_{1},\dots,v_{n},iv_{n} \}$ is a basis over $\mathbb{R}$ 
+
 > [!note] Field Extension Perspective (Tower Law)
 > In abstract algebra, this is an application of the field extension degree formula:
 > $$\dim_{\mathbb{R}}(V) = [\mathbb{C} : \mathbb{R}] \cdot \dim_{\mathbb{C}}(V) = 2 \dim_{\mathbb{C}}(V)$$
@@ -222,6 +225,36 @@ $U \cap W = \{0\}$ ensures that the two subspaces share no non-zero vectors. The
 > 2. **Finite-Dimensional Shortcut:** If the sum is already direct, simply check if the total dimension matches:
 >    $$\sum_{j=1}^k \dim(U_j) = \dim(V)$$
 
+> [!comparison] Strategy Guide: Statement 2 (Trivial Zero) vs. Statement 4 (Combined Bases)
+> What is the core difference between these two tests, and when should you choose one over the other in practice?
+> 
+> | Feature | Statement 2: Trivial Zero Representation | Statement 4: Combined Bases Theorem |
+> | :--- | :--- | :--- |
+> | **Condition** | $\sum u_j = \mathbf{0} \implies u_j = \mathbf{0}$ for arbitrary $u_j \in U_j$ | Combined set $\bigcup \mathcal{B}_j$ is linearly independent |
+> | **Scope** | Universal quantifier: must hold for **all** vectors in $U_j$ | Finite quantifier: tested only on **basis vectors** |
+> | **Practical Nature** | Intuitive / Counterexample test | Algorithmic / Computational matrix test |
+> 
+> #### 1. When to Use Statement 2 (Trivial Zero Representation)
+> - **Disproving a Direct Sum (Finding Counterexamples):** 
+>   To show a sum is **NOT direct**, Statement 2 is unbeatable in speed: you only need to produce **one concrete non-zero combination** $u_1 + \dots + u_k = \mathbf{0}$. You don't need to find bases or row-reduce matrices (e.g. $(1, 0) + (0, 1) + (-1, -1) = \mathbf{0} \implies \text{not direct immediately}$).
+> - **Abstract Proofs (No Coordinates / Infinite Dimensions):**
+>   When working with abstract operators or subspace properties (e.g. $V = \ker(T) \oplus \operatorname{im}(T)$ for projections $T^2 = T$, or $M_{n\times n} = \text{Sym} \oplus \text{Skew}$), no concrete bases are given. Applying operator definitions directly yields $u_1 = u_2 = \mathbf{0}$ without ever choosing coordinates.
+> 
+> #### 2. When to Use Statement 4 (Combined Bases Theorem)
+> - **Proving Concrete Direct Sums ($\mathbb{R}^n, \mathbb{C}^n$, Polynomials):**
+>   To *prove* a sum is direct via Statement 2, you cannot just pick 1 vector—you must handle arbitrary elements algebraically, which requires deciding which vectors to choose. Statement 4 removes all guesswork:
+>   1. Find a basis for each subspace $U_j$.
+>   2. Stack them into columns of a matrix $A = [\mathcal{B}_1 \mid \dots \mid \mathcal{B}_k]$.
+>   3. Compute $\operatorname{rank}(A)$ or $\det(A)$. Full column rank $\iff$ Direct sum.
+> - **Automatic Counterexample Generator:**
+>   If the combined bases turn out to be linearly dependent, the free variables from RREF will automatically output the exact non-trivial linear combination that produces $\mathbf{0}$, with zero trial and error.
+> 
+> **Rule of Thumb:**
+> - **Concrete coordinates / numbers?** $\to$ Use **Statement 4** (purely mechanical, no guesswork).
+> - **Obvious counterexample in sight?** $\to$ Use **Statement 2** (spot the non-zero sum to $\mathbf{0}$).
+> - **Abstract operator / theoretical proof?** $\to$ Use **Statement 2** (algebra on abstract vectors).
+^diff-zero-vs-bases
+
 
 
 ---
@@ -286,52 +319,6 @@ $$
   $$
   Here $\mathbb{R}^2 = U \oplus W$ is a direct sum, but $\langle (1, 0), (1, 1) \rangle = 1 \neq 0$, so it is **not** an orthogonal direct sum.
 - **When orthogonality is already known:** If $U \perp W$ is already given, then $\dim(U) + \dim(W) = \dim(V)$ guarantees that $U + W = V$, confirming $V = U \oplus^\perp W$.
-
----
-
-## Application: Row Space and Nullspace
-### Following the Chain: Orthogonal $\implies$ Direct Sum $\implies$ Full Decomposition
-
-Consider an $m \times n$ matrix $A$. Both $\operatorname{Row}(A)$ and $\operatorname{Null}(A)$ are subspaces of the same ambient space $\mathbb{F}^n$.
-
-#### 1. Orthogonal ($\operatorname{Row}(A) \perp \operatorname{Null}(A)$)
-By definition of the nullspace, if $x \in \operatorname{Null}(A)$, then $Ax = 0$:
-$$
-\begin{bmatrix} r_1^T \\ r_2^T \\ \vdots \\ r_m^T \end{bmatrix} x = \begin{bmatrix} r_1 \cdot x \\ r_2 \cdot x \\ \vdots \\ r_m \cdot x \end{bmatrix} = \begin{bmatrix} 0 \\ 0 \\ \vdots \\ 0 \end{bmatrix}
-$$
-Every vector $x \in \operatorname{Null}(A)$ is orthogonal to every row $r_i$ of $A$. Since $\operatorname{Row}(A)$ is the span of the rows, any $r \in \operatorname{Row}(A)$ satisfies:
-$$
-\langle r, x \rangle = 0 \implies \operatorname{Row}(A) \perp \operatorname{Null}(A)
-$$
-
-#### 2. Orthogonal $\implies$ Direct Sum
-Because orthogonality guarantees that they share only the zero vector:
-$$
-\operatorname{Row}(A) \cap \operatorname{Null}(A) = \{0\}
-$$
-(If $v$ were in both, $\langle v, v \rangle = 0 \implies v = 0$).  
-Therefore, their sum is automatically an orthogonal direct sum:
-$$
-\operatorname{Row}(A) \oplus^\perp \operatorname{Null}(A)
-$$
-
-#### 3. Dimension $\implies$ The Fundamental Theorem Decomposition
-From the Rank-Nullity Theorem:
-- $\dim(\operatorname{Row}(A)) = \operatorname{rank}(A) = r$
-- $\dim(\operatorname{Null}(A)) = \operatorname{nullity}(A) = n - r$
-
-Adding their dimensions:
-$$
-\dim(\operatorname{Row}(A)) + \dim(\operatorname{Null}(A)) = r + (n - r) = n = \dim(\mathbb{F}^n)
-$$
-Because they are orthogonal and their dimensions sum to the full dimension $n = \dim(\mathbb{F}^n)$, they span all of $\mathbb{F}^n$:
-$$
-\mathbb{F}^n = \operatorname{Row}(A) \oplus^\perp \operatorname{Null}(A)
-$$
-Hence, the nullspace is the unique orthogonal complement of the row space:
-$$
-\operatorname{Null}(A) = (\operatorname{Row}(A))^\perp
-$$
 
 
 ---

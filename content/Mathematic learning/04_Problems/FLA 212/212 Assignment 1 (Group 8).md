@@ -1,3 +1,11 @@
+---
+author:
+  - CONNIE CHEN WAN TING
+  - LIM YEE HONG
+  - NUR AISYAH BINTI TAJUDIN
+  - SEE CHUN WEI
+---
+
 1. Let $V = \mathbb { C } ^ { 3 }$ be the vector space over C, and consider the vectors 
 
 $$
@@ -14,23 +22,74 @@ Step 3: Therefore, S is a basis for V.
 
 (a) Evaluate the student's proof. Identify the first incorrect step and explain why the reasoning is invalid. 
 
+ Step 1 is correct because all three vectors u, v and w are nonzero. 
+
+Step 2 is the first incorrect step. Having exactly three nonzero vectors in $V = \mathbb{C}^3$ does not guarantee that they span $V$ . The vectors must also be linearly independent. In this case, 
+
+$$
+\begin{array}{r l} {u + v} & {= (1, 1, 0) + (1, 0, 1)} \\ & {= (2, 1, 1)} \\ & {= w} \end{array}
+$$
+
+Therefore, the vectors are linearly dependent. 
+
+By the definition of a basis, a set of vectors in a vector space is a basis if and only if it spans the space and is linearly independent. Since u, v, w are linearly dependent, the set $S = \{u, v, w\}$ is not a basis for V. 
+
+Hence, the student's conclusion in Step 3 is incorrect.
 
 ---
 
-
 (b) Construct a nontrivial linear combination of $u , v ,$ w that equals the zero vector. Explain how your result affects the student's conclusion. 
+
+Given, 
+
+$$
+u = (1, 1, 0), v = (1, 0, 1), w = (2, 1, 1)
+$$
+
+Since $u + v = w$ , we obtain 
+
+$$
+u + v - w = (0, 0, 0)
+$$
+
+This is a nontrivial linear combination because the coefficients 1, 1, -1 are not all zero. 
+
+By the definition of Linearly Independence , a set of vectors is linearly independent if and only if the only linear combination that equals the zero vector has all coefficients equal to zero. Since the above equation is a nontrivial linear combination that equals the zero vector, the vectors $u,v,w$ are linearly dependent. 
+
+Therefore, the set $S = \{ u, v, w \}$ is not a basis for $V$ , because a basis must be linearly independent. 
 
 ---
 
 
 (c) The student revises the argument by replacing w with $p = ( 1 , - 1 , 1 )$ Determine whether u, v, p is a basis for V. Justify your evaluation. 
 
+Given $p = (1, -1, 1)$ , form the matrix $A = \begin{bmatrix} u^{T} & v^{T} & p^{T} \end{bmatrix}$ 
+
+$$
+A = \left( \begin{array}{r r r} 1 & 1 & 1 \\ 1 & 0 & - 1 \\ 0 & 1 & 1 \end{array} \right)
+$$
+
+$$
+\begin{array}{r l} {\det (A)} & {= 1 \left| \begin{array}{l l} 0 & - 1 \\ 1 & 1 \end{array} \right| - 1 \left| \begin{array}{l l} 1 & - 1 \\ 0 & 1 \end{array} \right| + 1 \left| \begin{array}{l l} 1 & 0 \\ 0 & 1 \end{array} \right|} \\ & {= 1 (1) - 1 (1) + 1 (1)} \\ & {= 1} \end{array}
+$$
+
+Since $\det(A) = 1 \neq 0$ , the matrix $A$ is invertible. 
+
+By the Invertible Matrix Theorem, a square matrix is invertible if and only if its determinant is nonzero. Therefore, the columns of $A$ , namely $u, v, p$ are linearly independent. 
+
+Furthermore, by the Basis Theorem, three linearly independent vectors in $\mathbb{C}^3$ form a basis for $\mathbb{C}^3$ . 
+
+Hence, $\{u,v,p\}$ is a basis for $V$ . 
 
 ---
 
-
 (d) Explain why the condition that a set contains exactly three nonzero vectors in V is insufficient to conclude that the set is a basis. State the additional condition needed. 
 
+Having exactly three nonzero vectors in $V = \mathbb{C}^{3}$ is insufficient to conclude that the set is a basis because the vectors may be linearly dependent. For example, in Question 1(a), $w = u + v$ , which shows that the three vectors are linearly dependent even though all of them are nonzero. 
+
+By the definition of a basis, a set of vectors must span the space and be linearly independent. Furthermore, by the Basis Theorem, any three linearly independent vectors in $\mathbb{C}^3$ automatically span $\mathbb{C}^3$ and form a basis. 
+
+Therefore, the additional condition needed is linear independence. Equivalently, for three vectors in $\mathbb{C}^3$ , the determinant of the matrix formed by the vectors must be nonzero. This ensures that the vectors are linearly independent and span $V$ , so they form a basis. 
 
 ---
 
@@ -219,7 +278,7 @@ Therefore, $W$ is a subspace of $V$.
 > [!remark]
 > Since $U\subseteq V$ and $W\subseteq V$, it follow if an element is in $U$ or $W$ then it is also an element in $V$. Thus, the property above like associative, distributive, commutative and so on are justified by the axiom of vector space $V$  
 > 
-> Note that $\mathbb{C}$ is a field, thus it is closure under addition and scalar multiplication.
+> Note that $\mathbb{C}$ is a field, thus it is closure under addition and multiplication.
 
 
 ---
