@@ -103,7 +103,7 @@ Thus, $\sum_{i=1}^{\infty}a_{i}$ it convergent which is a contradiction. $\black
 
 
 
-(b*) If $\sum _ { i = 1 } ^ { \infty } a _ { i }$ is convergent and $\sum _ { i = 1 } ^ { \infty } b _ { i }$ is divergent, prove that $\sum _ { i = 1 } ^ { \infty } ( a _ { i } + b _ { i } )$ is divergent. 
+(b*) If $\sum _ { i = 1 } ^ { \infty } a _ { i }$ is convergent and $\sum _ { i = 1 } ^ { \infty } b _ { i }$ is divergent, prove that $\sum _ { i = 1 } ^ { \infty } ( a _ { i } + b _ { i } )$ is divergent.  ^6385ca
 
 Proof:
 Suppose $\sum_{i=1}^{\infty}a_{i}$ is convergent, then $\lim_{ i \to \infty }a_{i}=0$. We need to show $\lim_{ i \to \infty }(a_{i}+b_{i}) \neq 0$.

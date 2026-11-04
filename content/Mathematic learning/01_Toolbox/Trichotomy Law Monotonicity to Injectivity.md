@@ -179,6 +179,18 @@ Since $f(x) = x^2$ is strictly increasing on $[0, \infty)$, squaring non-negativ
 * **Negative Version (Strictly Decreasing on $(-\infty, 0]$):** 
   Order inverts because $f(x) = x^2$ is strictly decreasing for non-positive numbers:
   $$a < b \le 0 \iff a^2 > b^2 \ge 0 \quad (\text{e.g. } -5 < -2 \iff 25 > 4)$$
+* **Calculus Monotonicity Preservation (Testing Decreasing Sequences/Functions):**
+  Because $u \mapsto u^2$ is strictly increasing on $[0, \infty)$ (staying strictly on the positive side of the axis of symmetry $u = 0$), squaring any positive function $f(x) > 0$ preserves its exact direction of monotonicity:
+  $$
+  f(x) \text{ is strictly decreasing} \iff [f(x)]^2 \text{ is strictly decreasing}
+  $$
+  By the chain rule:
+  $$
+  \frac{d}{dx}\left([f(x)]^2\right) = 2f(x) \cdot f'(x)
+  $$
+  Because $f(x) > 0$, the factor $2f(x)$ is always positive, guaranteeing that $\frac{d}{dx}[f(x)]^2$ and $f'(x)$ share the exact same sign.
+  - *Strategic Advantage:* Eliminates messy square roots when verifying that an alternating series sequence $b_i$ is decreasing, avoiding degree-5 polynomial ratios (e.g., differentiating $h(x) = \frac{x^2}{x^3+2}$ instead of $f(x) = \frac{x}{\sqrt{x^3+2}}$).
+[[201 Problem Set 4#^546c70]]
 
 ---
 

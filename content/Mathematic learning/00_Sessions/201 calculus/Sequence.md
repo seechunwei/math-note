@@ -500,10 +500,10 @@ $$
 
 To determine whether a sequence $\langle a_n \rangle$ is increasing or decreasing, we have three standard tools:
 
-| Method | What to Test | When to Use It |
-| :--- | :--- | :--- |
-| **1. Derivative ($f'(x)$)** | Let $f(n) = a_n$.<br>• $f'(x) \geq 0 \implies$ increasing<br>• $f'(x) \leq 0 \implies$ decreasing | Best for **rational functions, roots, and logarithms** (e.g., $\frac{n+1}{9n+1}$, $\frac{\ln n}{n}$). |
-| **2. Difference ($a_{n+1} - a_n$)** | • $a_{n+1} - a_n \geq 0 \implies$ increasing<br>• $a_{n+1} - a_n \leq 0 \implies$ decreasing | Best for **sums, linear terms, and polynomial differences**. |
+| Method                                                 | What to Test                                                                                                                              | When to Use It                                                                                                |
+| :----------------------------------------------------- | :---------------------------------------------------------------------------------------------------------------------------------------- | :------------------------------------------------------------------------------------------------------------ |
+| **1. Derivative ($f'(x)$)**                            | Let $f(n) = a_n$.<br>• $f'(x) \geq 0 \implies$ increasing<br>• $f'(x) \leq 0 \implies$ decreasing                                         | Best for **rational functions, roots, and logarithms** (e.g., $\frac{n+1}{9n+1}$, $\frac{\ln n}{n}$).         |
+| **2. Difference ($a_{n+1} - a_n$)**                    | • $a_{n+1} - a_n \geq 0 \implies$ increasing<br>• $a_{n+1} - a_n \leq 0 \implies$ decreasing                                              | Best for **sums, linear terms, and polynomial differences**.                                                  |
 | **3. Ratio ($\frac{a_{n+1}}{a_n}$)** *(for $a_n > 0$)* | Compare the ratio to **$1$**:<br>• $\frac{a_{n+1}}{a_n} \geq 1 \implies$ increasing<br>• $\frac{a_{n+1}}{a_n} \leq 1 \implies$ decreasing | Best for **factorials ($n!$) and exponentials ($c^n$)** (cannot differentiate $n!$ with elementary calculus). |
 
 > [!definition]

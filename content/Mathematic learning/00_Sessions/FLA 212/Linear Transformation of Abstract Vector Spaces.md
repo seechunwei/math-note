@@ -471,6 +471,8 @@ Hence, it is onto. Therefore, $T$ is bijective and thus it is isomorphism. Hence
 
 # Linear Extension
 
+^deab0e
+
 > [!theorem] Theorem (Linear Extension Theorem)
 > Let $V$ and $W$ be vector spaces over the same field $\mathbb{F}$.  
 > Let $B = \{v_1, v_2, \dots, v_n\}$ be an ordered basis of $V$, and let $\{w_1, w_2, \dots, w_n\}$ be any arbitrary vectors in $W$.
@@ -624,6 +626,8 @@ Whenever you write down an $m \times n$ matrix $A$ to represent a linear map, th
 $$
 A = \begin{bmatrix} | & | & & | \\ T(v_1) & T(v_2) & \cdots & T(v_n) \\ | & | & & | \end{bmatrix}
 $$
+
+^fceb18
 
 Why are we allowed to associate any arbitrary grid of numbers with a legitimate linear transformation? 
 **Because of the Linear Extension Theorem.** It guarantees that specifying the image of the basis vectors gives a legitimate, globally consistent linear transformation on the whole space.

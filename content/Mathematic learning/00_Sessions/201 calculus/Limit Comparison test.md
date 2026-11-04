@@ -36,6 +36,10 @@ if $\sum_{i=1}^{\infty}b_{i}$ is convergent, so $\sum_{i=1}^{\infty}Mb_{i}$. Thu
 If $\sum_{i=1}^{\infty}b_{i}$ is divergent, so $\sum_{i=1}^{\infty}mb_{i}$. Hence, $\sum_{i=1}^{\infty}a_{i}$ is divergent by the Comparison Test. $\blacksquare$
 
 > [!remark]
+> We need it to be with positive terms only to ensure the $\sum$ is increasing (monotonic)
+
+
+> [!remark]
 > What is the difference of Integral Test and Limit Comparison Test? Integral test and limit comparison test no need to create an inequality to compare. 
 > - Integral test, we know the limit value but also need strict condition
 > - Use LCT when polynomial or roots or rational
@@ -122,7 +126,7 @@ $$
 ## Alternating series test
 
 > [!Theorem] Alternating Series Test
-> An alternating series $\sum_{i=1}^{\infty}(-1)^{i+1}b_{i}$ with $b_{i}>0$ for a;; $i\geq 1$ is convergent if it satisfies both the following properties:
+> An alternating series $\sum_{i=1}^{\infty}(-1)^{i+1}b_{i}$ with $b_{i}>0$ for $i\geq 1$ is convergent if it satisfies both the following properties:
 > 1) $b_{1+1}\leq b_{i}$ for all $i\geq 1$ and
 > 2) $\lim_{ i \to \infty }b_{i}=0$
 

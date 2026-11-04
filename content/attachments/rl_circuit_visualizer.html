@@ -1,0 +1,716 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>RL Circuit - Water Pressure Analogy</title>
+  <style>
+    :root {
+      --bg-color: #121214;
+      --card-bg: #1c1c1f;
+      --inner-bg: #26262b;
+      --text-color: #f4f4f5;
+      --text-muted: #a1a1aa;
+      --border-color: #3f3f46;
+      --emerald: #10b981;
+      --amber: #f59e0b;
+      --indigo: #6366f1;
+      --cyan: #06b6d4;
+    }
+
+    @media (prefers-color-scheme: light) {
+      :root {
+        --bg-color: #f8fafc;
+        --card-bg: #ffffff;
+        --inner-bg: #f1f5f9;
+        --text-color: #0f172a;
+        --text-muted: #64748b;
+        --border-color: #e2e8f0;
+      }
+    }
+
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+    }
+
+    body {
+      background-color: var(--bg-color);
+      color: var(--text-color);
+      padding: 14px;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      min-height: 100vh;
+    }
+
+    .container {
+      width: 100%;
+      max-width: 960px;
+      background: var(--card-bg);
+      border: 1px solid var(--border-color);
+      border-radius: 16px;
+      padding: 18px;
+      display: flex;
+      flex-direction: column;
+      gap: 16px;
+      box-shadow: 0 4px 20px rgba(0, 0, 0, 0.15);
+    }
+
+    /* Header */
+    .header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      border-bottom: 1px solid var(--border-color);
+      padding-bottom: 12px;
+      flex-wrap: wrap;
+      gap: 10px;
+    }
+
+    .title-group h2 {
+      font-size: 1.15rem;
+      font-weight: 700;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .title-group p {
+      font-size: 0.8rem;
+      color: var(--text-muted);
+      margin-top: 2px;
+    }
+
+    /* Equation Bar */
+    .equation-bar {
+      background: var(--inner-bg);
+      border: 1px solid var(--border-color);
+      border-radius: 12px;
+      padding: 12px;
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: center;
+      align-items: center;
+      gap: 8px;
+      font-family: monospace;
+      font-size: 0.95rem;
+      font-weight: 700;
+    }
+
+    .eq-chip {
+      padding: 4px 10px;
+      border-radius: 8px;
+      display: inline-flex;
+      flex-direction: column;
+      align-items: center;
+      font-size: 0.88rem;
+    }
+
+    .chip-sub {
+      font-size: 0.65rem;
+      font-weight: normal;
+      margin-bottom: 2px;
+    }
+
+    .chip-indigo {
+      background: rgba(99, 102, 241, 0.15);
+      border: 1px solid var(--indigo);
+      color: #818cf8;
+    }
+
+    .chip-amber {
+      background: rgba(245, 158, 11, 0.15);
+      border: 1px solid var(--amber);
+      color: #fbbf24;
+    }
+
+    .chip-emerald {
+      background: rgba(16, 185, 129, 0.15);
+      border: 1px solid var(--emerald);
+      color: #34d399;
+    }
+
+    /* Grid Layout */
+    .main-grid {
+      display: grid;
+      grid-template-columns: 1.2fr 0.8fr;
+      gap: 16px;
+      align-items: start;
+    }
+
+    @media (max-width: 768px) {
+      .main-grid {
+        grid-template-columns: 1fr;
+      }
+    }
+
+    /* Left Col: Canvas */
+    .canvas-panel {
+      background: var(--inner-bg);
+      border: 1px solid var(--border-color);
+      border-radius: 12px;
+      padding: 8px;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+    }
+
+    canvas {
+      width: 100%;
+      height: auto;
+      aspect-ratio: 4 / 3;
+      display: block;
+      border-radius: 8px;
+    }
+
+    .legend-row {
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: center;
+      gap: 12px;
+      margin-top: 8px;
+      font-size: 0.72rem;
+      color: var(--text-muted);
+    }
+
+    .legend-item {
+      display: flex;
+      align-items: center;
+      gap: 4px;
+    }
+
+    .legend-dot {
+      width: 8px;
+      height: 8px;
+      border-radius: 50%;
+    }
+
+    /* Right Col: Controls & Readouts */
+    .control-panel {
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+    }
+
+    .card {
+      background: var(--inner-bg);
+      border: 1px solid var(--border-color);
+      border-radius: 10px;
+      padding: 12px;
+    }
+
+    .card-title {
+      font-size: 0.75rem;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+      color: var(--text-muted);
+      margin-bottom: 8px;
+      display: flex;
+      justify-content: space-between;
+    }
+
+    .slider-group {
+      margin-bottom: 10px;
+    }
+
+    .slider-group:last-child {
+      margin-bottom: 0;
+    }
+
+    .slider-header {
+      display: flex;
+      justify-content: space-between;
+      font-size: 0.78rem;
+      font-weight: 600;
+      margin-bottom: 4px;
+    }
+
+    input[type=range] {
+      width: 100%;
+      height: 5px;
+      background: var(--border-color);
+      border-radius: 5px;
+      outline: none;
+      -webkit-appearance: none;
+      cursor: pointer;
+    }
+
+    input[type=range]::-webkit-slider-thumb {
+      -webkit-appearance: none;
+      width: 15px;
+      height: 15px;
+      border-radius: 50%;
+      background: var(--text-color);
+      cursor: pointer;
+    }
+
+    .btn {
+      padding: 7px 14px;
+      border-radius: 8px;
+      font-size: 0.8rem;
+      font-weight: 600;
+      cursor: pointer;
+      border: 1px solid transparent;
+      transition: all 0.15s ease;
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+    }
+
+    .btn-emerald {
+      background: var(--emerald);
+      color: #fff;
+    }
+    .btn-emerald:hover { opacity: 0.9; }
+
+    .btn-rose {
+      background: #e11d48;
+      color: #fff;
+    }
+    .btn-rose:hover { opacity: 0.9; }
+
+    .btn-ghost {
+      background: transparent;
+      border: 1px solid var(--border-color);
+      color: var(--text-muted);
+    }
+    .btn-ghost:hover {
+      background: var(--card-bg);
+      color: var(--text-color);
+    }
+
+    .readout-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 8px;
+    }
+
+    .readout-box {
+      background: var(--card-bg);
+      border: 1px solid var(--border-color);
+      border-radius: 8px;
+      padding: 8px;
+      text-align: center;
+    }
+
+    .readout-label {
+      font-size: 0.68rem;
+      color: var(--text-muted);
+    }
+
+    .readout-val {
+      font-size: 0.95rem;
+      font-weight: 700;
+      font-family: monospace;
+      margin-top: 2px;
+    }
+
+    .takeaway-card {
+      border-left: 3px solid var(--indigo);
+      font-size: 0.75rem;
+      line-height: 1.4;
+      color: var(--text-muted);
+    }
+    .takeaway-card strong {
+      color: var(--text-color);
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    
+    <!-- Header -->
+    <div class="header">
+      <div class="title-group">
+        <h2>💧 RL Circuit ↔ Water Pressure Analogy</h2>
+        <p>Interactive verification of Kirchhoff's Voltage Law: <strong>L(di/dt) + Ri = E(t)</strong></p>
+      </div>
+      <div style="display: flex; gap: 8px;">
+        <button id="toggleBtn" class="btn btn-emerald">⚡ Pump: ON (10V)</button>
+        <button id="resetBtn" class="btn btn-ghost" title="Reset Current">↺</button>
+      </div>
+    </div>
+
+    <!-- Live Equation Bar -->
+    <div class="equation-bar">
+      <div class="eq-chip chip-indigo">
+        <span class="chip-sub">Inertia Drop (Flywheel)</span>
+        <span>L·(di/dt) = <span id="eqVL">0.00</span> V</span>
+      </div>
+      <span>+</span>
+      <div class="eq-chip chip-amber">
+        <span class="chip-sub">Friction Drop (Constriction)</span>
+        <span>R·i = <span id="eqVR">0.00</span> V</span>
+      </div>
+      <span>=</span>
+      <div class="eq-chip chip-emerald">
+        <span class="chip-sub">Impressed Voltage (Pump)</span>
+        <span>E(t) = <span id="eqE">10.00</span> V</span>
+      </div>
+    </div>
+
+    <!-- Main Content Grid -->
+    <div class="main-grid">
+      <!-- Left: Simulation Canvas -->
+      <div class="canvas-panel">
+        <canvas id="simCanvas" width="560" height="420"></canvas>
+        <div class="legend-row">
+          <div class="legend-item"><div class="legend-dot" style="background:#10b981;"></div>Pump (E)</div>
+          <div class="legend-item"><div class="legend-dot" style="background:#6366f1;"></div>Flywheel / Inductor (L)</div>
+          <div class="legend-item"><div class="legend-dot" style="background:#f59e0b;"></div>Constriction / Resistor (R)</div>
+          <div class="legend-item"><div class="legend-dot" style="background:#38bdf8;"></div>Water / Current (i)</div>
+        </div>
+      </div>
+
+      <!-- Right: Controls & Metrics -->
+      <div class="control-panel">
+        <!-- Live Readouts -->
+        <div class="card">
+          <div class="card-title">Live System State</div>
+          <div class="readout-grid">
+            <div class="readout-box">
+              <div class="readout-label">Flow Rate i(t)</div>
+              <div id="readoutI" class="readout-val" style="color:var(--cyan);">0.00 A</div>
+            </div>
+            <div class="readout-box">
+              <div class="readout-label">Accel di/dt</div>
+              <div id="readoutDIDT" class="readout-val" style="color:var(--indigo);">0.00 A/s</div>
+            </div>
+            <div class="readout-box">
+              <div class="readout-label">Steady State i(∞)</div>
+              <div id="readoutISS" class="readout-val" style="color:var(--emerald);">3.33 A</div>
+            </div>
+            <div class="readout-box">
+              <div class="readout-label">Time Constant τ=L/R</div>
+              <div id="readoutTau" class="readout-val" style="color:var(--amber);">0.50 s</div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Sliders -->
+        <div class="card">
+          <div class="card-title">Circuit / Pipe Parameters</div>
+          
+          <div class="slider-group">
+            <div class="slider-header">
+              <span style="color:var(--indigo);">⚙️ Inductance L (Flywheel Inertia)</span>
+              <span id="badgeL">1.5 H</span>
+            </div>
+            <input id="sliderL" type="range" min="0.2" max="4.0" step="0.1" value="1.5">
+          </div>
+
+          <div class="slider-group">
+            <div class="slider-header">
+              <span style="color:var(--amber);">🧱 Resistance R (Pipe Friction)</span>
+              <span id="badgeR">3.0 Ω</span>
+            </div>
+            <input id="sliderR" type="range" min="0.5" max="8.0" step="0.5" value="3.0">
+          </div>
+        </div>
+
+        <!-- Takeaway Insight Card -->
+        <div class="card takeaway-card">
+          <strong>Key Physical Insight:</strong><br>
+          • <strong>At switch turn-on:</strong> Water rushes to accelerate, so <em>di/dt</em> is large. The heavy wheel absorbs almost all pressure (<em>V<sub>L</sub> ≈ E</em>), so current rises gradually.<br>
+          • <strong>At steady state:</strong> Acceleration drops to zero (<em>di/dt = 0</em>). The wheel spins freely with zero back-pressure (<em>V<sub>L</sub> = 0</em>), leaving all voltage drop across the resistor (<em>Ri = E</em>).
+        </div>
+      </div>
+    </div>
+
+  </div>
+
+  <script>
+    // State variables
+    let E = 10.0;
+    let R = 3.0;
+    let L = 1.5;
+    let current_i = 0.0;
+    let didt = 0.0;
+    let isPumpOn = true;
+    let wheelAngle = 0;
+
+    // Simulation particles
+    const NUM_PARTICLES = 32;
+    const particles = [];
+    for (let i = 0; i < NUM_PARTICLES; i++) {
+      particles.push({ dist: i / NUM_PARTICLES });
+    }
+
+    // DOM Elements
+    const canvas = document.getElementById('simCanvas');
+    const ctx = canvas.getContext('2d');
+    const toggleBtn = document.getElementById('toggleBtn');
+    const resetBtn = document.getElementById('resetBtn');
+    const sliderL = document.getElementById('sliderL');
+    const sliderR = document.getElementById('sliderR');
+    const badgeL = document.getElementById('badgeL');
+    const badgeR = document.getElementById('badgeR');
+
+    const eqVL = document.getElementById('eqVL');
+    const eqVR = document.getElementById('eqVR');
+    const eqE = document.getElementById('eqE');
+    const readoutI = document.getElementById('readoutI');
+    const readoutDIDT = document.getElementById('readoutDIDT');
+    const readoutISS = document.getElementById('readoutISS');
+    const readoutTau = document.getElementById('readoutTau');
+
+    // Controls
+    toggleBtn.addEventListener('click', () => {
+      isPumpOn = !isPumpOn;
+      if (isPumpOn) {
+        toggleBtn.className = "btn btn-emerald";
+        toggleBtn.innerHTML = "⚡ Pump: ON (10V)";
+      } else {
+        toggleBtn.className = "btn btn-rose";
+        toggleBtn.innerHTML = "🛑 Pump: OFF (0V)";
+      }
+    });
+
+    resetBtn.addEventListener('click', () => {
+      current_i = 0;
+      didt = 0;
+    });
+
+    sliderL.addEventListener('input', (e) => {
+      L = parseFloat(e.target.value);
+      badgeL.textContent = L.toFixed(1) + " H";
+      updateReadouts();
+    });
+
+    sliderR.addEventListener('input', (e) => {
+      R = parseFloat(e.target.value);
+      badgeR.textContent = R.toFixed(1) + " Ω";
+      updateReadouts();
+    });
+
+    function updateReadouts() {
+      const iss = isPumpOn ? (10.0 / R) : 0.0;
+      readoutISS.textContent = iss.toFixed(2) + " A";
+      readoutTau.textContent = (L / R).toFixed(2) + " s";
+    }
+    updateReadouts();
+
+    // Pipe Loop Geometry
+    const xLeft = 70, xRight = 490, yTop = 70, yBottom = 330;
+    const loopW = xRight - xLeft;
+    const loopH = yBottom - yTop;
+    const perimeter = 2 * (loopW + loopH);
+
+    function getPointOnLoop(t) {
+      t = (t % 1 + 1) % 1;
+      let d = t * perimeter;
+      if (d <= loopW) return { x: xLeft + d, y: yTop, dir: 'right' };
+      d -= loopW;
+      if (d <= loopH) return { x: xRight, y: yTop + d, dir: 'down' };
+      d -= loopH;
+      if (d <= loopW) return { x: xRight - d, y: yBottom, dir: 'left' };
+      d -= loopW;
+      return { x: xLeft, y: yBottom - d, dir: 'up' };
+    }
+
+    // Physics Engine
+    let lastTime = performance.now();
+
+    function updatePhysics(dt) {
+      E = isPumpOn ? 10.0 : 0.0;
+      // Differential equation: di/dt = (E - R*i) / L
+      didt = (E - R * current_i) / L;
+      current_i += didt * dt;
+      if (current_i < 0) current_i = 0;
+
+      const vL = L * didt;
+      const vR = R * current_i;
+
+      // Update text values
+      eqVL.textContent = (vL >= 0 ? "+" : "") + vL.toFixed(2);
+      eqVR.textContent = vR.toFixed(2);
+      eqE.textContent = E.toFixed(2);
+      readoutI.textContent = current_i.toFixed(2) + " A";
+      readoutDIDT.textContent = (didt >= 0 ? "+" : "") + didt.toFixed(2) + " A/s";
+
+      // Move particles
+      const speed = current_i * 0.09 * dt;
+      particles.forEach(p => {
+        p.dist = (p.dist + speed) % 1;
+      });
+
+      wheelAngle += current_i * 2.8 * dt;
+    }
+
+    // Rendering
+    function draw() {
+      ctx.clearRect(0, 0, canvas.width, canvas.height);
+
+      const vL = L * didt;
+      const vR = R * current_i;
+      const p1 = E;
+      const p2 = Math.max(0, E - vL);
+      const p3 = 0.0;
+
+      // Pipe Outer Outline
+      ctx.lineWidth = 36;
+      ctx.lineCap = 'round';
+      ctx.lineJoin = 'round';
+      ctx.strokeStyle = 'rgba(100, 116, 139, 0.25)';
+      ctx.strokeRect(xLeft, yTop, loopW, loopH);
+
+      // Pipe Inner Chamber
+      ctx.lineWidth = 26;
+      ctx.strokeStyle = 'rgba(15, 23, 42, 0.7)';
+      ctx.strokeRect(xLeft, yTop, loopW, loopH);
+
+      // Water Particles
+      particles.forEach(p => {
+        const pt = getPointOnLoop(p.dist);
+        ctx.beginPath();
+        ctx.arc(pt.x, pt.y, 4.5, 0, Math.PI * 2);
+        if (pt.y < (yTop + yBottom) / 2 && pt.x < xRight - 40) {
+          ctx.fillStyle = isPumpOn ? '#38bdf8' : '#64748b';
+        } else if (pt.x > (xLeft + xRight) / 2) {
+          ctx.fillStyle = '#818cf8';
+        } else {
+          ctx.fillStyle = '#475569';
+        }
+        ctx.fill();
+      });
+
+      // --- Component 1: Water Pump (Battery / E) ---
+      const pumpX = 180, pumpY = yTop;
+      ctx.save();
+      ctx.fillStyle = isPumpOn ? '#10b981' : '#475569';
+      ctx.beginPath();
+      ctx.arc(pumpX, pumpY, 26, 0, Math.PI * 2);
+      ctx.fill();
+      ctx.lineWidth = 3;
+      ctx.strokeStyle = '#34d399';
+      ctx.stroke();
+      ctx.fillStyle = '#ffffff';
+      ctx.font = 'bold 11px sans-serif';
+      ctx.textAlign = 'center';
+      ctx.textBaseline = 'middle';
+      ctx.fillText(isPumpOn ? 'PUMP' : 'OFF', pumpX, pumpY - 4);
+      ctx.font = '10px monospace';
+      ctx.fillText(`${E.toFixed(0)}V`, pumpX, pumpY + 8);
+      ctx.restore();
+
+      // --- Component 2: Heavy Flywheel (Inductor / L) ---
+      const wheelX = xRight, wheelY = (yTop + yBottom) / 2;
+      ctx.save();
+      ctx.translate(wheelX, wheelY);
+      ctx.beginPath();
+      ctx.arc(0, 0, 30, 0, Math.PI * 2);
+      ctx.fillStyle = 'rgba(99, 102, 241, 0.2)';
+      ctx.fill();
+      ctx.lineWidth = 3;
+      ctx.strokeStyle = '#6366f1';
+      ctx.stroke();
+
+      ctx.rotate(wheelAngle);
+      for (let i = 0; i < 4; i++) {
+        ctx.rotate(Math.PI / 2);
+        ctx.beginPath();
+        ctx.rect(-3, -24, 6, 48);
+        ctx.fillStyle = '#818cf8';
+        ctx.fill();
+      }
+      ctx.beginPath();
+      ctx.arc(0, 0, 7, 0, Math.PI * 2);
+      ctx.fillStyle = '#312e81';
+      ctx.fill();
+      ctx.restore();
+
+      // Inductor Label
+      ctx.font = 'bold 11px sans-serif';
+      ctx.fillStyle = '#a5b4fc';
+      ctx.textAlign = 'center';
+      ctx.fillText(`FLYWHEEL (L = ${L}H)`, wheelX, wheelY + 44);
+      ctx.font = '10px monospace';
+      ctx.fillText(`Drop: ${vL.toFixed(1)}V`, wheelX, wheelY + 58);
+
+      // --- Component 3: Constriction / Resistor (R) ---
+      const resX = (xLeft + xRight) / 2, resY = yBottom;
+      ctx.save();
+      ctx.beginPath();
+      ctx.rect(resX - 60, resY - 14, 120, 28);
+      ctx.fillStyle = 'rgba(245, 158, 11, 0.2)';
+      ctx.fill();
+      ctx.lineWidth = 2;
+      ctx.strokeStyle = '#f59e0b';
+      ctx.stroke();
+
+      ctx.beginPath();
+      ctx.moveTo(resX - 50, resY);
+      for (let i = -40; i <= 50; i += 15) {
+        ctx.lineTo(resX + i - 7.5, resY + ((i % 30 === 0) ? -10 : 10));
+        ctx.lineTo(resX + i, resY);
+      }
+      ctx.lineWidth = 3;
+      ctx.strokeStyle = '#d97706';
+      ctx.stroke();
+      ctx.restore();
+
+      // Resistor Label
+      ctx.font = 'bold 11px sans-serif';
+      ctx.fillStyle = '#fbbf24';
+      ctx.textAlign = 'center';
+      ctx.fillText(`CONSTRICTION (R = ${R}Ω)`, resX, resY + 28);
+      ctx.font = '10px monospace';
+      ctx.fillText(`Drop: ${vR.toFixed(1)}V`, resX, resY + 42);
+
+      // --- Gauges ---
+      drawGauge(330, yTop - 30, p1, '10V', '#10b981');
+      drawGauge(xRight + 34, yBottom - 30, p2, `${p2.toFixed(1)}V`, '#818cf8');
+      drawGauge(xLeft - 32, yBottom - 20, p3, '0V', '#64748b');
+    }
+
+    function drawGauge(x, y, value, labelVal, color) {
+      ctx.save();
+      ctx.translate(x, y);
+      ctx.beginPath();
+      ctx.arc(0, 0, 18, 0, Math.PI * 2);
+      ctx.fillStyle = '#0f172a';
+      ctx.fill();
+      ctx.lineWidth = 2;
+      ctx.strokeStyle = color;
+      ctx.stroke();
+
+      const fraction = Math.min(1.0, Math.max(0.0, value / 10.0));
+      const angle = -Math.PI * 0.75 + fraction * (Math.PI * 1.5);
+
+      ctx.save();
+      ctx.rotate(angle);
+      ctx.beginPath();
+      ctx.moveTo(0, 2);
+      ctx.lineTo(0, -13);
+      ctx.lineWidth = 2;
+      ctx.strokeStyle = '#ffffff';
+      ctx.stroke();
+      ctx.restore();
+
+      ctx.beginPath();
+      ctx.arc(0, 0, 3, 0, Math.PI * 2);
+      ctx.fillStyle = '#ffffff';
+      ctx.fill();
+
+      ctx.font = 'bold 9px monospace';
+      ctx.fillStyle = color;
+      ctx.textAlign = 'center';
+      ctx.fillText(labelVal, 0, 28);
+      ctx.restore();
+    }
+
+    function animate(now) {
+      const dt = Math.min((now - lastTime) / 1000, 0.05);
+      lastTime = now;
+      updatePhysics(dt);
+      draw();
+      requestAnimationFrame(animate);
+    }
+    requestAnimationFrame(animate);
+  </script>
+</body>
+</html>
