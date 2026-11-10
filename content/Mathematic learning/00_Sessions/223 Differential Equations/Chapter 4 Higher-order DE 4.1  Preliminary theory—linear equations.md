@@ -371,7 +371,7 @@ $$
 It is the same definition of linear independence of vector in vector space.
 [[1.7 Linear Independence]]. But there is one thing that need to emphasis here which is if a set of 2 function is linearly dependent, then one function is simply constant multiple of other.
 
-In other word, 2 set of function is linearly independent when neither function is a constant multiple of the other on interval. For example,
+In other word, 2 set of function is linearly independent when neither function is a constant multiple of the other on interval. For example, ^28fd31
 $$
 f_{1}(x)=\mu(x)f_{2}(x)
 $$
@@ -381,7 +381,7 @@ where $\mu(x)$ is not a constant function. We will use this fact in next section
 An $n$-order linear homogeneous ordinary differential equation always has exactly $n$ linearly independent solutions in a fundamental set, under the existence and uniqueness assumption
 
 Why?
-$L(y)=0$ is a homogeneous equation, and  $L$ itself is a linear transformation, recalled from linear algebra, there exist a matrix $A$ such that $Ay=0$, and the solution is the nullspace which allow us to find  a basis. In perspective of linear transformation [[Linear Transformation of Abstract Vector Spaces]], $\ker(L)$ is always a subspace. This, answer the question why we only focus on homogeneous linear DE.
+$L(y)=0$ is a homogeneous equation, and  $L$ itself is a linear transformation, recalled from linear algebra, there exist a matrix $A$ such that $Ay=0$, and the solution is the nullspace which allow us to find a basis. In perspective of linear transformation [[Linear Transformation of Abstract Vector Spaces]], $\ker(L)$ is always a subspace. This, answer the question why we only focus on homogeneous linear DE.
 
 Why the dimension is exactly $n$? (The intuition)
 For any $nth$-order DE:
@@ -404,7 +404,7 @@ y^{(n-1)}(x_{0})
 \end{align}
 $$
 
-where $y=\{ y_{1},y_{2},\dots,y_{n} \}$ is the set of solution for the DE.
+where $y=\operatorname{span}\{ y_{1},y_{2},\dots,y_{n} \}$ is the set of solution for the DE.
 - Surjective: By the Existence theorem, $\mathrm{Im}(T)=\mathbb{R}^{n}$ (there is a solution that maps to it)
 - Injective (one-to-one): By the Uniqueness theorem, if $T(y)=0$, then $y(x)=0$ is the only solution (the kernel is trivial $\{ 0 \}$).
 
@@ -417,8 +417,32 @@ Hence, the set of solution form by basis that consists $n$ vector (or function).
 > [!question]
 > Why we mention IVP here?
 > Because the Existence and Uniqueness Theorem is the bridge of this proof. We suppose arbitrary $x_{0}$, so that it work for all value in the interval.
+> - When all the initial condition =0, we can prove $\ker(T)=\{ 0 \}$
+> - When it is arbitrary value, then we prove $\mathrm{Im}(T)=\mathbb{R}^{n}$
 
-How the matrix representation of this linear transformation $T$ looks like?
+> [!note] Two Distinct Linear Transformations: $L$ vs. $T$
+> Do not confuse the differential operator $L$ with the evaluation map $T$! They are two different linear maps with two different purposes:
+> 
+> 1. **$L$ (The Differential Operator):**
+>    - $L: C^n(I) \to C(I)$, defined by $L(y) = y^{(n)} + a_{n-1}(x)y^{(n-1)} + \dots + a_0(x)y$.
+>    - **Job:** $L$ *creates* the solution space. Solving the homogeneous ODE $L(y) = 0$ means finding the nullspace $S = \ker(L)$.
+>    - **Proves:** Because $L$ is linear, its kernel $S = \ker(L)$ is a vector subspace (Superposition Principle).
+> 
+> 2. **$T$ (The Initial Value Snapshot Map):**
+>    - $T: S \to \mathbb{R}^n$, defined by $T(y) = \begin{pmatrix} y(x_0) \\ y'(x_0) \\ \vdots \\ y^{(n-1)}(x_0) \end{pmatrix}$.
+>    - **Job:** $T$ *measures the dimension* of $S$. It maps each solution curve $y \in S$ to its initial values in $\mathbb{R}^n$ at $x_0$.
+>    - **Proves:** By Existence & Uniqueness, $T$ is an isomorphism, which proves $\dim(\ker(L)) = \dim(\mathbb{R}^n) = n$.
+> 
+> | Feature | $L$ (Differential Operator) | $T$ (Evaluation Map) |
+> | :--- | :--- | :--- |
+> | **Domain** | All smooth functions $C^n(I)$ | Solution space $S = \ker(L)$ |
+> | **Codomain** | Continuous functions $C(I)$ | Coordinate space $\mathbb{R}^n$ |
+> | **Kernel** | $\ker(L) = S$ (All solutions to the DE) | $\ker(T) = \{0\}$ (Only the zero function $y \equiv 0$) |
+> | **Purpose** | Proves solutions form a **vector space** | Proves the vector space has **dimension $n$** |
+
+> [!question]
+> How the matrix representation of this linear transformation $T$ looks like?
+
 Suppose we have a set of $n$ solutions $\{y_1, y_2, \dots, y_n\}$ and form the general linear combination:
 $$
 y(x) = c_1 y_1(x) + c_2 y_2(x) + \dots + c_n y_n(x)
@@ -455,6 +479,44 @@ $$
 M(x_0) = \begin{pmatrix} T(y_1) & T(y_2) & \dots & T(y_n) \end{pmatrix}
 $$
 
+> [!note] Conceptual Check: Does $T(y_1)$ map to $\mathbf{k}$?
+> **No.** $T(y_1) = \begin{pmatrix} y_1(x_0) \\ y_1'(x_0) \\ \vdots \\ y_1^{(n-1)}(x_0) \end{pmatrix}$ only maps $y_1$ to its own initial values. It does not equal $\mathbf{k}$ on its own.
+> 
+> It is the **entire linear combination** $y(x) = c_1 y_1(x) + \dots + c_n y_n(x)$ that maps to the target initial conditions $\mathbf{k}$:
+> $$
+> T(y) = \mathbf{k}
+> $$
+> Because $T$ is linear, $T$ distributes across the combination:
+> $$
+> T(y) = T(c_1 y_1 + \dots + c_n y_n) = c_1 T(y_1) + c_2 T(y_2) + \dots + c_n T(y_n) = \mathbf{k}
+> $$
+> In linear algebra, a linear combination of vectors is identical to the **column picture of matrix multiplication**:
+> $$
+> \begin{pmatrix} T(y_1) & T(y_2) & \dots & T(y_n) \end{pmatrix} \begin{pmatrix} c_1 \\ c_2 \\ \vdots \\ c_n \end{pmatrix} = \mathbf{k}
+> $$
+> - Each $T(y_i) \in \mathbb{R}^n$ is an individual **column building block**.
+> - The scalars $c_1, \dots, c_n$ determine **how much of each column $T(y_i)$ to mix together** to reach the target initial condition vector $\mathbf{k}$.
+
+> [!question]
+> Why does the matrix multiply coordinates $(c_1, \dots, c_n)$ if $T$ maps a function $y$? (Is there a contradiction?)
+> 
+> **No contradiction!** This is the bridge between the **Abstract Function Space** and the **Concrete Matrix Space**:
+> 
+> 1. **Matrices cannot multiply curves directly:** A matrix can only multiply columns of numbers. To feed a function $y \in S$ into a matrix, we must represent $y$ in coordinates.
+> 2. **Function as a Coordinate Vector:** By choosing a basis $\mathcal{B} = \{y_1, y_2, \dots, y_n\}$, any solution $y(x) = c_1 y_1(x) + \dots + c_n y_n(x)$ is uniquely encoded by its coordinate vector:
+>    $$
+>    [y]_\mathcal{B} = \begin{pmatrix} c_1 \\ c_2 \\ \vdots \\ c_n \end{pmatrix} \in \mathbb{R}^n
+>    $$
+> 3. **Building the Matrix $[T]$:** In linear algebra, the matrix representation of any linear transformation is constructed by evaluating $T$ on each basis vector:
+>    $$
+>    [T] = \begin{pmatrix} T(y_1) & T(y_2) & \dots & T(y_n) \end{pmatrix} = M(x_0)
+>    $$
+> 4. **Two Sides of the Same Coin:**
+>    - **Abstract World (Functions):** $T(y) = \mathbf{k}$ (the map $T$ takes function $y$ and evaluates its initial state).
+>    - **Matrix World (Coordinates):** $[T][y]_\mathcal{B} = M(x_0)\mathbf{c} = \mathbf{k}$ (the matrix multiplies the coordinate representation $\mathbf{c}$ to get the initial values).
+> 
+> $T$ acts on the **abstract function** $y(x)$, while the matrix $M(x_0)$ acts on the **coordinates** $(c_1, \dots, c_n)$ of that function.
+
 By the **Existence and Uniqueness Theorem**, for every initial condition vector $\mathbf{k} \in \mathbb{R}^n$, there exists a unique solution (hence a unique set of scalars $c_1, \dots, c_n$). In linear algebra, a square system $M(x_0)\mathbf{c} = \mathbf{k}$ has a unique solution for every $\mathbf{k}$ if and only if $M(x_0)$ is invertible ($\det(M(x_0)) \neq 0$).
 
 The determinant of this matrix is precisely the **Wronskian** evaluated at $x_0$:
@@ -462,6 +524,13 @@ $$
 \det(M(x_0)) = W(y_1, y_2, \dots, y_n)(x_0) \neq 0
 $$
 Thus, $\{y_1, \dots, y_n\}$ is a fundamental set (basis) if and only if their Wronskian does not vanish!
+
+> [!remark]
+> In other word Existence and Uniqueness Theorem implies that Wronskian(determinant) not equal to 0 implies that the solution set is linearly independent. (Basis)
+>
+>Note that the above argument is biconditional, hence given a linearly independent solution set, Wronskian not equal to 0 implies that $c_{1},\dots,c_{n}$ are exist and unique.
+>
+>Earlier we examine the linear transformation and now we examine the matrix representation.
 
 ### Wronskian
 
@@ -561,4 +630,68 @@ This is the natural result from [[Chapter 4 Higher-order DE 4.1  Preliminary the
 > where $c_{i},i=1,2,\dots,n$ are arbitrary constants.
 
 Proof:
-Let $Y$ be a solution and let $y_{1}$ and $y_{2}$ be linearly independent ^710293
+Let $Y$ be a solution and let $y_{1}$ and $y_{2}$ be linearly independent 
+solutions of $a_{2}y''+a_{1}y'+a_{0}y=0$ on an interval $I$. Suppose $x=t$ is a point in the interval. Suppose also that $Y(t)=k_{1}$ and $Y'(t)=k_{2}$. (Initial condition). Examine the equations
+$$
+\begin{gathered}
+C_{1}y_{1}(t)+C_{2}y_{2}(t)=k_{1} \\
+C_{1}y'(t)+C_{2}y'(t)=k_{2}
+\end{gathered}
+$$
+Since $y_{1},y_{2}$ are linearly independent, it follow that $W(y_{1},y_{2})\neq 0$. Hence, the Wronskian which is the determinant of above system is also not 0. Hence, we can determine uniquely $C_{1}$ and $C_{2}$. If we define $G(x)=C_{1}y_{1}(x)+C_{2}y_{2}(x)$, we observe that $G(x)$ satisfies the differential equation since it is a superposition of 2 known solutions; $G(x)$ satisfies the initial conditions.
+
+Since the solution of this liner-value problem is unique, we have $Y(x)=G(x)$. $\blacksquare$
+
+
+---
+
+## 4.1.3 Nonhomogeneous Equations
+
+> [!theorem] Theorem 4.1.6 General Solution-Nonhomogeneous Equations
+> Let $y_{p}$ be any particular solution of the nonhomogeneous linear $n$th-order DE on an interval $I$, and let $y_{1},y_{2},\dots,y_{n}$ be a fundamental set of solutions of the associated homogeneous DE on $I$. Then the general solution of the equation on the interval is
+> $$
+> y=c_{1}y_{1}(x)+c_{2}y_{2}(x)+\dots+c_{n}y_{n}(x)+y_{p}(x)
+> $$
+> where $c_{i},i=1,2,\dots,n$ are arbitrary constants.
+
+Remark:
+It look completely make sense because $D$ is a linear operator, hence $L=a_{n}D^{n}+\dots+a_{0}$ is also a linear operator, Hence, the linear combination part will map to 0 and the $L(y_{p})=g(x)$.
+
+Proof:
+Let $L$ be the differential operator and let $Y(x)$ and $y_{p}(x)$ be particular solutions of the nonhomogeneous equation $L(y)=g(x)$. Note that
+
+$$
+\begin{align}
+L(Y(x)-y_{p}(x))=L(Y(x))-L(y_{p}(x))=g(x)-g(x)=0
+\end{align}
+$$
+
+Note that it is a homogeneous equation. Hence, this show that $Y(x)-y_{p}(x)$ is a solution for homogeneous equation above. And by Theorem 4.1.5, it follow that there exist unique $c_{1},\dots,c_{n}$ such that
+
+$$
+\begin{align}
+Y(x)-y_{p}(x)&= c_{1}y_{1}(x)+c_{2}y_{2}(x)+\dots+c_{n}y_{n}(x) \\
+Y(x)&= c_{1}y_{1}(x)+\dots+c_{n}y_{n}(x)+y_{p}(x) \tag*{$\blacksquare$}
+\end{align}
+$$
+
+### Complementary function
+The general solution of a homogeneous linear equation:
+$$
+y=c_{1}y_{1}(x)+\dots+c_{n}y_{n}(x)
+$$
+
+is called complementary function for nonhomogeneous linear equation. Hence, $y=$complementary function + any particular solution.
+
+> [!theorem] Theorem 4.1.7 Superposition Principle- Nonhomogeneous Equations
+> 
+> $$
+> y_{p}(x)=y_{p_{1}}(x)+\dots+y_{pk}(x)
+> $$
+> is a particular solution of
+> $$
+> a_{n}(x)y^{(n)}+\dots+a_{0}(x)y=g_{1}(x)+\dots+g_{k}(x)
+> $$
+> 
+
+This theorem state that the solution for linear combination of $g(x)$ for nonhomogeneous equation is also the linear combination of the solution for each $g(x)$.
